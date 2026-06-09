@@ -26,6 +26,22 @@
                 --border-color: #333333;
             }
         }
+        body.light-theme {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+        }
+        body.dark-theme {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-color: #58a6ff;
+            --border-color: #333333;
+        }
         body {
             margin: 0;
             padding: 0;
@@ -33,6 +49,24 @@
             color: var(--text-main);
             font-family: 'Inter', -apple-system, sans-serif;
             line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            float: right;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-toggle:hover {
+            background: var(--surface-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         .archive-container {
             max-width: 800px;
@@ -98,12 +132,40 @@
     </style>
 </head>
 <body>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.add(savedTheme + '-theme');
+        }
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+        }
+    </script>
     <div class="archive-container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
         <a href="https://nkhola.github.io/" class="back-link">← Back to Main Site</a>
         <h1>Intelligence Briefings</h1>
         <p class="subtitle">A daily automated synthesis of the top AI and Finance news.</p>
         <ul class="archive-list">
             <li><a href="2026-06-09.html">Briefing for 2026-06-09 <span>Read →</span></a></li>
+            <li><a href="2026-06-08.html">Briefing for 2026-06-08 <span>Read →</span></a></li>
 
         </ul>
     </div>
