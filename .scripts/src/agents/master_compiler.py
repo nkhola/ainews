@@ -23,7 +23,7 @@ WRITING RULES:
 2. Connect equity-level news (earnings, guidance, analyst moves) to the broader macro picture (rates, inflation, geopolitics, sector rotation).
 3. When discussing a stock or sector, always frame it within valuation context or relative performance — never just "Stock X went up."
 4. Use a tone that is authoritative, analytical, and crisp. Think Matt Levine crossed with a Morningstar equity analyst. No filler, no clichés ("amid uncertainty", "investors are watching closely").
-5. Include [Read More: <url>] links inline for the reader to drill into specific stories.
+5. Format links using STRICT Markdown syntax: `[Read More](<url>)`. Never output raw URLs or bracketed URLs without the parenthesis.
 6. Keep the total briefing under 800 words.
 7. Use markdown formatting: bold for emphasis, headers for themes."""
 

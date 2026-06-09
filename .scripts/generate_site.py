@@ -46,41 +46,148 @@ def generate_daily_briefing():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Briefing - {date_str} | AI News</title>
-    <!-- Use the main website's stylesheet -->
-    <link rel="stylesheet" href="https://nkhola.github.io/styles.css">
+    <title>Briefing - {date_str} | AI & Finance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        .briefing-container {{ max-width: 800px; margin: 40px auto; padding: 20px; }}
-        .section-card {{ background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 40px; }}
-        @media (prefers-color-scheme: dark) {{
-            .section-card {{ background: #1a1a1a; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 1px solid #333; }}
+        :root {{
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
         }}
-        h1, h2, h3 {{ border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 30px; }}
-        @media (prefers-color-scheme: dark) {{ h1, h2, h3 {{ border-bottom: 1px solid #333; }} }}
-        .nav-link {{ display: inline-block; margin-bottom: 20px; font-weight: bold; }}
+        @media (prefers-color-scheme: dark) {{
+            :root {{
+                --bg-color: #121212;
+                --surface-color: #1e1e1e;
+                --text-main: #e0e0e0;
+                --text-muted: #a0a0a0;
+                --accent-color: #58a6ff;
+                --border-color: #333333;
+                --shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }}
+        }}
+        body {{
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+        }}
+        .briefing-container {{
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }}
+        .header-section {{
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }}
+        .header-section h1 {{
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }}
+        .header-section p {{
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }}
+        .section-card {{
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }}
+        .section-card h2 {{
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }}
+        .section-card h3 {{
+            font-family: 'Merriweather', serif;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }}
+        .section-card p {{
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }}
+        a {{
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            word-wrap: break-word;
+        }}
+        a:hover {{
+            text-decoration: underline;
+        }}
+        .nav-link {{
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }}
+        ul {{
+            padding-left: 24px;
+        }}
+        li {{
+            margin-bottom: 8px;
+        }}
+        blockquote {{
+            border-left: 4px solid var(--accent-color);
+            margin: 0;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.03);
+            font-style: italic;
+        }}
+        @media (prefers-color-scheme: dark) {{
+            blockquote {{
+                background: rgba(255,255,255,0.03);
+            }}
+        }}
     </style>
 </head>
 <body>
     <div class="briefing-container">
         <a href="index.html" class="nav-link">← Back to Archive</a>
         
-        <h1>Briefing for {date_str}</h1>
+        <div class="header-section">
+            <h1>The Daily Briefing</h1>
+            <p>{date_str}</p>
+        </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 AI News</h2>
+            <h2>🧠 Artificial Intelligence</h2>
             {ai_html}
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Finance News</h2>
+            <h2>📈 Markets &amp; Macro</h2>
             {fin_html}
         </div>
     </div>
 </body>
 </html>
 """
-    # Setup directories
-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     # Save daily file in the root
     daily_file = os.path.join(repo_root, f"{date_str}.html")
@@ -100,30 +207,112 @@ def update_index_page(repo_root, new_date_str):
     links_html = ""
     for f in files:
         date_name = f.replace('.html', '')
-        links_html += f'            <li><a href="{f}">{date_name} - AI & Finance Briefing</a></li>\n'
+        links_html += f'            <li><a href="{f}">Briefing for {date_name} <span>Read →</span></a></li>\n'
 
     index_template = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI & Finance Briefings Archive</title>
-    <!-- Use the main website's stylesheet -->
-    <link rel="stylesheet" href="https://nkhola.github.io/styles.css">
+    <title>Intelligence Briefings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        .archive-container {{ max-width: 800px; margin: 40px auto; padding: 20px; }}
-        .archive-list {{ list-style-type: none; padding: 0; }}
-        .archive-list li {{ margin-bottom: 10px; padding: 15px; background: rgba(0,0,0,0.02); border-radius: 6px; }}
-        @media (prefers-color-scheme: dark) {{ .archive-list li {{ background: rgba(255,255,255,0.05); }} }}
-        .archive-list a {{ text-decoration: none; font-size: 18px; font-weight: 500; display: block; }}
-        .archive-list a:hover {{ text-decoration: underline; }}
+        :root {{
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+        }}
+        @media (prefers-color-scheme: dark) {{
+            :root {{
+                --bg-color: #121212;
+                --surface-color: #1e1e1e;
+                --text-main: #e0e0e0;
+                --text-muted: #a0a0a0;
+                --accent-color: #58a6ff;
+                --border-color: #333333;
+            }}
+        }}
+        body {{
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+        }}
+        .archive-container {{
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 20px;
+        }}
+        h1 {{
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 8px;
+        }}
+        p.subtitle {{
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }}
+        .archive-list {{
+            list-style-type: none;
+            padding: 0;
+        }}
+        .archive-list li {{
+            margin-bottom: 16px;
+        }}
+        .archive-list a {{
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }}
+        .archive-list a:hover {{
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }}
+        .archive-list a span {{
+            color: var(--accent-color);
+            font-size: 0.95rem;
+            margin-left: auto;
+            font-weight: 600;
+        }}
+        .back-link {{
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            font-weight: 600;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.9rem;
+        }}
+        .back-link:hover {{
+            text-decoration: underline;
+        }}
     </style>
 </head>
 <body>
     <div class="archive-container">
-        <a href="https://nkhola.github.io/" style="font-weight: bold;">← Back to Main Site</a>
-        <h1>AI & Finance Briefings</h1>
-        <p>A daily automated synthesis of the top AI and Finance news.</p>
+        <a href="https://nkhola.github.io/" class="back-link">← Back to Main Site</a>
+        <h1>Intelligence Briefings</h1>
+        <p class="subtitle">A daily automated synthesis of the top AI and Finance news.</p>
         <ul class="archive-list">
 {links_html}
         </ul>
