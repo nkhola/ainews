@@ -3,88 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Briefing - 2026-06-09 | AI News</title>
-    <!-- Use the main website's stylesheet -->
-    <link rel="stylesheet" href="https://nkhola.github.io/styles.css">
+    <title>Briefing - 2026-06-09 | AI & Finance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        .briefing-container { max-width: 800px; margin: 40px auto; padding: 20px; }
-        .section-card { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 40px; }
-        @media (prefers-color-scheme: dark) {
-            .section-card { background: #1a1a1a; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 1px solid #333; }
+        :root {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        h1, h2, h3 { border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 30px; }
-        @media (prefers-color-scheme: dark) { h1, h2, h3 { border-bottom: 1px solid #333; } }
-        .nav-link { display: inline-block; margin-bottom: 20px; font-weight: bold; }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --surface-color: #1e1e1e;
+                --text-main: #e0e0e0;
+                --text-muted: #a0a0a0;
+                --accent-color: #58a6ff;
+                --border-color: #333333;
+                --shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+        }
+        .briefing-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .header-section h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .section-card {
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        .section-card h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+        .section-card h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        .section-card p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            word-wrap: break-word;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        blockquote {
+            border-left: 4px solid var(--accent-color);
+            margin: 0;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.03);
+            font-style: italic;
+        }
+        @media (prefers-color-scheme: dark) {
+            blockquote {
+                background: rgba(255,255,255,0.03);
+            }
+        }
     </style>
 </head>
 <body>
     <div class="briefing-container">
         <a href="index.html" class="nav-link">← Back to Archive</a>
         
-        <h1>Briefing for 2026-06-09</h1>
+        <div class="header-section">
+            <h1>The Daily Briefing</h1>
+            <p>2026-06-09</p>
+        </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 AI News</h2>
-            <h3>Inference-Time Scaling Hits a Phase Transition</h3>
-<p>The BAIR blog drops two complementary pieces that shift how we think about compute during inference. <strong>GRASP</strong> (gradient-based planning for world models) solves the long-horizon planning problem by lifting trajectories into virtual states and adding stochasticity directly to iterates — effectively parallelizing optimization across time while avoiding the brittle “state-input” gradient pathologies that have plagued model-based RL. Meanwhile, <strong>Adaptive Parallel Reasoning</strong> gives the model agency to decide when to decompose and parallelize subtasks, spawning concurrent threads adaptively. These aren't just incremental: together they suggest that <em>the next frontier of scaling is not model size but orchestration of compute at inference time.</em> The old view that inference is a cheap forward pass is dead. We now have systems that dynamically allocate parallel compute, and that changes the economics of deployment — especially when combined with token-saving tools like <strong>Lowfat</strong>, which cuts 91.8% of tokens by filtering verbose CLI output before the model sees it.</p>
-<p>[Deep Dive: http://bair.berkeley.edu/blog/2026/04/20/grasp/]<br />
-[Deep Dive: http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/]<br />
-[Deep Dive: https://github.com/zdk/lowfat]</p>
-<h3>Model Architectures: The Great Unbundling</h3>
-<p>Apple’s <strong>third-generation Foundation Models</strong> reveal an architecture built <em>collaboratively with Google’s Gemini team</em> — five models ranging from on-device to server-side, with privacy as the spine. This is a tectonic shift: Apple, historically vertically integrated, is abstracting its model supply chain. Meanwhile <strong>DeepSeek V4 Pro</strong> claims to beat GPT-5.5 Pro on precision, fueling the narrative that open-weight models and closed models are on <strong>different exponentials</strong> (as Nathan Lambert argues convincingly). The open model ecosystem is compounding rapidly — Gemma 4, DeepSeek V4, Kimi K2.6, MiMo 2.5, GLM-5.1 — and the marginal intelligence gap between open and closed is narrowing, while the value of <em>control</em> (customization, data governance) is rising. Apple’s move is the first major OEM signal that custom foundation models are a commodity input, not a moat.</p>
-<p>[Deep Dive: https://machinelearning.apple.com/research/introducing-third-generation-of-apple-foundation-models]<br />
-[Deep Dive: https://www.interconnects.ai/p/open-and-closed-models-are-on-different]<br />
-[Deep Dive: https://www.interconnects.ai/p/latest-open-artifacts-21-open-model]</p>
-<h3>Evaluation Crisis and the Forgetting of Uncertainty</h3>
-<p>Three new benchmarks from the arXiv flood expose a rot in our measurement culture. <strong>UnpredictaBench</strong> tests whether LLMs can capture true underlying distributions rather than collapsing to a single plausible answer — a pathology that kills their utility in economic simulations. <strong>VSAS-Bench</strong> from Apple attacks the offline evaluation bias in streaming VLMs, showing that metrics like proactiveness and latency matter as much as traditional accuracy. And <strong>CrowdMath</strong> attempts to benchmark collaborative open-problem solving, a setting that captures actual scientific discourse rather than closed-form answer keys.</p>
-<p>This connects to the broader evaluation crisis flagged by Sebastian Ruder (NLP News): standard evals have narrowed, and even those are unreliable. The <strong>RL without TD learning</strong> paper from BAIR is relevant here — it replaces temporal difference with divide-and-conquer, avoiding TD’s known pathologies in long-horizon settings. The meta-lesson: we are seeing a shift from <em>accuracy-centric</em> benchmarking to <em>distributional, temporal, and procedural</em> evaluation. The field is finally asking how models <em>actually</em> think, not just if they get the right answer.</p>
-<p>[Deep Dive: https://arxiv.org/abs/2606.06622 (UnpredictaBench)]<br />
-[Deep Dive: https://machinelearning.apple.com/research/vsas-bench-streaming-assistant]<br />
-[Deep Dive: https://newsletter.ruder.io/p/the-evolving-landscape-of-llm-evaluation]<br />
-[Deep Dive: http://bair.berkeley.edu/blog/2025/11/01/rl-without-td-learning/]</p>
-<h3>Safety as a Structural Problem, Not a Patch</h3>
-<p>The safety conversation is maturing. <strong>SafeGene</strong> (arXiv:2606.06519) proposes reusable adapters for transferable safety alignment — a response to the reality that fine-tuning erodes base-model guardrails, and red-teaming them each time is unsustainable. Separately, a paper formalizes bias as <strong>symmetry breaking</strong> under counterfactual sensitive-attribute switches, implementing fairness as a regularization loss that enforces invariance. This is a clean application of group theory to a previously ad-hoc practice.</p>
-<p>On the deployment side, OpenAI ships <strong>Lockdown Mode</strong> to prevent prompt-injection exfiltration — a practical acknowledgment that safety must be built into the I/O layer, not just the model weights. And the long shadow of Timnit Gebru’s 2020 paper on LLM dangers reappears as a reminder that warnings were dismissed as alarmism. The common thread: safety is not a single knob but a systems-level property involving architecture, data, fine-tuning protocol, and runtime monitoring.</p>
-<p>[Deep Dive: https://arxiv.org/abs/2606.06519]<br />
-[Deep Dive: https://arxiv.org/abs/2606.06514]<br />
-[Deep Dive: https://simonwillison.net/2026/Jun/5/openai-help-lockdown-mode/]<br />
-[Deep Dive: https://www.tumblr.com/dreaminginthedeepsouth/817865966907228160/darren-oconnor-timnit-gebru-was-fired-from]</p>
-<h3>Quick Hits Worth Your Attention</h3>
-<ul>
-<li><strong>Jane Street’s experience</strong> designing with Claude Code more than Figma signals that agentic coding is eating the design toolchain.</li>
-<li><strong>OpenAI’s Economic Research Exchange</strong> and <strong>Google DeepMind’s Asia Pacific Accelerator</strong> both aim to shape the socioeconomic narrative — a sign that labs are proactively framing impact.</li>
-<li><strong>The Gradient’s piece on AGI not being multimodal</strong> is a sharp rebuttal to the assumption that scaling vision+language is sufficient for general intelligence — worth reading alongside the <strong>virtue ethics alignment</strong> essay.</li>
-<li><strong>Apple’s EpikCache</strong> for long-context on-device memory is a practical engineering answer to the growing KV-cache bottleneck, especially for personalization.</li>
-</ul>
-<p>[Deep Dive: https://blog.janestreet.com/i-design-with-claude-code-more-than-figma-now-index/]<br />
-[Deep Dive: https://machinelearning.apple.com/research/epicache]</p>
+            <h2>🧠 Artificial Intelligence</h2>
+            <h1>Daily Briefing: June 9, 2026</h1>
+<h2>1. The Great Unbundling: Model Architecture and the End of Monolithic Scaling</h2>
+<p>The biggest story today is <strong>Apple’s third-generation Foundation Models built in collaboration with Google Gemini</strong> (<a href="https://machinelearning.apple.com/research/introducing-third-generation-of-apple-foundation-models">Apple ML</a>, <a href="https://www.macrumors.com/2026/06/08/apple-reveals-new-ai-architecture/">MacRumors</a>). This is a genuine surprise: Apple, the privacy-obsessed vertical integrator, is licensing a competitor’s architecture. The five-model family spans on-device to server, with “Private Cloud Compute” as the bridge. The subtext is that <strong>custom silicon + Gemini’s architecture</strong> may be the only viable path to on-device frontier capability without sacrificing privacy.</p>
+<p>Meanwhile, <strong>DeepSeek V4 Pro claims to beat GPT-5.5 Pro on precision</strong> (<a href="https://runtimewire.com/article/deepseek-v4-pro-beats-gpt-5-5-pro-on-precision">RuntimeWire</a>), and <strong>Xiaomi claims 1000+ tps on a 1T model using a standard 8-GPU server</strong> (<a href="https://www.reddit.com/r/LocalLLaMA/comments/1u0buhm/xiaomi_just_claimed_1000_tps_on_a_1t_model_using/">Reddit</a>). These are not just benchmarks — they signal that <strong>the scaling returns curve is bifurcating</strong>. As <a href="https://www.interconnects.ai/p/open-and-closed-models-are-on-different">Interconnects AI</a> argues, open and closed models are on different exponentials: closed models win on raw intelligence per dollar, but open models win on customization and deployment velocity.</p>
+<p>On the research side, BAIR’s <strong>Adaptive Parallel Reasoning</strong> (<a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">BAIR</a>) and <strong>GRASP</strong> for long-horizon planning in world models (<a href="http://bair.berkeley.edu/blog/2026/04/20/grasp/">BAIR</a>) point to a future where inference is not just faster but <em>structurally adaptive</em> — models decide when to parallelize subtasks or plan via gradient-based optimization. This is the opposite of the “one big forward pass” paradigm.</p>
+<p><strong>Takeaway</strong>: The era of “just scale up” is over. The winning strategy now combines architectural specialization, hardware co-design, and deployment-aware inference.</p>
+<h2>2. The Evaluation Crisis: Benchmarks Are Broken, But We’re Building Better Tools</h2>
+<p>The evaluation landscape is in turmoil. <a href="https://newsletter.ruder.io/p/the-evolving-landscape-of-llm-evaluation">NLP News</a> notes that standard evals have narrowed and their reliability is questioned. <a href="https://arxiv.org/abs/2606.06622">UnpredictaBench</a> tests whether LLMs capture true underlying distributions (spoiler: they collapse to a single plausible answer). <a href="https://arxiv.org/abs/2606.06635">How Language Models Fail</a> identifies two distinct failure signatures — committed vs. persistent — using token-level uncertainty.</p>
+<p>This is not just academic. <a href="https://www.latent.space/p/bad-envs">Latent Space</a> calls out broken RL environments that actively make models worse. <a href="https://twimlai.com/podcast/twimlai/how-find-agent-failures-your-evals-miss">TWIML</a> introduces a Maslow’s hierarchy of observability for agents. BAIR’s <strong>Spex</strong> (<a href="http://bair.berkeley.edu/blog/2026/03/13/spex/">BAIR</a>) tackles interpretability at scale by identifying interactions in LLMs.</p>
+<p>The contradiction: benchmarks are saturated, yet user experience isn’t improving proportionally (<a href="https://thegradient.pub/dialog/">The Gradient</a>). We need evals that measure <em>distributional fidelity</em>, <em>reasoning robustness</em>, and <em>user satisfaction</em> — not just accuracy on static sets.</p>
+<h2>3. Memory and Personalization: The Next Frontier for Assistants</h2>
+<p>OpenAI’s <strong>“Dreaming” memory system</strong> (<a href="https://openai.com/index/chatgpt-memory-dreaming">OpenAI</a>) and Apple’s <strong>EpiCache</strong> (<a href="https://machinelearning.apple.com/research/epicache">Apple ML</a>) both tackle the same problem: how to maintain coherent long-term context on-device with limited memory. EpiCache uses episodic KV cache management to compress history without losing critical information. Meanwhile, <a href="https://github.com/zaydmulani09/mnemo">Mnemo</a> offers a local-first memory layer for any LLM.</p>
+<p>But there’s a deeper issue: <a href="https://arxiv.org/abs/2606.06614">Re-Centering Humans in LLM Personalization</a> shows that current systems perform much worse on real human data than on synthetic data. We’re optimizing for the wrong distribution. <a href="https://thegradient.pub/agi-is-not-multimodal/">The Gradient</a> argues that AGI won’t come from language alone — it requires embodied, tacit understanding. Memory systems are a step toward that, but they’re still operating in a disembodied space.</p>
+<p><strong>Key insight</strong>: Memory is necessary but not sufficient. True personalization requires models that <em>learn from interaction</em> without catastrophic forgetting, and that respect user agency.</p>
+<h2>4. Safety, Alignment, and the Open-Closed Tension</h2>
+<p>The safety community is producing concrete tools: <strong>SafeGene</strong> (<a href="https://arxiv.org/abs/2606.06519">arXiv</a>) provides reusable adapters for transferable safety alignment — a practical answer to the “fine-tuning breaks safety” problem. <strong>Bias as symmetry operation</strong> (<a href="https://arxiv.org/abs/2606.06514">arXiv</a>) formalizes fairness as invariance under counterfactual sensitive attribute switching. <strong>Lean4Agent</strong> (<a href="https://arxiv.org/abs/2606.06523">arXiv</a>) brings formal verification to agent workflows.</p>
+<p>OpenAI’s <strong>Lockdown Mode</strong> (<a href="https://simonwillison.net/2026/Jun/5/openai-help-lockdown-mode/">Simon Willison</a>) is a pragmatic defense against</p>
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Finance News</h2>
-            <p><strong>Morning Briefing — June 9, 2026</strong></p>
-<p>Markets are staging a modest recovery after the AI-driven rout on Monday, with Asian bourses rebounding and U.S. futures pointing higher. But beneath the snap-back lie three narratives that every self-directed portfolio manager needs to internalize: the concentration of the AI capex bet, the fragile calm in the Middle East, and the accelerating collision between private credit and public markets.</p>
-<hr />
-<h3>1. The AI Capex Bet is Alive, but Increasingly Concentrated</h3>
-<p>The iShares Semiconductor ETF (SOXX) has gone vertical — up 89% year-to-date — and its next leg depends entirely on the capex whims of the five hyperscalers. As 24/7 Wall Street notes, you are no longer owning semis; you are owning a proxy for Amazon, Microsoft, Google, Meta, and Apple's collective willingness to wire cash into data centers. <a href="https://247wallst.com/investing/2026/06/08/why-soxxs-next-12-months-hinge-on-five-tech-giants-capex-decisions/">Read More</a></p>
-<p>Against that backdrop, the Biden/Trump chip export regime is tightening again. Bipartisan senators are urging the administration to close a loophole that lets Chinese firms' overseas subsidiaries access advanced AI chips via contract manufacturers like TSMC. <a href="https://finance.yahoo.com/sectors/technology/articles/us-lawmakers-urge-tighter-rules-020903149.html">Read More</a> The policy risk is real and under-priced in semis.</p>
-<p>Meanwhile, Microsoft's NHS Copilot deal — covering 505,000 clinicians — is a concrete proof-of-concept for enterprise AI adoption in a regulated setting. <a href="https://finance.yahoo.com/sectors/healthcare/articles/microsoft-nhs-copilot-deal-tests-021136224.html">Read More</a> That's bullish for MSFT's commercial cloud, but it also reinforces the thesis that most AI value capture accrues to the platform layer, not the chip makers.</p>
-<p>A footnote from Korea: a leveraged ETF tied to SK Hynix swung 40% the wrong way — the underlying stock surged, the ETF cratered. <a href="https://www.bloomberg.com/news/articles/2026-06-08/korean-leveraged-etf-misfires-jumps-50-even-as-sk-hynix-slumps">Read More</a> That's a reminder that retail leverage in AI can create mechanical dislocations; treat it as a sentiment gauge, not a trading signal.</p>
-<p><strong>Valuation context:</strong> At 35x forward earnings, SOXX is pricing in perpetual 20%+ earnings growth. A capex pause — or a geopolitical semiconductor ban on China — would compress that multiple violently.</p>
-<hr />
-<h3>2. Geopolitical Pause Buys Time for Oil, But Supercycle Risks Loom</h3>
-<p>Oil closed modestly higher after Israel and Iran agreed to halt direct strikes. <a href="https://seekingalpha.com/news/4601615-oil-closes-modestly-higher-after-iran-israel-hold-off-from-further-strikes">Read More</a> The immediate escalation risk is off the table, but the structural backdrop remains bullish for energy equities: supertanker orders just surpassed the 2008 record, driven by the Middle East war re-routing global trade. <a href="https://seekingalpha.com/news/4601614-supertanker-orders-top-record-set-in-2008-in-boom-driven-by-middle-east-war">Read More</a></p>
-<p>For a portfolio manager, this is a classic "sell the news" setup on crude — unless you believe the truce holds. The risk-reward in energy now depends on whether the Iran-Israel ceasefire is the start of a broader de-escalation (which would weigh on oil) or a temporary breather before the next strike (which would send crude higher). We lean toward the latter and maintain an overweight in midstream, but we're reducing tactical long crude positions.</p>
-<hr />
-<h3>3. The AI IPO Machine Revs Up — Private Credit and Public Markets Collide</h3>
-<p>OpenAI has filed confidentially for its IPO, with a price tag north of $1 trillion. The Financial Times reports the paperwork is in. <a href="https://www.ft.com/content/a347e00a-2952-41ad-9f12-88c01ba199d6">Read More</a> But there's a catch: CEO Sam Altman signals the company may remain private for a while longer because "there are things we want to do that are likely easier as a private company." <a href="https://www.marketwatch.com/story/openai-files-confidentially-for-ipo-but-theres-a-catch-3f13fc13">Read More</a> That vague warning should worry public market investors — it implies the IPO will happen only after the most capital-intensive projects are funded.</p>
-<p>Speaking of capital-intensive: Apollo and Blackstone just raised $35 billion in private credit to finance Anthropic's AI buildout. <a href="https://www.ft.com/content/c49e0eff-0776-4103-8eaf-1b049fbf9d3f">Read More</a> That's one of the largest private credit fundraisings ever. It further blurs the line between private equity and AI infrastructure — and it puts direct pressure on the public cloud providers to match those capex levels.</p>
-<p>Meanwhile, SpaceX IPO buzz is growing, but Motley Fool warns: don't buy at IPO without understanding the capital structure and the orbital data center ambitions Musk teased yesterday. <a href="https://www.fool.com/investing/2026/06/08/dont-buy-spacex-stock-at-ipo-without-reading-this/">Read More</a></p>
-<p>The takeaway: the next wave of AI value creation is being funded off the public balance sheet. Public market investors are being asked to pay up for the equity story while private credit captures the yield. That asymmetry is a red flag.</p>
-<hr />
-<h3>4. Red Flags and Rotation — BofA Says Get Defensive</h3>
-<p>Bank of America's latest note warns that the S&amp;P 500 is a "heavy bet on Big Tech" and that bet has run its course. <a href="https://www.marketwatch.com/story/bofa-sees-red-flags-in-the-u-s-stock-market-heres-what-to-buy-now-4d7ba245">Read More</a> They recommend rotating into value and non-tech cyclicals. Separately, MarketWatch highlights that the coming $1,000 gaming console will squeeze hardware stocks — a microcosm of the broader input cost pressure that tech faces. <a href="https://www.marketwatch.com/story/your-next-videogame-console-could-cost-1-000-and-it-has-nothing-to-do-with-better-hardware-8cb180dd">Read More</a></p>
-<p><strong>Bottom line:</strong> The AI trade is not broken, but it is crowded. The best risk-adjusted returns over the next 6 months likely come from energy, selective healthcare, and infrastructure plays — not from chasing SOXX into its fifth consecutive double-quarter return.</p>
+            <h2>📈 Markets &amp; Macro</h2>
+            <h1>The AI Capital Stack Unwinds, Then Rebounds</h1>
+<p><strong>Good morning.</strong> The dominant macro story this morning is a coiled spring in the semiconductor trade. Yesterday's sharp AI-sector selloff reversed in dramatic afternoon fashion, lifting names like Texas Instruments, Western Digital, and Nova. The bounce wasn't a fundamental re-rating—it was a mechanical flush abating. The question is whether this is a dip to buy or the first real test of AI's pricing power since the GLP-1 scare last winter.</p>
+<h2>Narrative 1: The AI Infrastructure Trade Hits a Speed Bump</h2>
+<p>The semiconductor recovery was broad but shallow. <strong>Texas Instruments</strong> (+6%) and <strong>Universal Display</strong> (+7%) led the afternoon charge after an overnight drawdown that had traders questioning the capex cycle. The selloff had been driven by a lingering macro whiff—rising bond yields and an oil spike following Iran-Israel tensions that have now been paused. Oil closed modestly higher after both sides held off from further strikes (<a href="https://seekingalpha.com/news/4601615-oil-closes-modestly-higher-after-iran-israel-hold-off-from-further-strikes">Seeking Alpha</a>). The relief in geopolitics triggered a classic "risk-on" snap-back in semis.</p>
+<p>But <strong>BofA sees red flags</strong>, arguing that the S&amp;P 500 is nothing more than a heavy bet on Big Tech—and that bet has run its course (<a href="https://www.marketwatch.com/story/bofa-sees-red-flags-in-the-u-s-stock-market-heres-what-to-buy-now-4d7ba245">MarketWatch</a>). That's a conviction call that will be tested. Valuations in semis are not egregious by trailing metrics, but the forward multiple on names like NVDA and AVGO assumes a capex boom that may be peaking. Keep an eye on the SOX vs. NDX ratio—it's telling you which part of the AI stack has pricing power.</p>
+<h2>Narrative 2: The Capital Supercycle Is Just Beginning</h2>
+<p>If the equity market is getting nervous about AI infrastructure returns, the private markets are not. <strong>Apollo and Blackstone raised $35bn</strong> in a chip financing deal for Anthropic (<a href="https://www.ft.com/content/c49e0eff-0776-4103-8eaf-1b049fbf9d3f">FT</a>), one of the largest private-credit fundraisings ever. This is a bet that compute demand is structurally undersupplied, not oversupplied. The capital is flowing to the model layer, not the chip layer—which is a subtle but important distinction.</p>
+<p>Meanwhile, <strong>OpenAI filed confidentially for its IPO</strong> (<a href="https://www.ft.com/content/a347e00a-2952-41ad-9f12-88c01ba199d6">FT</a>, <a href="https://www.marketwatch.com/story/openai-files-confidentially-for-ipo-but-theres-a-catch-3f13fc13">MarketWatch</a>), with a likely $1tn+ valuation. But the company cautioned that "there are things we want to do that are likely easier as a private company," suggesting the public listing may be delayed in favor of staying private to pursue even more aggressive GPU spending. That's a signal: the AI buildout is not slowing; it's accelerating inside the private markets where valuation scrutiny is lighter.</p>
+<h2>Narrative 3: A Functional Market—For Now</h2>
+<p>The macro picture is oddly benign. <strong>Citi issued a bearish call on rates volatility</strong>, citing the FIFA World Cup as a reason trading volumes will shrink (<a href="https://www.bloomberg.com/news/articles/2026-06-09/world-cup-season-spurs-citi-s-bearish-call-on-rates-volatility">Bloomberg</a>). That's a seasonal argument for calm—rates vol is a function of participation, and half of London will be watching football.</p>
+<p>In M&amp;A, <strong>GSK is in talks to buy Nuvalent</strong> for $9-$10bn (<a href="https://www.bloomberg.com/news/articles/2026-06-09/gsk-in-talks-to-buy-nuvalent-for-more-than-9-billion-ft-says">Bloomberg</a>), a bet on targeted cancer therapies that shows the pharma side of the AI coin still has legs. And <strong>Mission Produce</strong> is forecasting $84-88m second-half adjusted EBITDA after closing Calavo, targeting $25m in synergies (<a href="https://seekingalpha.com/news/4601618-mission-produce-forecasts-84m-88m-second-half-adjusted-ebitda-following-calavo-close-with-25m">Seeking Alpha</a>). Not everything is AI—avocados still need to be shipped.</p>
+<h2>The Bottom Line</h2>
+<p><strong>The AI trade is not broken, but it is maturing.</strong> The bounce in semis yesterday was a relief rally, not a new catalyst. Watch for the next trigger: OpenAI's S-1, the SOX vs. NDX spread, and whether the bond market makes the Fed's job harder. For now, stay long the private credit and compute layers, and keep powder dry for the inevitable second leg of the AI infrastructure bull.</p>
         </div>
     </div>
 </body>
