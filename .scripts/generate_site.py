@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import markdown
 
 # Ensure we can import from src
@@ -19,7 +19,9 @@ def generate_daily_briefing():
     # Change working directory to .scripts so config.yaml is found by the crawlers
     os.chdir(script_dir)
 
-    date_str = datetime.now().strftime('%Y-%m-%d')
+    # Use Eastern Time for the briefing date
+    eastern = timezone(timedelta(hours=-4))
+    date_str = datetime.now(eastern).strftime('%Y-%m-%d')
     print(f"Generating briefings for {date_str}...")
 
     compiler = MasterCompiler()
@@ -60,8 +62,8 @@ def generate_daily_briefing():
             --border-color: #e5e5e5;
             --shadow: 0 4px 12px rgba(0,0,0,0.05);
         }}
-        @media (prefers-color-scheme: dark) {{
-            :root {{
+        @media (prefers-color-scheme: dark) {
+            :root {
                 --bg-color: #121212;
                 --surface-color: #1e1e1e;
                 --text-main: #e0e0e0;
@@ -69,17 +71,53 @@ def generate_daily_briefing():
                 --accent-color: #58a6ff;
                 --border-color: #333333;
                 --shadow: 0 4px 12px rgba(0,0,0,0.2);
-            }}
-        }}
-        body {{
+            }
+        }
+        body.light-theme {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        body.dark-theme {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-color: #58a6ff;
+            --border-color: #333333;
+            --shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        body {
             margin: 0;
             padding: 0;
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
-        }}
-        .briefing-container {{
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            float: right;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-toggle:hover {
+            background: var(--surface-color);
+            box-shadow: var(--shadow);
+        }
+        .briefing-container {
             max-width: 800px;
             margin: 40px auto;
             padding: 20px;
@@ -167,7 +205,34 @@ def generate_daily_briefing():
     </style>
 </head>
 <body>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.add(savedTheme + '-theme');
+        }
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+        }
+    </script>
     <div class="briefing-container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
         <a href="index.html" class="nav-link">← Back to Archive</a>
         
         <div class="header-section">
@@ -227,25 +292,59 @@ def update_index_page(repo_root, new_date_str):
             --accent-color: #0056b3;
             --border-color: #e5e5e5;
         }}
-        @media (prefers-color-scheme: dark) {{
-            :root {{
+        @media (prefers-color-scheme: dark) {
+            :root {
                 --bg-color: #121212;
                 --surface-color: #1e1e1e;
                 --text-main: #e0e0e0;
                 --text-muted: #a0a0a0;
                 --accent-color: #58a6ff;
                 --border-color: #333333;
-            }}
-        }}
-        body {{
+            }
+        }
+        body.light-theme {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+        }
+        body.dark-theme {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-color: #58a6ff;
+            --border-color: #333333;
+        }
+        body {
             margin: 0;
             padding: 0;
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Inter', -apple-system, sans-serif;
             line-height: 1.6;
-        }}
-        .archive-container {{
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            float: right;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-toggle:hover {
+            background: var(--surface-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .archive-container {
             max-width: 800px;
             margin: 60px auto;
             padding: 20px;
@@ -309,7 +408,34 @@ def update_index_page(repo_root, new_date_str):
     </style>
 </head>
 <body>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.add(savedTheme + '-theme');
+        }
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+        }
+    </script>
     <div class="archive-container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
         <a href="https://nkhola.github.io/" class="back-link">← Back to Main Site</a>
         <h1>Intelligence Briefings</h1>
         <p class="subtitle">A daily automated synthesis of the top AI and Finance news.</p>
