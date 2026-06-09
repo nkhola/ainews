@@ -12,6 +12,13 @@ from src.fetchers.finance_crawler import FinanceCrawler
 from src.agents.master_compiler import MasterCompiler
 
 def generate_daily_briefing():
+    # Setup directories
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.dirname(script_dir)
+    
+    # Change working directory to .scripts so config.yaml is found by the crawlers
+    os.chdir(script_dir)
+
     date_str = datetime.now().strftime('%Y-%m-%d')
     print(f"Generating briefings for {date_str}...")
 
