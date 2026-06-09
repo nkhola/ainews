@@ -28,6 +28,24 @@
                 --shadow: 0 4px 12px rgba(0,0,0,0.2);
             }
         }
+        body.light-theme {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        body.dark-theme {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-color: #58a6ff;
+            --border-color: #333333;
+            --shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
         body {
             margin: 0;
             padding: 0;
@@ -35,6 +53,24 @@
             color: var(--text-main);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            float: right;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-toggle:hover {
+            background: var(--surface-color);
+            box-shadow: var(--shadow);
         }
         .briefing-container {
             max-width: 800px;
@@ -124,7 +160,34 @@
     </style>
 </head>
 <body>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.add(savedTheme + '-theme');
+        }
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+        }
+    </script>
     <div class="briefing-container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
         <a href="index.html" class="nav-link">← Back to Archive</a>
         
         <div class="header-section">
@@ -134,40 +197,62 @@
         
         <div class="section-card" id="ai-news">
             <h2>🧠 Artificial Intelligence</h2>
-            <h1>Daily Briefing: June 9, 2026</h1>
-<h2>1. The Great Unbundling: Model Architecture and the End of Monolithic Scaling</h2>
-<p>The biggest story today is <strong>Apple’s third-generation Foundation Models built in collaboration with Google Gemini</strong> (<a href="https://machinelearning.apple.com/research/introducing-third-generation-of-apple-foundation-models">Apple ML</a>, <a href="https://www.macrumors.com/2026/06/08/apple-reveals-new-ai-architecture/">MacRumors</a>). This is a genuine surprise: Apple, the privacy-obsessed vertical integrator, is licensing a competitor’s architecture. The five-model family spans on-device to server, with “Private Cloud Compute” as the bridge. The subtext is that <strong>custom silicon + Gemini’s architecture</strong> may be the only viable path to on-device frontier capability without sacrificing privacy.</p>
-<p>Meanwhile, <strong>DeepSeek V4 Pro claims to beat GPT-5.5 Pro on precision</strong> (<a href="https://runtimewire.com/article/deepseek-v4-pro-beats-gpt-5-5-pro-on-precision">RuntimeWire</a>), and <strong>Xiaomi claims 1000+ tps on a 1T model using a standard 8-GPU server</strong> (<a href="https://www.reddit.com/r/LocalLLaMA/comments/1u0buhm/xiaomi_just_claimed_1000_tps_on_a_1t_model_using/">Reddit</a>). These are not just benchmarks — they signal that <strong>the scaling returns curve is bifurcating</strong>. As <a href="https://www.interconnects.ai/p/open-and-closed-models-are-on-different">Interconnects AI</a> argues, open and closed models are on different exponentials: closed models win on raw intelligence per dollar, but open models win on customization and deployment velocity.</p>
-<p>On the research side, BAIR’s <strong>Adaptive Parallel Reasoning</strong> (<a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">BAIR</a>) and <strong>GRASP</strong> for long-horizon planning in world models (<a href="http://bair.berkeley.edu/blog/2026/04/20/grasp/">BAIR</a>) point to a future where inference is not just faster but <em>structurally adaptive</em> — models decide when to parallelize subtasks or plan via gradient-based optimization. This is the opposite of the “one big forward pass” paradigm.</p>
-<p><strong>Takeaway</strong>: The era of “just scale up” is over. The winning strategy now combines architectural specialization, hardware co-design, and deployment-aware inference.</p>
-<h2>2. The Evaluation Crisis: Benchmarks Are Broken, But We’re Building Better Tools</h2>
-<p>The evaluation landscape is in turmoil. <a href="https://newsletter.ruder.io/p/the-evolving-landscape-of-llm-evaluation">NLP News</a> notes that standard evals have narrowed and their reliability is questioned. <a href="https://arxiv.org/abs/2606.06622">UnpredictaBench</a> tests whether LLMs capture true underlying distributions (spoiler: they collapse to a single plausible answer). <a href="https://arxiv.org/abs/2606.06635">How Language Models Fail</a> identifies two distinct failure signatures — committed vs. persistent — using token-level uncertainty.</p>
-<p>This is not just academic. <a href="https://www.latent.space/p/bad-envs">Latent Space</a> calls out broken RL environments that actively make models worse. <a href="https://twimlai.com/podcast/twimlai/how-find-agent-failures-your-evals-miss">TWIML</a> introduces a Maslow’s hierarchy of observability for agents. BAIR’s <strong>Spex</strong> (<a href="http://bair.berkeley.edu/blog/2026/03/13/spex/">BAIR</a>) tackles interpretability at scale by identifying interactions in LLMs.</p>
-<p>The contradiction: benchmarks are saturated, yet user experience isn’t improving proportionally (<a href="https://thegradient.pub/dialog/">The Gradient</a>). We need evals that measure <em>distributional fidelity</em>, <em>reasoning robustness</em>, and <em>user satisfaction</em> — not just accuracy on static sets.</p>
-<h2>3. Memory and Personalization: The Next Frontier for Assistants</h2>
-<p>OpenAI’s <strong>“Dreaming” memory system</strong> (<a href="https://openai.com/index/chatgpt-memory-dreaming">OpenAI</a>) and Apple’s <strong>EpiCache</strong> (<a href="https://machinelearning.apple.com/research/epicache">Apple ML</a>) both tackle the same problem: how to maintain coherent long-term context on-device with limited memory. EpiCache uses episodic KV cache management to compress history without losing critical information. Meanwhile, <a href="https://github.com/zaydmulani09/mnemo">Mnemo</a> offers a local-first memory layer for any LLM.</p>
-<p>But there’s a deeper issue: <a href="https://arxiv.org/abs/2606.06614">Re-Centering Humans in LLM Personalization</a> shows that current systems perform much worse on real human data than on synthetic data. We’re optimizing for the wrong distribution. <a href="https://thegradient.pub/agi-is-not-multimodal/">The Gradient</a> argues that AGI won’t come from language alone — it requires embodied, tacit understanding. Memory systems are a step toward that, but they’re still operating in a disembodied space.</p>
-<p><strong>Key insight</strong>: Memory is necessary but not sufficient. True personalization requires models that <em>learn from interaction</em> without catastrophic forgetting, and that respect user agency.</p>
-<h2>4. Safety, Alignment, and the Open-Closed Tension</h2>
-<p>The safety community is producing concrete tools: <strong>SafeGene</strong> (<a href="https://arxiv.org/abs/2606.06519">arXiv</a>) provides reusable adapters for transferable safety alignment — a practical answer to the “fine-tuning breaks safety” problem. <strong>Bias as symmetry operation</strong> (<a href="https://arxiv.org/abs/2606.06514">arXiv</a>) formalizes fairness as invariance under counterfactual sensitive attribute switching. <strong>Lean4Agent</strong> (<a href="https://arxiv.org/abs/2606.06523">arXiv</a>) brings formal verification to agent workflows.</p>
-<p>OpenAI’s <strong>Lockdown Mode</strong> (<a href="https://simonwillison.net/2026/Jun/5/openai-help-lockdown-mode/">Simon Willison</a>) is a pragmatic defense against</p>
+            <h2>The Great Unmasking: Memory, Friction, and the Real Work</h2>
+<p>This week’s news confirms the abstraction layer is leaking. The physical constraints of memory bandwidth, cache capacity, and orchestration latency are now the primary engineering challenge. Three systemic shifts demand attention.</p>
+<h3>1. KV Cache Is the New DRAM – And It’s Full</h3>
+<p>Apple’s <strong>EpiCache</strong> and the <strong>OmniMem</strong> paper both address the same hard wall: linear KV cache growth is unbounded on real hardware. The comfortable abstraction is “long context.” The physical reality is memory hierarchy – L1/L2 bandwidth over PCIe, not “unlimited tokens.” Apple’s EpiCache introduces episodic cache management to evict with awareness of conversation structure. OmniMem compresses audio-visual KV caches by treating perturbation as a signal, not noise.</p>
+<p>The <strong>CoCoNuT</strong> paradigm (persistent residual stream over tokens) tries to cheat the limit by reasoning in latent space, but the hidden cost is state explosion across parallel reasoning paths. Every hypothesis branch becomes a memory allocation. Your inference server will OOM before it “thinks” deeply.</p>
+<p><strong>Rule:</strong> Design for cache locality or your pipeline thrashes. Measure tokens-per-second as a function of context window length, not peak throughput on tiny prompts.</p>
+<h3>2. Agentic Orchestration Is a Network You Can’t Trust</h3>
+<p>The shift to multi-agent workflows (Syll, PathoSage, CAF-Gen) hides the worst failure mode: tool call reliability and state consistency. Distrubutional’s podcast on “agent failures your evals miss” nails it – telemetry alone is not enough. You need post-hoc analysis of incorrect tool output parsing, non-deterministic API responses, and state corruption across agent boundaries.</p>
+<p>The <strong>Lockdown Mode</strong> from OpenAI is a reactive patch against prompt injection exfiltration. The real issue is that every agent boundary is an untrusted network call. Until your system treats “the model said X” as a lossy signal subject to verification, you will have data leaks and silent failures.</p>
+<p><strong>Rule:</strong> Every agent edge is an RPC with unknown reliability. Log all tool inputs and outputs in a structured format, then run automated replay checks to surface non-determinism.</p>
+<h3>3. Parallel Reasoning Costs Are Real – Branch Carefully</h3>
+<p>BAIR’s <strong>Adaptive Parallel Reasoning</strong> and <strong>GRASP</strong> planner promise scaling by decomposing tasks into parallel subtasks. The abstraction is “free parallelism.” The physical constraint is memory pressure from storing intermediate states and gradient re-computation. <strong>GRASP</strong> uses virtual states to parallelize across time, but this multiplies memory footprint linearly with horizon length.</p>
+<p>The <strong>CoCoNuT</strong> paper shows that latent reasoning explores multiple paths simultaneously – that’s a memory explosion. Every parallel branch is a cache miss cascade. You can’t just spawn threads; you must budget memory per branch and prune early.</p>
+<p><strong>Rule:</strong> Branching factor is your new OOM trigger. Cap parallel subtasks to the number of available memory channels. Use backpressure from allocator misses to throttle reasoning depth.</p>
+<h3>The Hardware Brawl</h3>
+<p>DeepSeek V4 beating GPT-5.5 on precision and Apple’s decision to build AFM on Google Gemini models reveal a deeper truth: no single model stack dominates all hardware profiles. The operational cost of managing multiple inference engines (NVIDIA, Google TPU, Apple Neural Engine) is the new fragility. You are now running a multi-vendor data center with heterogeneous schedulers, each with different memory latencies and power curves. That’s a systems problem, not a modeling one.</p>
+<p><a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">BAIR Adaptive Parallel Reasoning</a>
+<a href="https://machinelearning.apple.com/research/epicache">Apple EpiCache</a>
+<a href="https://arxiv.org/abs/2606.07577">OmniMem</a>
+<a href="https://arxiv.org/abs/2606.07720">CoCoNuT</a>
+<a href="https://arxiv.org/abs/2606.07594">Syll: Open-Source Personal Automation</a>
+<a href="https://twimlai.com/podcast/twimlai/how-find-agent-failures-your-evals-miss">Distributional: How to Find Agent Failures Your Evals Miss</a>
+<a href="https://runtimewire.com/article/deepseek-v4-pro-beats-gpt-5-5-pro-on-precision">DeepSeek V4 vs GPT-5.5</a>
+<a href="https://www.macrumors.com/2026/06/08/apple-reveals-new-ai-architecture/">Apple’s New AI Architecture</a></p>
         </div>
 
         <div class="section-card" id="finance-news">
             <h2>📈 Markets &amp; Macro</h2>
-            <h1>The AI Capital Stack Unwinds, Then Rebounds</h1>
-<p><strong>Good morning.</strong> The dominant macro story this morning is a coiled spring in the semiconductor trade. Yesterday's sharp AI-sector selloff reversed in dramatic afternoon fashion, lifting names like Texas Instruments, Western Digital, and Nova. The bounce wasn't a fundamental re-rating—it was a mechanical flush abating. The question is whether this is a dip to buy or the first real test of AI's pricing power since the GLP-1 scare last winter.</p>
-<h2>Narrative 1: The AI Infrastructure Trade Hits a Speed Bump</h2>
-<p>The semiconductor recovery was broad but shallow. <strong>Texas Instruments</strong> (+6%) and <strong>Universal Display</strong> (+7%) led the afternoon charge after an overnight drawdown that had traders questioning the capex cycle. The selloff had been driven by a lingering macro whiff—rising bond yields and an oil spike following Iran-Israel tensions that have now been paused. Oil closed modestly higher after both sides held off from further strikes (<a href="https://seekingalpha.com/news/4601615-oil-closes-modestly-higher-after-iran-israel-hold-off-from-further-strikes">Seeking Alpha</a>). The relief in geopolitics triggered a classic "risk-on" snap-back in semis.</p>
-<p>But <strong>BofA sees red flags</strong>, arguing that the S&amp;P 500 is nothing more than a heavy bet on Big Tech—and that bet has run its course (<a href="https://www.marketwatch.com/story/bofa-sees-red-flags-in-the-u-s-stock-market-heres-what-to-buy-now-4d7ba245">MarketWatch</a>). That's a conviction call that will be tested. Valuations in semis are not egregious by trailing metrics, but the forward multiple on names like NVDA and AVGO assumes a capex boom that may be peaking. Keep an eye on the SOX vs. NDX ratio—it's telling you which part of the AI stack has pricing power.</p>
-<h2>Narrative 2: The Capital Supercycle Is Just Beginning</h2>
-<p>If the equity market is getting nervous about AI infrastructure returns, the private markets are not. <strong>Apollo and Blackstone raised $35bn</strong> in a chip financing deal for Anthropic (<a href="https://www.ft.com/content/c49e0eff-0776-4103-8eaf-1b049fbf9d3f">FT</a>), one of the largest private-credit fundraisings ever. This is a bet that compute demand is structurally undersupplied, not oversupplied. The capital is flowing to the model layer, not the chip layer—which is a subtle but important distinction.</p>
-<p>Meanwhile, <strong>OpenAI filed confidentially for its IPO</strong> (<a href="https://www.ft.com/content/a347e00a-2952-41ad-9f12-88c01ba199d6">FT</a>, <a href="https://www.marketwatch.com/story/openai-files-confidentially-for-ipo-but-theres-a-catch-3f13fc13">MarketWatch</a>), with a likely $1tn+ valuation. But the company cautioned that "there are things we want to do that are likely easier as a private company," suggesting the public listing may be delayed in favor of staying private to pursue even more aggressive GPU spending. That's a signal: the AI buildout is not slowing; it's accelerating inside the private markets where valuation scrutiny is lighter.</p>
-<h2>Narrative 3: A Functional Market—For Now</h2>
-<p>The macro picture is oddly benign. <strong>Citi issued a bearish call on rates volatility</strong>, citing the FIFA World Cup as a reason trading volumes will shrink (<a href="https://www.bloomberg.com/news/articles/2026-06-09/world-cup-season-spurs-citi-s-bearish-call-on-rates-volatility">Bloomberg</a>). That's a seasonal argument for calm—rates vol is a function of participation, and half of London will be watching football.</p>
-<p>In M&amp;A, <strong>GSK is in talks to buy Nuvalent</strong> for $9-$10bn (<a href="https://www.bloomberg.com/news/articles/2026-06-09/gsk-in-talks-to-buy-nuvalent-for-more-than-9-billion-ft-says">Bloomberg</a>), a bet on targeted cancer therapies that shows the pharma side of the AI coin still has legs. And <strong>Mission Produce</strong> is forecasting $84-88m second-half adjusted EBITDA after closing Calavo, targeting $25m in synergies (<a href="https://seekingalpha.com/news/4601618-mission-produce-forecasts-84m-88m-second-half-adjusted-ebitda-following-calavo-close-with-25m">Seeking Alpha</a>). Not everything is AI—avocados still need to be shipped.</p>
-<h2>The Bottom Line</h2>
-<p><strong>The AI trade is not broken, but it is maturing.</strong> The bounce in semis yesterday was a relief rally, not a new catalyst. Watch for the next trigger: OpenAI's S-1, the SOX vs. NDX spread, and whether the bond market makes the Fed's job harder. For now, stay long the private credit and compute layers, and keep powder dry for the inevitable second leg of the AI infrastructure bull.</p>
+            <h1>Morning Briefing: The AI CapEx Vortex and the Great Rotation Pause</h1>
+<p><strong>Date: June 10, 2026</strong></p>
+<hr />
+<h2>1. The SpaceX IPO: Pricing a Trillion-Dollar Moonshot</h2>
+<p>The single most important event this week is SpaceX’s IPO, with FT pegging the target at <strong>$1.78 trillion</strong>. This is not a normal tech listing. It is a bundle of three structurally different businesses: Starlink (cash flow now), Starship (optionality), and the newly acquired xAI supercomputing assets (CapEx sinkhole).</p>
+<p>The key datapoint: <strong>Google just signed a $30 billion, 32-month compute lease with SpaceX for $920 million/month.</strong> This is effectively a prepaid CapEx monetization contract. Google is renting capacity from a pre-IPO SpaceX rather than building its own TPU clusters, which tells you two things: (1) Google is that desperate for AI compute, and (2) SpaceX/xAI has the hardware density to command monopoly pricing.</p>
+<p>For ETF holders, the <strong>scarcity premium on pre-IPO SpaceX exposure</strong> is about to vanish. Several funds (e.g., Destiny Tech100) have surged purely on SpaceX stakes. Post-listing, the ordinary float dynamics will compress that premium. If you own these, you are about to get marked to market without the optionality.</p>
+<p><a href="https://www.ft.com/content/70fa49e3-1014-4412-890f-c7fe91497db9">Read More</a></p>
+<hr />
+<h2>2. The AI CapEx Supernova: Private Credit Now Runs the Show</h2>
+<p><strong>Apollo and Blackstone just raised $35 billion</strong> in private credit to finance Anthropic's chip infrastructure. This is not a loan; it’s a direct ownership bypass of the public bond market. Private credit is now writing checks that used to be the domain of the IG syndicate desk.</p>
+<p>Why this matters for portfolio construction: The Columbia study showing that <strong>private credit ratings systematically understate risk</strong> is the canary. When the largest deal in history is done by two shadow banks lending to an unprofitable AI lab, the tail risk is not default -- it’s that the entire asset class gets repriced simultaneously if a single compute lease sours.</p>
+<p>Meanwhile, the <strong>"boring AI winners"</strong> narrative is real: Caterpillar and Hochtief are up because data centers need concrete and transformers, not because they have an LLM. This is the structure of the cycle: picks-and-shovels have better unit economics than the miners.</p>
+<p><a href="https://www.ft.com/content/c49e0eff-0776-4103-8eaf-1b049fbf9d3f">Read More</a></p>
+<hr />
+<h2>3. The Tech Rotation Pauses: Rates Are the Governor</h2>
+<p>Wall Street reversed course Tuesday, handing back early gains as <strong>tech slid after weeks of relentless rally</strong>. The proximate cause: renewed doubt on AI names after the NVDA-led surge stalled. But the deeper mechanism is rate expectations.</p>
+<p>Gold is pulling back as <strong>Fed hike bets build again</strong>. Energy supply tightness (Iran-Israel ceasefire notwithstanding) is pushing breakevens higher. If the 10-year yields push through 5.5%, growth stocks get repriced. The QQQ selloff is a regime check: the market wants to believe in AI margins, but carries an implicit short vol position that is now being questioned.</p>
+<p>The silver slump (down sharply) confirms the "de-risking" is broad. Commodities are rotating out of monetary metals and into energy stocks, which is the classic "inflation isn't transitory" hedge.</p>
+<p><a href="https://seekingalpha.com/news/4601830-wall-street-rallies-further-as-eyes-shift-to-spacex-ipo">Read More</a></p>
+<hr />
+<h2>4. The Startup Death Spiral: SOC2 as Protection Racket</h2>
+<p>A structural short on private tech: the Margins piece on <strong>SOC2 as a "tech protection racket"</strong> captures why the venture pipeline is slowing. Startups are spending 40% of engineering cycles on compliance screenshots for auditors instead of shipping code. This is a tax on innovation that compounds in a high-rate environment.</p>
+<p>The macro read: SPACs are dead, pre-IPO vehicles are being cleaned out (Cerebras just IPO'd, TSG added Project Prometheus), and the remaining private companies are either (a) raising at inflated private credit valuations or (b) doing reverse splits (Global Mofy AI at 1-for-50). The <strong>dispersion between the top 10 AI names and the rest of the market has never been wider</strong>. That is both an opportunity and a trap.</p>
+<p><a href="https://www.readmargins.com/p/the-soc2-kabuki-theater">Read More</a></p>
+<hr />
+<p><strong>Summary:</strong> The macro regime is bifurcated. SpaceX/AI mega-CapEx is pulling all oxygen from the market, but the bond market is starting to push back. Short-term technicals favor a pullback in tech. Long-term structural thesis remains intact, but only for the names that can fund their own compute.</p>
+<p><strong>Action:</strong> Monitor the 10-year yield and the SpaceX IPO pricing range. If the IPO prices above $1.8T, it signals peak euphoria. Below $1.5T, the private credit thesis cracks. You want to be short the ETFs with concentrated pre-IPO exposure and long picks-and-shovels (CAT, HOC).</p>
         </div>
     </div>
 </body>
