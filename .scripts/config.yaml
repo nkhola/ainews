@@ -1,0 +1,62 @@
+# ============================================================
+# AI News & Finance Aggregator — Source Configuration
+# ============================================================
+# All sources are pre-populated. The agent does NOT search for
+# sources at runtime. Edit this file to add/remove feeds.
+# ============================================================
+
+sources:
+  ai_news:
+    rss_feeds:
+      # --- Frontier Lab Blogs ---
+      - "https://bair.berkeley.edu/blog/feed.xml"                        # UC Berkeley AI Research
+      - "https://openai.com/blog/rss.xml"                                # OpenAI
+      - "https://blog.google/technology/ai/rss/"                         # Google AI Blog
+      - "https://ai.meta.com/blog/rss/"                                  # Meta AI (FAIR)
+      - "https://machinelearning.apple.com/rss.xml"                      # Apple ML Journal
+      - "https://www.anthropic.com/research/rss.xml"                     # Anthropic Research
+      - "https://deepmind.google/blog/rss.xml"                           # Google DeepMind
+
+      # --- HackerNews (AI/ML filtered) ---
+      - "https://hnrss.org/newest?q=LLM+OR+GPT+OR+transformer+OR+reasoning&points=50"
+      - "https://hnrss.org/newest?q=DeepSeek+OR+Claude+OR+Gemini+OR+Llama&points=30"
+
+      # --- Substack (AI/ML Writers) ---
+      - "https://www.interconnects.ai/feed"                              # Nathan Lambert (RLHF expert, ex-HuggingFace)
+      - "https://thegradient.pub/rss/"                                   # The Gradient
+      - "https://newsletter.ruder.io/feed"                               # Sebastian Ruder (NLP)
+      - "https://importai.substack.com/feed"                             # Import AI by Jack Clark (co-founder Anthropic)
+      - "https://www.latent.space/feed"                                  # Latent Space (AI Engineering)
+      - "https://simonwillison.net/atom/everything/"                     # Simon Willison (LLM tooling)
+
+      # --- arXiv (daily AI picks) ---
+      - "http://export.arxiv.org/rss/cs.AI"                              # arXiv cs.AI
+      - "http://export.arxiv.org/rss/cs.CL"                              # arXiv Computation & Language
+
+    subreddits:
+      - "LocalLLaMA"
+      - "MachineLearning"
+
+    # --- Podcast Transcripts (via RSS where available) ---
+    podcast_feeds:
+      - "https://feeds.megaphone.fm/MLN2155636147"                       # Lex Fridman Podcast
+      - "https://lexfridman.com/feed/podcast/"                           # Lex Fridman (alt)
+
+  finance:
+    rss_feeds:
+      # --- Market News ---
+      - "https://feeds.finance.yahoo.com/rss/2.0/headline?s=SPY,QQQ,AAPL,MSFT,NVDA,GOOG,AMZN,META,TSM,AVGO"
+      - "https://seekingalpha.com/market_currents.xml"                   # Seeking Alpha Market Currents
+      - "https://www.ft.com/?format=rss"                                 # Financial Times
+
+      # --- Equity Research & Analysis ---
+      - "https://www.marketwatch.com/rss/topstories"                     # MarketWatch
+      - "https://feeds.bloomberg.com/markets/news.rss"                   # Bloomberg Markets
+
+      # --- Finance Substacks ---
+      - "https://www.readmargins.com/feed"                               # Margins (fintech)
+      - "https://www.netinterest.co/feed"                                # Net Interest (banking/finance)
+      - "https://www.kaylarecommends.com/feed"                           # Kayla's Finance Newsletter
+
+      # --- Macro/Economic ---
+      - "https://feeds.feedburner.com/CalculatedRisk"                    # Calculated Risk (economics)
