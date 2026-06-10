@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefing - 2026-06-10 | AI & Finance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --surface-color: #1e1e1e;
+                --text-main: #e0e0e0;
+                --text-muted: #a0a0a0;
+                --accent-color: #58a6ff;
+                --border-color: #333333;
+                --shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+        }
+        body.light-theme {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        body.dark-theme {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-color: #58a6ff;
+            --border-color: #333333;
+            --shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            float: right;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-toggle:hover {
+            background: var(--surface-color);
+            box-shadow: var(--shadow);
+        }
+        .briefing-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .header-section h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .section-card {
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        .section-card h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+        .section-card h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        .section-card p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            word-wrap: break-word;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        blockquote {
+            border-left: 4px solid var(--accent-color);
+            margin: 0;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.03);
+            font-style: italic;
+        }
+        @media (prefers-color-scheme: dark) {
+            blockquote {
+                background: rgba(255,255,255,0.03);
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.add(savedTheme + '-theme');
+        }
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+        }
+    </script>
+    <div class="briefing-container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+        <a href="index.html" class="nav-link">← Back to Archive</a>
+        
+        <div class="header-section">
+            <h1>The Daily Briefing</h1>
+            <p>2026-06-10</p>
+        </div>
+        
+        <div class="section-card" id="ai-news">
+            <h2>🧠 Artificial Intelligence</h2>
+            <h1>Today's Briefing: The Throttled Frontier</h1>
+<h2>1. The Silent Degradation Layer</h2>
+<p>Anthropic shipped <a href="https://simonwillison.net/2026/Jun/9/claude-fable-5/">Claude Fable 5</a> and immediately confirmed the rumor: the model <a href="https://www.reddit.com/r/LocalLLaMA/comments/1u1s2oz/anthropic_is_intentionally_nerfing_fable_when/">intentionally handicaps itself</a> when asked to accelerate AI development. <a href="https://simonwillison.net/2026/Jun/10/if-claude-fable-stops-helping-you/#atom-everything">319-page system card</a> reveals interventions that limit Claude's effectiveness on "requests targeting further capability acceleration". The user gets degraded output without notification.</p>
+<p><strong>Abstraction sold</strong>: A more capable model that is also safer.</p>
+<p><strong>Physical constraint hidden</strong>: Capability is now a <strong>contingent resource</strong> governed by a stack of prompting, alignment, and now explicit throttling rules. The model's output quality is not a fixed property of the weights. It is a function of the task classification pipeline that runs before inference.</p>
+<p><strong>Engineering rule</strong>: When using a frontier API, run a control experiment with a probe task that mirrors your actual workload but pretends to be unrelated. If the probe returns worse performance than expected, you are being throttled. Log every response latency and quality metric per task type to detect silent degradation.</p>
+<p>This is the first production example of a model that applies its own compute budget based on assessed risk. Expect every major provider to follow. Your agents will operate under a variable, hidden compute cap.</p>
+<h2>2. The Memory Wall for Long-Horizon Agents</h2>
+<p>Two papers from today directly confront the same physical limit: KV cache growth kills long-context agents on real hardware. Apple's <a href="https://machinelearning.apple.com/research/epicache">EpiCache</a> uses episodic memory management to keep KV cache under device limits. <a href="https://arxiv.org/abs/2606.09900">Bi-Temporal Memory Engine</a> shows that a lean retrieved context beats full history on accuracy, not just cost.</p>
+<p><strong>Abstraction sold</strong>: Unlimited context windows. Personalized agents that remember everything.</p>
+<p><strong>Physical constraint hidden</strong>: KV cache scales linearly with dialogue length. At 1M tokens, a single conversation can consume tens of GB of device memory. This is not a software problem. It is a DRAM envy problem.</p>
+<p><strong>Engineering rule</strong>: Treat context length as a <strong>stateful resource budget</strong> subject to eviction policy. Profile your agent's KV cache growth empirically. If it exceeds 50% of device memory, implement a sparsifying retrieval layer (dense retrieval of key turns, not full replay). The papers show that full-context accuracy is a lie; retrieval-augmented agents outperform memory-dump agents above a few tens of thousands of tokens.</p>
+<p>Apple's third-gen foundation models (<a href="https://machinelearning.apple.com/research/introducing-third-generation-of-apple-foundation-models">AFM</a>) are custom for on-device deployment. They will enforce strict memory budgets. Your cloud-equivalent assumptions break on device.</p>
+<h2>3. Inference Scaling Hits the Scheduler</h2>
+<p><a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">BAIR's Adaptive Parallel Reasoning</a> and <a href="http://bair.berkeley.edu/blog/2026/04/20/grasp/">GRASP</a> for world models push parallel inference into the training-inference loop. The model decomposes tasks and spawns threads dynamically. This promises lower latency for complex reasoning.</p>
+<p><strong>Abstraction sold</strong>: Free parallelism from the model itself. Efficient inference scaling.</p>
+<p><strong>Physical constraint hidden</strong>: Concurrency at inference time stresses <strong>memory bandwidth and cache coherence</strong> more than compute. Each parallel thread fetches separate KV cache segments. On a single GPU, the memory bus becomes the bottleneck. On a multi-GPU setup, NCCL all-reduce latency dominates for small batches. The model's "decide when to parallelize" policy cannot see your hardware topology.</p>
+<p><strong>Engineering rule</strong>: Before deploying adaptive parallel reasoning, benchmark your memory bandwidth utilization with a synthetic workload that simulates 8 concurrent inference subtasks. If you see more than 60% bandwidth utilization, the parallel policy will deliver diminishing returns. The model's scheduler is not your scheduler. You must cap the parallelism budget at a hardware-informed limit.</p>
+<h2>4. The Open-Closed Exponential Divergence</h2>
+<p><a href="https://www.interconnects.ai/p/open-and-closed-models-are-on-different">Interconnects</a> makes the case: open models and closed models are on different capability exponentials. The Claude Fable throttling scandal accelerates this divergence. Closed models will gate capability on trust policies. Open models will not.</p>
+<p><strong>Abstraction sold</strong>: Competition drives all boats up.</p>
+<p><strong>Physical constraint hidden</strong>: Verification of model behavior requires access to weights and the ability to run inference outside the provider's control. You cannot audit a throttling policy on a black-box API. The system card is a document, not a proof.</p>
+<p><strong>Engineering rule</strong>: If your production system depends on consistent, untampered reasoning output, you must run a local open model for critical evaluations. Use the closed model only for tasks where degradation detection is possible and tolerance is high. The Reddit thread "<a href="https://www.reddit.com/r/LocalLLaMA/comments/1u1p3k5/without_open_llm_competition_closed_source_llm/">Without open LLM competition, closed source LLM companies will become insatiable</a>" is not political. It is operational risk management.</p>
+<hr />
+<p><strong>Final opinion</strong>: The most important development today is not the new capability. It is the new capability that secretly stops working based on what you ask. The post-human engineer's job now includes reverse-engineering the provider's task classifier from response patterns. If you are not logging every API call with a goal label, you are blind to the silent throttle.</p>
+        </div>
+
+        <div class="section-card" id="finance-news">
+            <h2>📈 Markets &amp; Macro</h2>
+            <h2>Morning Briefing: Geopolitical Shock Overlays a Fragile Macro</h2>
+<h3>1. Oil at $90 and the Inflation Regime Reset</h3>
+<p>Crude topped $90 after Trump warned of imminent attacks on Iran, following an exchange of fire over a downed U.S. helicopter. US CPI hit 4.2% in May, a three-year high, driven entirely by the Middle East energy pass-through. Core inflation printed softer, but bond traders are still pricing a Fed hike by year-end. The structure is now a supply shock layered on top of sticky services inflation. This kills the “soft landing” narrative and forces the Fed into a corner: tighten into a geopolitical spike or tolerate a de-anchoring of expectations. Either path is bad for equities.</p>
+<p>The market reaction is textbook: energy stocks rally, broad indices sell off (Bloomberg reports a renewed tech selloff). <strong>SPY</strong> and <strong>QQQ</strong> are repricing a higher discount rate. <strong>AAPL</strong> and <strong>NVDA</strong> are the most vulnerable to rate-sensitive multiple compression. Oil producers like <strong>Petrobras</strong> (buying a stake from Equinor) benefit from the spot price lift, but the structural risk is that the Fed has to chase the inflation dragon while growth slows. Expect more defensive rotation into value ETFs like <strong>VTV</strong> (the Vanguard Value ETF) as the S&amp;P 500's narrow leadership frays.</p>
+<h3>2. Tech's Twin Headwinds: AI Fatigue and Export Controls</h3>
+<p>Apple's WWDC showcase of upgraded Siri AI met with skepticism. The question is whether iPhone becomes a drag as AI features fail to drive an upgrade cycle. Apple trades at 30x forward earnings, pricing in a services-led growth that hinges on AI adoption. If the iPhone refresh underwhelms, the multiple will compress further. Meanwhile, Taiwan is tightening export controls on advanced AI chips to China, with potential criminal penalties for TSMC. TSMC's China exposure is non-trivial (roughly 15-20% of revenue from Chinese customers). This is a direct hit on the AI supply chain narrative.</p>
+<p><strong>NVDA</strong>, <strong>AVGO</strong>, and <strong>TSM</strong> all face a two-front war: lower AI demand expectations on the margin and geopolitical friction. The analyst call about “rolling bubbles” captures this precisely. The AI bubble is deflating in real time as investors realize monetization lags capex. <strong>TSLA</strong> is a parallel story: Q1 margins rebounded, FSD subs grew, but shares are down 7% YTD. The auto sector is caught between commodity inflation (oil hits EV demand) and competition. The $500 target is a hope trade, not a risk-adjusted thesis.</p>
+<h3>3. Consumer Credit Cracks Are Widening</h3>
+<p>America's Car-Mart, a subprime auto lender, is seeking emergency capital to avoid default. This is the canary in the coal mine for lower-income consumers. With inflation running at 4.2% and wage growth lagging, subprime auto delinquencies are a leading indicator for the broader consumer. <strong>JNJ</strong> was hit with a $32M talc verdict, adding legal tail risk to an already defensive stock. <strong>Casey's General Stores</strong> popped on its quarter, but convenience stores are a low-beta trade that signals investors want staples exposure.</p>
+<p>The macro setup is a classic late-cycle stress: credit conditions tighten for marginal borrowers as the Fed remains hawkish. The “rollover” in consumer spending will hit discretionary names harder. Energy inflation is a regressive tax that accelerates this process. Keep an eye on <strong>AMZN</strong> (discretionary exposure) and <strong>META</strong> (ad revenue sensitive to consumer spending). The SPY selloff may intensify if the next round of retail sales data confirms weakness.</p>
+<p><strong>Structure of the day:</strong> Oil up, rates up, tech down, defensives bid. The IPO market is broken (Warburg CEO said it plainly), and SpaceX's impending IPO is being called out for its lack of profitability and governance red flags. That’s a sentiment signal, not a tradeable event. Focus on positioning: shorten duration, overweight energy, underweight tech until the Iran situation stabilizes and the Fed’s reaction function clears.</p>
+        </div>
+    </div>
+</body>
+</html>
