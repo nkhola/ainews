@@ -21,8 +21,13 @@ def generate_daily_briefing():
 
     # Use Eastern Time for the briefing date
     eastern = timezone(timedelta(hours=-4))
-    date_str = datetime.now(eastern).strftime('%Y-%m-%d')
-    print(f"Generating briefings for {date_str}...")
+    now = datetime.now(eastern)
+    date_str = now.strftime('%Y-%m-%d')
+    is_evening = now.hour >= 14
+    time_label = "Evening" if is_evening else "Morning"
+    file_suffix = "PM" if is_evening else "AM"
+    base_name = f"{date_str}-{file_suffix}"
+    print(f"Generating {time_label.lower()} briefing for {date_str}...")
 
     compiler = MasterCompiler()
 
@@ -255,7 +260,7 @@ def generate_daily_briefing():
 """
     
     # Save daily file in the root
-    daily_file = os.path.join(repo_root, f"{date_str}.html")
+    daily_file = os.path.join(repo_root, f"{base_name}.html")
     with open(daily_file, "w", encoding="utf-8") as f:
         f.write(html_template)
     print(f"Saved daily briefing to {daily_file}")
@@ -271,8 +276,16 @@ def update_index_page(repo_root, new_date_str):
 
     links_html = ""
     for f in files:
-        date_name = f.replace('.html', '')
-        links_html += f'            <li><a href="{f}">Briefing for {date_name} <span>Read →</span></a></li>\n'
+        name_parts = f.replace('.html', '').split('-')
+        if len(name_parts) == 4:
+            year, month, day, am_pm = name_parts
+            label = "Evening" if am_pm == "PM" else "Morning"
+            display_name = f"{year}-{month}-{day} &mdash; {label} Briefing"
+        else:
+            date_name = f.replace('.html', '')
+            display_name = f"Briefing for {date_name}"
+            
+        links_html += f'            <li><a href="{f}">{display_name} <span>Read →</span></a></li>\n'
 
     index_template = f"""<!DOCTYPE html>
 <html lang="en">
