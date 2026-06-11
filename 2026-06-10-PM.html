@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefing - 2026-06-10 | AI & Finance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --surface-color: #1e1e1e;
+                --text-main: #e0e0e0;
+                --text-muted: #a0a0a0;
+                --accent-color: #58a6ff;
+                --border-color: #333333;
+                --shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+        }
+        body.light-theme {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        body.dark-theme {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-color: #58a6ff;
+            --border-color: #333333;
+            --shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            float: right;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-toggle:hover {
+            background: var(--surface-color);
+            box-shadow: var(--shadow);
+        }
+        .briefing-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .header-section h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .section-card {
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        .section-card h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+        .section-card h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        .section-card p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            word-wrap: break-word;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        blockquote {
+            border-left: 4px solid var(--accent-color);
+            margin: 0;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.03);
+            font-style: italic;
+        }
+        @media (prefers-color-scheme: dark) {
+            blockquote {
+                background: rgba(255,255,255,0.03);
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.add(savedTheme + '-theme');
+        }
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+        }
+    </script>
+    <div class="briefing-container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+        <a href="index.html" class="nav-link">← Back to Archive</a>
+        
+        <div class="header-section">
+            <h1>The Daily Briefing</h1>
+            <p>2026-06-10</p>
+        </div>
+        
+        <div class="section-card" id="ai-news">
+            <h2>🧠 Artificial Intelligence</h2>
+            <p>Error during LLM synthesis: Error code: 402 - {'error': {'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 2086. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account', 'code': 402, 'metadata': {'provider_name': None, 'previous_errors': [{'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 2086. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 2101. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'Prompt tokens limit exceeded: 7708 &gt; 5563. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'Prompt tokens limit exceeded: 7708 &gt; 5841. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 2179. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 2086. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 2086. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'Prompt tokens limit exceeded: 7708 &gt; 5942. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 2242. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'Prompt tokens limit exceeded: 7708 &gt; 5841. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 1668. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 2195. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 2500 tokens, but can only afford 2086. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}, {'code': 402, 'message': 'Prompt tokens limit exceeded: 7708 &gt; 5215. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}]}}, 'user_id': 'user_3EBEvjUgsdgprC58ohuJAjX1jXK'}</p>
+        </div>
+
+        <div class="section-card" id="finance-news">
+            <h2>📈 Markets &amp; Macro</h2>
+            <h1>Morning Briefing: The Straits of Tech and Oil</h1>
+<h2>Iran Strikes Reset the Risk Premia</h2>
+<p>The US military completed a second wave of strikes on Iran overnight, prompting Tehran to announce a halt to all vessels through the Strait of Hormuz. Oil jumped, then pared gains as Washington declared its operations complete. The real signal is the fragile ceasefire regime: while oil tankers are reportedly sneaking through, the insurance and routing cost has permanently repriced. Crude is up but not spiking, suggesting the market has internalized a narrower Strait premium without a full blockade. This is the new baseline — expect oil to hold a $3-5/bbl risk premium above pre-strike levels until a diplomatic off-ramp materializes. The geopolitical vol is now a constant, not an event.</p>
+<p>On the clean-energy side, Trump's Iran campaign has inadvertently accelerated China's cleantech exports. Disruption to Middle East oil supply creates a structural demand pull for solar and battery storage, with Chinese manufacturers the default beneficiary. The US manufacturing renaissance narrative (FT) is colliding with the reality of tariff uncertainty and permitting bottlenecks. Capital is flowing to the path of least resistance, and right now that path runs through Shanghai.</p>
+<h2>Tech Volatility Meets the AI CapEx Wave</h2>
+<p>US tech stocks sank overnight (FT), but futures are recovering as the Iran attack news is digested. The structural story is a tug-of-war: the AI infrastructure bull case remains intact, but near-term earnings misses (Oracle tumbled post-earnings) and supply-chain threats are introducing micro-stressors.</p>
+<p>The most important signal today is <strong>Broadcom's AI XPV Platform</strong>, backed by Apollo Global (up 5.5% on the news) and Blackstone. Apollo is leading a $35 billion capital solution to fund over 20 GW of AI compute capacity through 2028, including 1 GW for Anthropic. This is private credit stepping into a funding gap that traditional banks can't fill. The mechanism: Apollo structures infrastructure as a yield-bearing asset, securing long-term, investment-grade cash flows from hyperscaler tenants. It transforms CapEx into a financing product. This is the template for the next wave of AI data center buildout — and it explains why Apollo's stock is ripping while Oracle's is diving.</p>
+<p>Meanwhile, China's export controls on indium phosphide threaten a key substrate for AI data center optics and RF chips. Coherent's CEO personally raised this on a trade mission with Trump. The supply constraint is real and will act as a governor on GPU deployment velocity unless substitutes (gallium nitride, silicon photonics) scale faster than expected. This is a silent bottleneck that will show up in lead times by Q4.</p>
+<h2>SpaceX IPO: The Liquidity Event Everyone is Already Priced For</h2>
+<p>SpaceX's IPO is reportedly over <strong>four times oversubscribed</strong>. This is the most anticipated tech listing since the last cycle, and it is absorbing a massive amount of speculative liquidity that would otherwise chase public mega-cap tech names. The oversubscription is a demand signal for high-growth, founder-led, mission-driven assets — the antithesis of the index-heavy, diversification-obsessed portfolio.</p>
+<p>The Net Interest piece on SpaceX ("When the Ducks are Quacking") frames the IPO as the culmination of a new asset class: private infrastructure with narrative volatility. Investors are buying a call on Mars, Starlink's monopoly, and the defense prime multiplier. The valuation is astronomical by traditional multiples, but the market is pricing a binary option, not a DCF. This IPO will either be the top of the risk appetite cycle or the launchpad for a new bull leg. Watch the aftermarket price action for clues.</p>
+<h2>In the Weeds</h2>
+<ul>
+<li><strong>Elliott Management</strong> is banging on Northern Star for a strategic review. This is classic activist pressure in a sector (gold/mining) that has become a geopolitical hedge. Expect spin-off talk.</li>
+<li><strong>Frasers Group</strong> offers €2B for the rest of Hugo Boss. Mike Ashley consolidating retail — a bet on the European luxury discount channel.</li>
+<li><strong>Stitch Fix</strong> forecasts FY2026 revenue of $1.35B with $50M EBITDA. The numbers are bad, but the market will care more about path to profitability — this is a turnaround story on life support.</li>
+<li><strong>Prediction markets</strong> policing insider trading is a sign the SEC is widening the net to novel venues. Kalshi wants to make an example. If you have material non-public information on a sporting event, don't trade it on Polymarket either. Same law, new wrapper.</li>
+</ul>
+<p><strong>Rates context</strong>: Oil surge and Iran uncertainty put upward pressure on breakevens. The 10-year yield is likely to trade in a 4.10-4.30% range today. Growth expectations are holding, but inflation expectations are creeping up. This is the stagflation-lite regime: not bad enough to panic, good enough to keep PMs rotating out of high-duration names.</p>
+<p><strong>Trade posture</strong>: Favor long positions in infrastructure-oriented AI plays (APO, BX) versus pure-play semi names (NVDA, AVGO) that face indium phosphide risk. Oil producers are now a tactical hedge, but the real alpha is in the financing layer (private credit, data center REITs). Active management beats passive beta when the Strait is on fire and the IPO is a media circus.</p>
+        </div>
+    </div>
+</body>
+</html>
