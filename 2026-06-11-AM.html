@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefing - 2026-06-11 | AI & Finance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --surface-color: #1e1e1e;
+                --text-main: #e0e0e0;
+                --text-muted: #a0a0a0;
+                --accent-color: #58a6ff;
+                --border-color: #333333;
+                --shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+        }
+        body.light-theme {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        body.dark-theme {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-color: #58a6ff;
+            --border-color: #333333;
+            --shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            float: right;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-toggle:hover {
+            background: var(--surface-color);
+            box-shadow: var(--shadow);
+        }
+        .briefing-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .header-section h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .section-card {
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        .section-card h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+        .section-card h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        .section-card p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            word-wrap: break-word;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        blockquote {
+            border-left: 4px solid var(--accent-color);
+            margin: 0;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.03);
+            font-style: italic;
+        }
+        @media (prefers-color-scheme: dark) {
+            blockquote {
+                background: rgba(255,255,255,0.03);
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.add(savedTheme + '-theme');
+        }
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+        }
+    </script>
+    <div class="briefing-container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+        <a href="index.html" class="nav-link">← Back to Archive</a>
+        
+        <div class="header-section">
+            <h1>The Daily Briefing</h1>
+            <p>2026-06-11</p>
+        </div>
+        
+        <div class="section-card" id="ai-news">
+            <h2>🧠 Artificial Intelligence</h2>
+            <p>Good morning, team,</p>
+<p>Today's developments highlight significant progress in architectural efficiency, the practical deployment and robustification of agentic systems, and a continued focus on trustworthy AI, alongside notable advancements in AI for scientific discovery and a dynamic evolution of the broader AI ecosystem.</p>
+<h3>Architectural Innovations for LLM Efficiency and Context Management</h3>
+<p>The drive for more efficient and scalable LLM inference continues to yield architectural innovations. Adaptive Parallel Reasoning (APR) is emerging as a paradigm to address the linear scaling of sequential reasoning, which often leads to context degradation (context-rot) and latency issues <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Berkeley AI Research Blog: Adaptive Parallel Reasoning</a>. APR allows models to dynamically decide when to parallelize subtasks, managing concurrent threads based on problem complexity. This contrasts with earlier fixed-parallelism methods like self-consistency or heuristic-based search. Implementations such as ThreadWeaver orchestrate parallel inference client-side, avoiding inference engine modifications but incurring some prefill redundancy, while Multiverse modifies the engine for KV cache reuse across branches, which can introduce system fragility and distributional shifts requiring extensive training <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Berkeley AI Research Blog: Adaptive Parallel Reasoning</a>.</p>
+<p>Complementing these efforts, advancements in KV cache management, such as Apple's EpiCache, focus on episodic eviction strategies to handle long conversational histories in resource-constrained environments, moving beyond simple compression or recency truncation <a href="https://machinelearning.apple.com/research/epicache">Apple Machine Learning Research: EpiCache: Episodic KV Cache Management for Long-Term Conversation on Resource-Constrained Environments</a>. Similarly, the Context Window Lifecycle (CWL) framework proposes semantically-aware eviction policies for long-horizon agents, preserving active reasoning context while shedding less relevant history to maintain budget and avoid performance degradation <a href="https://arxiv.org/abs/2606.11213">cs.CL updates on arXiv.org: Beyond Compaction: Structured Context Eviction for Long-Horizon Agents</a>. For attention mechanisms, research shows that reinforcement learning (RL) can adapt sliding-window attention (SWA) models to mathematical reasoning tasks, narrowing the performance gap with full self-attention models while retaining efficiency benefits, suggesting that RL can mitigate data-architecture mismatches <a href="https://arxiv.org/abs/2606.11634">cs.AI updates on arXiv.org: Architecture-Aware Reinforcement Learning Makes Sliding-Window Attention Competitive in Math Reasoning</a>.</p>
+<h3>Advancements in Agentic AI and Planning</h3>
+<p>The development of more robust and capable AI agents continues, particularly in planning and control. GRASP, a new gradient-based planner for learned world models, addresses the fragility of long-horizon planning by lifting trajectories into virtual states for parallel optimization and reshaping gradients to rely on more stable action Jacobians rather than brittle state-input gradients, which are susceptible to adversarial perturbations <a href="http://bair.berkeley.edu/blog/2026/04/20/grasp/">Berkeley AI Research Blog: Gradient-based Planning for World Models at Longer Horizons</a>. This approach makes long-horizon planning more practical and efficient.</p>
+<p>In reinforcement learning, Transitive RL (TRL) introduces a "divide and conquer" paradigm for off-policy learning, aiming to overcome the error accumulation issues inherent in traditional temporal difference (TD) learning <a href="http://bair.berkeley.edu/blog/2025/11/01/rl-without-td-learning/">Berkeley AI Research Blog: RL without TD learning</a>. TRL, particularly in goal-conditioned RL, recursively splits trajectories and uses expectile regression to learn values, demonstrating strong performance on complex, long-horizon tasks without requiring careful tuning of $n$-step lookaheads. For multi-agent systems, INFRAMIND proposes an infrastructure-aware orchestration framework that dynamically adapts planning, routing, and scheduling decisions based on real-time system load, balancing quality and latency in shared GPU clusters <a href="https://arxiv.org/abs/2606.11440">cs.AI updates on arXiv.org: INFRAMIND: Infrastructure-Aware Multi-Agent Orchestration</a>. Furthermore, new evaluation frameworks like SciConBench highlight the low factual quality of current AI agents in synthesizing scientific conclusions, emphasizing the need for clean-room evaluations to counter inflated performance estimates from data leakage <a href="https://arxiv.org/abs/2606.11337">cs.AI updates on arXiv.org: Can AI Agents Synthesize Scientific Conclusions?</a>.</p>
+<h3>Enhancing Trustworthiness and Interpretability of AI Systems</h3>
+<p>Interpretability and safety remain critical research areas. SPEX and ProxySPEX offer frameworks for identifying influential interactions at scale within LLMs, whether for feature, data, or model component attribution <a href="http://bair.berkeley.edu/blog/2026/03/13/spex/">Berkeley AI Research Blog: Identifying Interactions at Scale for LLMs</a>. These methods leverage sparsity and hierarchy properties to make interaction discovery tractable, revealing complex relationships that simpler attribution methods miss.</p>
+<p>Regarding prompt injection, new fine-tuning defenses like StruQ and SecAlign aim to mitigate attacks by explicitly separating prompt and data via a secure front-end and training LLMs to prioritize intended instructions <a href="http://bair.berkeley.edu/blog/2025/04/11/prompt-injection-defense/">Berkeley AI Research Blog: Defending against Prompt Injection with Structured Queries (StruQ) and Preference Optimization (SecAlign)</a>. OpenAI's new "Lockdown Mode" for ChatGPT further addresses data exfiltration risks by limiting outbound network requests, tackling one of the "Lethal Trifecta" components of prompt injection attacks <a href="https://simonwillison.net/2026/Jun/5/openai-help-lockdown-mode/#atom-everything">Simon Willison's Weblog: OpenAI Help: Lockdown Mode</a>. A recent controversy highlighted the importance of transparency in safety mechanisms, as Anthropic initially implemented "silent interventions" in Claude Fable 5 to limit its effectiveness for frontier LLM development, a policy they have since walked back to ensure visibility for users <a href="https://simonwillison.net/2026/Jun/11/anthropic-walks-back-policy/#atom-everything">Simon Willison's Weblog: Anthropic Walks Back Policy That Could Have ‘Sabotaged’ AI Researchers Using Claude</a>. This underscores the trade-off between perceived safety and user trust. Additionally, research on Calibration Drift Under Reasoning (CDUR) shows that increasing reasoning budgets can paradoxically lead to overconfidence in LLMs, necessitating calibration-aware stopping rules <a href="https://arxiv.org/abs/2606.11211">cs.CL updates on arXiv.org: Calibration Drift Under Reasoning: How Chain-of-Thought Budgets Induce Overconfidence in Large Language Models</a>.</p>
+<h3>AI for Scientific Discovery and Real-World Impact</h3>
+<p>AI continues to expand its reach into scientific discovery and large-scale real-world control. PLAID introduces a multimodal generative model for proteins, learning to sample from the latent space of protein folding models (e.g., ESMFold) to co-generate 1D sequence and 3D structure <a href="http://bair.berkeley.edu/blog/2025/04/08/plaid/">Berkeley AI Research Blog: Repurposing Protein Folding Models for Generation with Latent Diffusion</a>. This method uniquely trains on sequence-only data, which is far more abundant than structural data, and allows for compositional control over generation (e.g., function, organism specificity).</p>
+<p>In imaging, the Information-Driven Encoder Analysis Learning (IDEAL) framework offers a method to evaluate and optimize imaging systems based on mutual information, directly quantifying useful information content from noisy measurements <a href="http://bair.berkeley.edu/blog/2026/01/10/information-driven-imaging/">Berkeley AI Research Blog: Information-Driven Design of Imaging Systems</a>. This approach bypasses the need for explicit object models or task-specific decoders, simplifying design optimization. On a larger scale, the deployment of 100 RL-controlled autonomous vehicles (AVs) on a highway demonstrated the ability to smooth traffic congestion and reduce fuel consumption for all drivers [Berkeley AI Research Blog: Scaling Up Reinforcement Learning for Traffic Smoothing: A 100-AV Highway Deployment](http://bair.berkeley.edu/blog/2025/03/25</p>
+        </div>
+
+        <div class="section-card" id="finance-news">
+            <h2>📈 Markets &amp; Macro</h2>
+            <p>Error during LLM synthesis: Error code: 503 - [{'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}]</p>
+        </div>
+    </div>
+</body>
+</html>
