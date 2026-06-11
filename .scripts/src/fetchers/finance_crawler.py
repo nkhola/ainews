@@ -31,13 +31,14 @@ class FinanceCrawler:
                 print(f"  ⚠ Error fetching {url}: {e}")
 
         raw_text = f"Raw Finance & Equity Data ({len(items)} items):\n\n"
-        for idx, item in enumerate(items, 1):
-            raw_text += f"{idx}. [{item['source']}] {item['title']}\n"
+        for item in items:
+            raw_text += f"Source: {item['source']}\n"
+            raw_text += f"Title: {item['title']}\n"
             if item.get("summary"):
-                raw_text += f"   Summary: {item['summary']}\n"
+                raw_text += f"Summary: {item['summary']}\n"
             if item.get("link"):
-                raw_text += f"   Link: {item['link']}\n"
-            raw_text += "\n"
+                raw_text += f"URL: {item['link']}\n"
+            raw_text += "---\n\n"
 
         print(f"[FinanceCrawler] Done. {len(items)} total items aggregated.\n")
         return raw_text
