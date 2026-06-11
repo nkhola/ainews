@@ -65,7 +65,7 @@ class MasterCompiler:
                     },
                 ],
                 temperature=0.4,
-                max_tokens=2500,
+                max_tokens=1200,
             )
             result = response.choices[0].message.content
             print(f"[MasterCompiler] Done. ({len(result)} chars)")
