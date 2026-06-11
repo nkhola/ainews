@@ -35,13 +35,13 @@ def generate_daily_briefing():
     print("Fetching AI News...")
     ai_crawler = NewsCrawler()
     ai_raw = ai_crawler.get_latest_news()
-    ai_md = compiler.synthesize_news(ai_raw, topic="ai")
+    ai_md = compiler.synthesize_news(ai_raw, topic="ai", time_label=time_label)
 
     # 2. Fetch & Compile Finance News
     print("Fetching Finance News...")
     fin_crawler = FinanceCrawler()
     fin_raw = fin_crawler.get_latest_news()
-    fin_md = compiler.synthesize_news(fin_raw, topic="finance")
+    fin_md = compiler.synthesize_news(fin_raw, topic="finance", time_label=time_label)
 
     # Convert to HTML
     ai_html = markdown.markdown(ai_md, extensions=['tables', 'fenced_code'])

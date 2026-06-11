@@ -10,7 +10,7 @@ class NewsCrawler:
         with open(config_path, "r") as f:
             self.config = yaml.safe_load(f)["sources"]["ai_news"]
 
-    def _fetch_feed(self, url, max_items=5):
+    def _fetch_feed(self, url, max_items=15):
         """Fetch and parse an RSS/Atom feed, returning structured items."""
         items = []
         try:
@@ -19,7 +19,7 @@ class NewsCrawler:
                 summary = getattr(entry, "summary", "")
                 # Strip HTML from summary
                 if summary:
-                    summary = BeautifulSoup(summary, "html.parser").get_text(separator=" ")[:400]
+                    summary = BeautifulSoup(summary, "html.parser").get_text(separator=" ")
 
                 items.append({
                     "title": entry.get("title", "Untitled"),
@@ -36,7 +36,7 @@ class NewsCrawler:
         """Fetch all configured RSS feeds."""
         items = []
         for url in self.config.get("rss_feeds", []):
-            fetched = self._fetch_feed(url, max_items=5)
+            fetched = self._fetch_feed(url, max_items=15)
             items.extend(fetched)
             print(f"  ✓ {len(fetched)} items from {url[:60]}...")
         return items
@@ -50,7 +50,7 @@ class NewsCrawler:
                 headers = {"User-Agent": "ai-news-agent/1.0"}
                 response = requests.get(url, headers=headers, timeout=10)
                 feed = feedparser.parse(response.content)
-                for entry in feed.entries[:3]:
+                for entry in feed.entries[:10]:
                     items.append({
                         "title": entry.get("title", "Untitled"),
                         "link": entry.get("link", ""),
@@ -58,7 +58,7 @@ class NewsCrawler:
                         "source": f"r/{sub}",
                         "published": getattr(entry, "published", ""),
                     })
-                print(f"  ✓ {min(3, len(feed.entries))} items from r/{sub}")
+                print(f"  ✓ {min(10, len(feed.entries))} items from r/{sub}")
             except Exception as e:
                 print(f"  ⚠ Error fetching r/{sub}: {e}")
         return items
@@ -67,7 +67,7 @@ class NewsCrawler:
         """Fetch latest podcast episode titles/descriptions."""
         items = []
         for url in self.config.get("podcast_feeds", []):
-            fetched = self._fetch_feed(url, max_items=2)
+            fetched = self._fetch_feed(url, max_items=5)
             items.extend(fetched)
             if fetched:
                 print(f"  ✓ {len(fetched)} podcast episodes from {url[:60]}...")

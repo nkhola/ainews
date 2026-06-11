@@ -15,10 +15,10 @@ class FinanceCrawler:
         for url in self.config.get("rss_feeds", []):
             try:
                 feed = feedparser.parse(url)
-                for entry in feed.entries[:5]:
+                for entry in feed.entries[:15]:
                     summary = getattr(entry, "summary", "")
                     if summary:
-                        summary = BeautifulSoup(summary, "html.parser").get_text(separator=" ")[:400]
+                        summary = BeautifulSoup(summary, "html.parser").get_text(separator=" ")
 
                     items.append({
                         "title": entry.get("title", "Untitled"),
@@ -26,7 +26,7 @@ class FinanceCrawler:
                         "summary": summary,
                         "source": feed.feed.title if hasattr(feed.feed, "title") else url,
                     })
-                print(f"  ✓ {min(5, len(feed.entries))} items from {url[:60]}...")
+                print(f"  ✓ {min(15, len(feed.entries))} items from {url[:60]}...")
             except Exception as e:
                 print(f"  ⚠ Error fetching {url}: {e}")
 

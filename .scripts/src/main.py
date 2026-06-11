@@ -26,6 +26,13 @@ from src.delivery.whatsapp import WhatsAppDelivery
 load_dotenv()
 
 
+def get_time_label():
+    """Get Morning/Evening based on current time (Eastern)."""
+    # Simple check for demo purposes, in production use timezone-aware logic
+    hour = datetime.now().hour
+    return "Evening" if hour >= 14 else "Morning"
+
+
 def run_ai_news_briefing(deliver=True):
     """Fetch, synthesize, and deliver the AI news briefing."""
     print(f"\n{'='*60}")
@@ -34,18 +41,19 @@ def run_ai_news_briefing(deliver=True):
 
     crawler = NewsCrawler()
     compiler = MasterCompiler()
+    time_label = get_time_label()
 
     raw_data = crawler.get_latest_news()
     print(f"Fetched {raw_data.count(chr(10))} lines of raw AI news data.")
 
-    briefing = compiler.synthesize_news(raw_data, topic="ai")
-    print("\n--- AI NEWS BRIEFING ---")
+    briefing = compiler.synthesize_news(raw_data, topic="ai", time_label=time_label)
+    print(f"\n--- AI NEWS BRIEFING ({time_label}) ---")
     print(briefing)
     print("--- END ---\n")
 
     if deliver:
         wa = WhatsAppDelivery()
-        wa.send_message(f"🧠 *AI News Briefing*\n\n{briefing}")
+        wa.send_message(f"🧠 *AI News Briefing ({time_label})*\n\n{briefing}")
 
     return briefing
 
@@ -58,18 +66,19 @@ def run_finance_briefing(deliver=True):
 
     crawler = FinanceCrawler()
     compiler = MasterCompiler()
+    time_label = get_time_label()
 
     raw_data = crawler.get_latest_news()
     print(f"Fetched {raw_data.count(chr(10))} lines of raw finance data.")
 
-    briefing = compiler.synthesize_news(raw_data, topic="finance")
-    print("\n--- FINANCE BRIEFING ---")
+    briefing = compiler.synthesize_news(raw_data, topic="finance", time_label=time_label)
+    print(f"\n--- FINANCE BRIEFING ({time_label}) ---")
     print(briefing)
     print("--- END ---\n")
 
     if deliver:
         wa = WhatsAppDelivery()
-        wa.send_message(f"📈 *Finance Briefing*\n\n{briefing}")
+        wa.send_message(f"📈 *Finance Briefing ({time_label})*\n\n{briefing}")
 
     return briefing
 
