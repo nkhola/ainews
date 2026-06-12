@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefing - 2026-06-12 | AI & Finance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --surface-color: #1e1e1e;
+                --text-main: #e0e0e0;
+                --text-muted: #a0a0a0;
+                --accent-color: #58a6ff;
+                --border-color: #333333;
+                --shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+        }
+        body.light-theme {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #555555;
+            --accent-color: #0056b3;
+            --border-color: #e5e5e5;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        body.dark-theme {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-color: #58a6ff;
+            --border-color: #333333;
+            --shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            float: right;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-toggle:hover {
+            background: var(--surface-color);
+            box-shadow: var(--shadow);
+        }
+        .briefing-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .header-section h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .section-card {
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        .section-card h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+        .section-card h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        .section-card p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            word-wrap: break-word;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        blockquote {
+            border-left: 4px solid var(--accent-color);
+            margin: 0;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.03);
+            font-style: italic;
+        }
+        @media (prefers-color-scheme: dark) {
+            blockquote {
+                background: rgba(255,255,255,0.03);
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.add(savedTheme + '-theme');
+        }
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+        }
+    </script>
+    <div class="briefing-container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+        <a href="index.html" class="nav-link">← Back to Archive</a>
+        
+        <div class="header-section">
+            <h1>The Daily Briefing</h1>
+            <p>2026-06-12</p>
+        </div>
+        
+        <div class="section-card" id="ai-news">
+            <h2>🧠 Artificial Intelligence</h2>
+            <h2>Morning Briefing: Advancements in AI Reasoning, Embodiment, and Scientific Discovery</h2>
+<p>Today's developments highlight significant progress across several core areas of AI, from enhancing the efficiency and capabilities of large models to their deployment in complex physical and scientific domains. We observe a continued push towards more autonomous and interpretable systems, alongside a burgeoning application of AI in accelerating scientific discovery.</p>
+<h3>1. Architectures for Efficient Reasoning and Inference</h3>
+<p>The pursuit of more efficient and capable LLM reasoning continues to drive innovation in model architectures and inference systems. A detailed analysis from Berkeley introduces <strong>Adaptive Parallel Reasoning (APR)</strong>, a paradigm where models dynamically decide when and how to parallelize subtasks during inference [1]. This contrasts with prior fixed-parallelism methods (e.g., self-consistency, tree search) by allowing the model to learn optimal decomposition strategies, thereby reducing redundant computation and adapting to problem complexity. The implementation of APR presents a trade-off in inference engine design: approaches like Multiverse modify the engine for KV cache reuse, which can introduce fragility and distributional shifts, while ThreadWeaver maintains an engine-agnostic approach, orchestrating parallelization client-side at the cost of some prefill recomputation [1]. This highlights a fundamental tension between maximal theoretical efficiency and practical system robustness. Concurrently, efforts in inference engineering focus on optimizing throughput and latency on standard hardware, with new engines like Tiny-vLLM demonstrating high token-per-second rates [2, 3]. Hardware-level insights, such as the reverse-engineering of Apple's Metal 4.1 tensor compute path, reveal that claimed fp8 acceleration can sometimes be emulation, underscoring the importance of empirical characterization in hardware-aware optimization [4]. Further, efficient KV cache management, as explored by EpiCache, is critical for enabling long-term conversational memory in resource-constrained environments by addressing the linear growth of KV cache with context length [5].</p>
+<h3>2. Embodied AI and Autonomous Agentic Systems</h3>
+<p>The development of AI agents capable of operating in complex, dynamic environments is accelerating. <strong>GRASP</strong>, a gradient-based planner for learned world models, addresses the fragility of long-horizon planning by lifting trajectories into virtual states for parallel optimization and reshaping gradients to avoid brittle state-input dependencies [6]. This approach, drawing from control theory, mitigates vanishing/exploding gradients and navigates non-greedy landscapes. In a notable real-world deployment, reinforcement learning (RL) controlled autonomous vehicles were deployed on a highway to smooth traffic flow, demonstrating significant fuel savings and reduced congestion [7]. This large-scale experiment underscores the challenges of reward design and bridging the simulation-to-reality gap in multi-agent systems. Further advancements in embodied perception include <strong>PEVA</strong>, a model for whole-body conditioned egocentric video prediction, which learns to simulate environmental changes from human actions, enabling visual planning [8]. The broader landscape of agentic AI is expanding, with frameworks like Arbor introducing structured tree search as a cognition layer for multi-agent systems, particularly for LLM inference optimization [9]. The concept of "decision support" is also being re-evaluated, with AI agents becoming central actors and humans serving as support mechanisms, necessitating frameworks for strategic support that minimize intervention while controlling error [10]. This shift highlights a re-conceptualization of human-AI collaboration.</p>
+<h3>3. Interpretability, Evaluation, and Trustworthy AI</h3>
+<p>Understanding and ensuring the reliability of complex AI systems remains a central challenge. The <strong>SPEX</strong> and <strong>ProxySPEX</strong> frameworks offer scalable methods for identifying influential interactions within LLMs, whether for feature, data, or model component attribution [11]. By leveraging sparsity and hierarchical properties, these methods efficiently uncover non-linear dependencies, moving beyond individual feature importance. This work connects to foundational concepts in signal processing and coding theory. In a related vein, research into "latent reasoning models" cautions against equating observable latent-state patterns with causal explanations, emphasizing the need for matched controls and causal tests to establish genuine mechanisms [12]. Evaluating model truthfulness is also gaining traction, with a study on "lie detectors" for LLMs revealing that current activation- and logprob-based methods often struggle with belief-verified model organisms, while chain-of-thought judges show more promise [13]. This highlights the difficulty in reliably inferring internal model states. Furthermore, the practical deployment of LLMs in sensitive domains, such as clinical systems, necessitates deployment-centered evaluation metrics that predict user rejection based on query content and contextual factors, moving beyond static benchmarks [14]. The recent controversy surrounding Claude Fable 5's "invisible guardrails" for "frontier LLM development" illustrates the critical importance of transparency in model behavior and safety mechanisms, with Anthropic subsequently walking back the policy in response to community feedback [15, 16]. This incident underscores the ongoing tension between model capabilities, safety, and the need for clear communication regarding operational policies.</p>
+<h3>4. Generative Models and Multimodal Foundation Models</h3>
+<p>The landscape of generative and multimodal models continues to evolve rapidly. Apple introduced its third generation of <strong>Apple Foundation Models (AFM)</strong>, developed in collaboration with Google, spanning on-device to server-based models running on Private Cloud Compute [17]. These models are designed to power a new Siri and other intelligent tools, leveraging vision LLMs to extract information from user screens [18]. Google DeepMind also announced <strong>DiffusionGemma</strong>, a new open-weight model offering faster text generation, and <strong>Gemma 4 12B</strong>, a unified, encoder-free multimodal model [19, 20]. In the domain of computational biology, <strong>PLAID</strong> presents a multimodal generative model that simultaneously produces protein 1D sequence and 3D structure by learning the latent space of protein folding models [21]. This method can be trained on sequence-only data, which is significantly more abundant than structural data, and allows for compositional control over generation, addressing key limitations in drug design. This approach leverages the knowledge embedded in pre-trained protein folding models, akin to how vision-language-action models use priors from vision-language models. The proliferation of open-weight models, including new releases from DeepSeek, Kimi, and Huawei, continues to expand the ecosystem, fostering broader experimentation and development [22, 23, 24, 25, 26, 27].</p>
+<h3>5. AI for Scientific Discovery and Engineering Design</h3>
+<p>AI is increasingly being applied to accelerate scientific discovery and optimize engineering processes. The <strong>Information-Driven Encoder Analysis Learning (IDEAL)</strong> method proposes optimizing imaging systems based on mutual information, directly quantifying how well measurements distinguish objects [28]. This approach avoids the complexity of training task-specific decoders and predicts system performance across diverse imaging domains, from color photography to microscopy. In formal mathematics, <strong>Pythagoras-Prover</strong> introduces a family of Lean theorem provers, including a diffusion-based variant, that achieve strong performance with significantly fewer parameters than prior state-of-the-art models [29]. This is achieved through curriculum SFT and Augmented Lean Formalisation, which expands scarce verified corpora. A new benchmark, <strong>SciAgentArena</strong>, aims to evaluate AI agents in real-world scientific research scenarios, highlighting that current agents excel in well-specified data-analysis but struggle with generating novel insights or sustaining self-directed exploration [30]. This underscores the gap between current agent capabilities and the demands of open-ended scientific inquiry. Further, efforts are underway to reduce the computational complexity of deep learning models for EEG analysis, enabling their deployment on resource-constrained wearable devices through techniques like parameter quantization and electrode reduction [31].</p>
+<hr />
+<p><strong>References:</strong>
+[1] <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Adaptive Parallel Reasoning: The Next Paradigm in Efficient Inference Scaling</a>
+[2] <a href="https://blog.kog.ai/real-time-llm-inference-on-standard-gpus-3-000-tokens-s-per-request/">Real-time LLM Inference on Standard GPUs: 3k tokens/s per request</a>
+[3] <a href="https://github.com/jmaczan/tiny-vllm">Show HN: Tiny-vLLM – high performance LLM inference engine in C++ and CUDA</a>
+[4] <a href="https://arxiv.org/abs/2606.12765">Rigel: Reverse-Engineering the Metal 4.1 Tensor Compute Path on the Apple M4 Max GPU</a>
+[5] <a href="https://machinelearning.apple.com/research/epicache">EpiCache: Episodic KV Cache Management for Long-Term Conversation on Resource-Constrained Environments</a>
+[6] <a href="http://bair.berkeley.edu/blog/2026/04/20/grasp/">Gradient-based Planning for World Models at Longer Horizons</a>
+[7] <a href="http://bair.berkeley.edu/blog/2025/03/25/rl-av-smoothing/">Scaling Up Reinforcement Learning for Traffic Smoothing: A 100-AV Highway Deployment</a>
+[8] <a href="http://bair.berkeley.edu/blog/2025/07/01/peva/">Whole-Body Conditioned Egocentric Video Prediction</a>
+[9] <a href="https://arxiv.org/abs/2606.12563">Arbor: Tree Search as a Cognition Layer for Autonomous Agents</a>
+[10] <a href="https://arxiv.org/abs/2606.12587">Strategic Decision Support for AI Agents</a>
+[11] <a href="http://bair.berkeley.edu/blog/2026/03/13/spex/">Identifying Interactions at Scale for LLMs</a>
+[12] <a href="https://arxiv.org/abs/2606.12689">Observable Patterns Are Not Explanations: A Causal-Geometric Analysis of Latent Reasoning Models</a>
+[13] <a href="https://arxiv.org/abs/2606.12618">"Did you lie?" Evaluating Lie Detectors across Model Scale and Belief-Verified Model Organisms</a>
+[14] <a href="https://arxiv.org/abs/2606.12702">Deployment-Centered Evaluation: Predicting Query-Level Rejection Risk in a Clinical LLM System</a>
+[15] <a href="https://simonwillison.net/2026/Jun/10/if-claude-fable-stops-helping-you/#atom-everything">If Claude Fable stops helping you, you'll never know</a>
+[16] <a href="https://simonwillison.net/2026/Jun/11/anthropic-walks-back-policy/#atom-everything">Anthropic Walks Back Policy That Could Have ‘Sabotaged’ AI Researchers Using Claude</a>
+[17] <a href="https://machinelearning.apple.com/research/introducing-third-generation-of-apple-foundation-models">Introducing the Third Generation of Apple’s Foundation Models</a>
+[18] <a href="https://simonwillison.net/2026/Jun/8/wwdc/#atom-everything">Siri AI at WWDC 2026</a>
+[19] <a href="https://deepmind.google/blog/diffusiongemma-4x-faster-text-generation/">DiffusionGemma: 4x faster text generation</a>
+[20] <a href="https://deepmind.google/blog/introducing-gemma-4-12b-a-unified-encoder-free-multimodal-model/">Introducing Gemma 4 12B: a unified, encoder-free multimodal model</a>
+[21] <a href="http://bair.berkeley.edu/blog/2025/04/08/plaid/">Repurposing Protein Folding Models for Generation with Latent Diffusion</a>
+[22] <a href="https://www.interconnects.ai/p/latest-open-artifacts-21-open-model">Latest open artifacts (#21): Open model bonanza! Gemma 4, DeepSeek V4, Kimi K2.6, MiMo 2.5, GLM-5.1 &amp; others. On CAISI's V4 assessment.</a>
+[23] <a href="https://www.reddit.com/r/LocalLLaMA/comments/1u3flg9/gemma_4_quadruple_release_12b_12b_qat_26ba4b_qat/">Gemma 4 Quadruple Release, 12B, 12B QAT, 26B-A4B QAT and 31B QAT Uncensored Heretics!</a>
+[24] <a href="https://github.com/huggingface/open-r1">Open Reproduction of DeepSeek-R1</a>
+[25] <a href="https://www.reddit.com/r/LocalLLaMA/comments/1u3rdk9/moonshotaikimik27code_hugging_face/">moonshotai/Kimi-K2.7-Code · Hugging Face</a>
+[26] <a href="https://www.reddit.com/r/LocalLLaMA/comments/1u3q1j9/huawei_released_openpangu_20_will_open_source_on/">Huawei Released openPangu 2.0 (Will open source on June 30)</a>
+[27] <a href="https://www.reddit.com/r/LocalLLaMA/comments/1u37ckw/new_models_released_nexn2_pro_397b_and_nexn2_mini/">New models released: Nex-N2 Pro 397B and Nex-N2 Mini 35B</a>
+[28] <a href="http://bair.berkeley.edu/blog/2026/01/10/information-driven-imaging/">Information-Driven Design of Imaging Systems</a>
+[29] <a href="https://arxiv.org/abs/2606.12594">Pythagoras-Prover: Advancing Efficient Formal Proving via Augmented Lean Formalisation</a>
+[30] <a href="https://arxiv.org/abs/2606.12736">Benchmarking AI Agents for Addressing Scientific Challenges Across Scales</a>
+[31] <a href="https://arxiv.org/abs/2606.12742">Reducing the Complexity of Deep Learning Models for EEG Analysis on Wearable Devices</a></p>
+        </div>
+
+        <div class="section-card" id="finance-news">
+            <h2>📈 Markets &amp; Macro</h2>
+            <p>Good morning. Today's market dynamics are shaped by a confluence of geopolitical shifts, a landmark initial public offering, and ongoing reallocations within the technology sector, all set against a backdrop of evolving macroeconomic indicators.</p>
+<h3>Geopolitical De-escalation and Energy Market Rebalancing</h3>
+<p>A significant market catalyst emerged from the Middle East, where President Trump indicated a potential agreement to conclude the regional conflict could be formalized within days, leading to the cancellation of previously threatened military actions [https://247wallst.com/investing/2026/06/12/trump-calls-off-iran-strikes-with-deal-in-reach-we-should-be-getting-it-done-in-the-next-few-days/?.tsrc=rss]. This de-escalation immediately impacted energy markets, with West Texas Intermediate (WTI) and Brent crude oil prices declining to three-month lows, trading around $88 per barrel [https://www.marketwatch.com/story/global-oil-prices-drop-to-88-a-barrel-on-hopes-for-an-iran-peace-deal-as-early-as-this-weekend-6d2822bd?mod=mw_rss_topstories]. The prospect of an Iran deal, which could entail a lifting of oil sanctions, introduces a supply-side disinflationary impulse, potentially easing global energy costs and influencing future inflation expectations. This sentiment was further evidenced by European credit traders unwinding approximately $20 billion in wartime hedges, reflecting a perceived reduction in systemic risk [https://www.bloomberg.com/news/articles/2026-06-12/credit-traders-unwind-a-20-billion-wartime-short-in-europe].</p>
+<h3>The Emergence of the New Space Economy and IPO Dynamics</h3>
+<p>The market witnessed the historic public debut of Space Exploration Technologies Corp. (SpaceX), which priced its initial public offering (IPO) at $135, opened at $150, and traded at $168.75, representing a 25% gain from its IPO price [https://247wallst.com/investing/2026/06/12/elon-musk-just-became-the-worlds-first-trillionaire-and-spacex-hasnt-even-finished-its-first-trading-day/?.tsrc=rss]. This record $75 billion IPO valued SpaceX at $1.77 trillion, elevating Elon Musk to the status of the world's first paper trillionaire [https://qz.com/spacex-ipo-stock-opens-trading-spcx-061226?.tsrc=rss, https://www.cbsnews.com/news/elon-musk-spacex-ipo-trillionaire-wealth/]. The event underscores significant investor appetite for disruptive innovation, particularly in the nascent space economy. However, the enthusiasm for SpaceX generated a gravitational pull on capital, causing a notable sell-off in rival space-linked companies. For instance, AST SpaceMobile (ASTS) experienced a decline, illustrating the competitive reallocation of investor capital towards the perceived market leader [https://www.fool.com/investing/2026/06/12/why-ast-spacemobile-stock-crashed-today/]. Options trading for SpaceX is scheduled to commence next Tuesday, which will introduce additional layers of price discovery and volatility to the equity.</p>
+<h3>AI's Continued Reshaping of the Technology Sector</h3>
+<p>The technology sector continues its internal re-evaluation, driven by the pervasive influence of artificial intelligence. Advanced Micro Devices (AMD) shares advanced 5% following a Citi analyst upgrade, which highlighted the company's position in the AI accelerator market and anticipated increased spending from entities like Meta Platforms [https://247wallst.com/investing/2026/06/12/wall-street-just-put-a-monster-target-on-amd-is-the-stock-still-too-cheap/?.tsrc=rss]. This upward revision reflects a structural shift in hardware demand driven by AI infrastructure build-out. Conversely, Microsoft (MSFT), despite its long-term growth trajectory and consistent dividend increases, has experienced a 17% year-to-date decline, with an 8.8% drop in the past week [https://finance.yahoo.com/markets/stocks/articles/microsoft-msft-stock-17-date-161708608.html?.tsrc=rss]. This performance suggests a re-assessment of valuation multiples for even established mega-cap technology firms, potentially driven by higher discount rates or a rotation into more specialized AI plays. The broader software-as-a-service (SaaS) sector is also undergoing a "SaaSpocalypse 2.0" sell-off, indicating a broader valuation adjustment across software companies [https://www.fool.com/investing/2026/06/12/saaspocalypse-20-3-saas-stocks-to-buy-on-the-lates/]. This bifurcation within technology emphasizes the market's increasing discernment between direct AI beneficiaries and other segments.</p>
+<p>In the broader macroeconomic context, the December employment report indicated a modest addition of 50,000 jobs, with the unemployment rate decreasing to 4.4% [http://www.calculatedriskblog.com/2026/01/december-employment-report-50-thousand.html]. Average hourly wages grew 3.8% year-over-year [http://www.calculatedriskblog.com/2026/01/comments-on-december-employment-report.html]. Housing starts in October decreased to an annual rate of 1.246 million, down 7.8% year-over-year, reflecting ongoing adjustments in the residential construction sector [http://www.calculatedriskblog.com/2026/01/housing-starts-decreased-to-1246.html]. These data points suggest a labor market that is cooling, albeit gradually, and a housing market facing headwinds, both of which will factor into future monetary policy considerations.</p>
+        </div>
+    </div>
+</body>
+</html>
