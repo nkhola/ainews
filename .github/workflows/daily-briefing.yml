@@ -6,15 +6,18 @@ on:
     - cron: '15 13 * * *'
     # Run at 22:30 UTC (which is 6:30 PM Eastern Time)
     - cron: '30 22 * * *'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '*.html'
+      - 'index.html'
   workflow_dispatch: # Allow running manually from the Actions tab
 
 jobs:
   generate-site:
     runs-on: ubuntu-latest
     
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      
     # We need permission to push back to the repository
     permissions:
       contents: write
@@ -22,6 +25,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Debug Environment
+        run: |
+          echo "Current Date (UTC): $(date -u)"
+          echo "Python version: $(python3 --version)"
+          echo "Branch: ${{ github.ref }}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -39,12 +48,23 @@ jobs:
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
         run: |
-          python .scripts/generate_site.py
+          python3 .scripts/generate_site.py
+
+      - name: Verify Generated Files
+        run: |
+          ls -lh *.html
+          ls -lh index.html
 
       - name: Commit and Push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add *.html
+          git add *.html index.html
           # Only commit if there are changes
-          git diff --staged --quiet || (git commit -m "Automated daily briefing [skip ci]" && git push)
+          if ! git diff --staged --quiet; then
+            git commit -m "Automated daily briefing [skip ci]"
+            git pull --rebase origin main
+            git push
+          else
+            echo "No changes detected, skipping commit."
+          fi
