@@ -53,7 +53,7 @@ def generate_daily_briefing():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Briefing - {date_str} | AI & Finance</title>
+    <title>The Post-Human Brief - {date_str}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -66,6 +66,8 @@ def generate_daily_briefing():
             --accent-color: #0056b3;
             --border-color: #e5e5e5;
             --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --callout-bg: #f0f7ff;
+            --callout-border: #0056b3;
         }}
         @media (prefers-color-scheme: dark) {{
             :root {{
@@ -76,6 +78,8 @@ def generate_daily_briefing():
                 --accent-color: #58a6ff;
                 --border-color: #333333;
                 --shadow: 0 4px 12px rgba(0,0,0,0.2);
+                --callout-bg: #162638;
+                --callout-border: #58a6ff;
             }}
         }}
         body.light-theme {{
@@ -241,8 +245,8 @@ def generate_daily_briefing():
         <a href="index.html" class="nav-link">← Back to Archive</a>
         
         <div class="header-section">
-            <h1>The Daily Briefing</h1>
-            <p>{date_str}</p>
+            <h1>The Post-Human Brief</h1>
+            <div class="meta">{date_str} &bull; {time_label} &bull; {reading_time} min read</div>
         </div>
         
         <div class="section-card" id="ai-news">
@@ -450,7 +454,7 @@ def update_index_page(repo_root, new_date_str):
     <div class="archive-container">
         <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
         <a href="https://nkhola.github.io/" class="back-link">← Back to Main Site</a>
-        <h1>Intelligence Briefings</h1>
+        <h1>The Post-Human Brief</h1>
         <p class="subtitle">A daily automated synthesis of the top AI and Finance news.</p>
         <ul class="archive-list">
 {links_html}
@@ -465,4 +469,20 @@ def update_index_page(repo_root, new_date_str):
     print("Updated index.html")
 
 if __name__ == "__main__":
-    generate_daily_briefing()
+    generate_daily_briefing()aily_briefing()"back-link">← Back to Main Site</a>
+        <h1>The Post-Human Brief</h1>
+        <p class="subtitle">A daily automated synthesis of the top AI and Finance news.</p>
+        <ul class="archive-list">
+{links_html}
+        </ul>
+    </div>
+</body>
+</html>
+"""
+    index_file = os.path.join(repo_root, "index.html")
+    with open(index_file, "w", encoding="utf-8") as f:
+        f.write(index_template)
+    print("Updated index.html")
+
+if __name__ == "__main__":
+    generate_daily_briefing()aily_briefing()()
