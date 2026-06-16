@@ -43,6 +43,10 @@ def generate_daily_briefing():
     fin_raw = fin_crawler.get_latest_news()
     fin_md = compiler.synthesize_news(fin_raw, topic="finance", time_label=time_label)
 
+    # Calculate reading time (rough estimate: 200 words per minute)
+    total_words = len(ai_md.split()) + len(fin_md.split())
+    reading_time = max(1, total_words // 200)
+
     # Convert to HTML
     ai_html = markdown.markdown(ai_md, extensions=['tables', 'fenced_code'])
     fin_html = markdown.markdown(fin_md, extensions=['tables', 'fenced_code'])
@@ -469,20 +473,4 @@ def update_index_page(repo_root, new_date_str):
     print("Updated index.html")
 
 if __name__ == "__main__":
-    generate_daily_briefing()aily_briefing()"back-link">← Back to Main Site</a>
-        <h1>The Post-Human Brief</h1>
-        <p class="subtitle">A daily automated synthesis of the top AI and Finance news.</p>
-        <ul class="archive-list">
-{links_html}
-        </ul>
-    </div>
-</body>
-</html>
-"""
-    index_file = os.path.join(repo_root, "index.html")
-    with open(index_file, "w", encoding="utf-8") as f:
-        f.write(index_template)
-    print("Updated index.html")
-
-if __name__ == "__main__":
-    generate_daily_briefing()aily_briefing()()
+    generate_daily_briefing()
