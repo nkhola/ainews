@@ -27,7 +27,7 @@ WRITING RULES:
    - NO AI CLICHÉS: "In the ever-evolving...", "It's important to note...", "Only time will tell...".
    - NO FINANCIAL CLICHÉS (for finance): "amid uncertainty", "investors are watching closely".
    - NO EM DASHES (`—` or `–`). Use parentheses or commas.
-8. CONCISION: Under 800 words. Density over length.
+8. CONCISION: Prioritize extreme conciseness and high information density. Do not ramble, but ensure all thoughts and sentences are fully completed.
 
 {topic_specific_guidance}"""
 
