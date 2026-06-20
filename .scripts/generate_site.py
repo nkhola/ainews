@@ -277,10 +277,24 @@ def generate_daily_briefing():
     update_index_page(repo_root, date_str)
 
 def update_index_page(repo_root, new_date_str):
-    # Find all html files in the directory that look like dates
-    files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html']
+    import re
+    # Find all html files in the directory that look like dates (e.g. YYYY-MM-DD)
+    files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f)]
+    
+    def get_sort_key(filename):
+        name = filename.replace('.html', '')
+        parts = name.split('-')
+        if len(parts) == 4:
+            date_str = "-".join(parts[:3])
+            suffix = parts[3]
+            weight = 1 if suffix == "PM" else 0
+        else:
+            date_str = name
+            weight = 0
+        return (date_str, weight)
+
     # Sort files descending (newest first)
-    files.sort(reverse=True)
+    files.sort(key=get_sort_key, reverse=True)
 
     links_html = ""
     for f in files:

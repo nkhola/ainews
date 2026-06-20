@@ -3,6 +3,8 @@ import requests
 import feedparser
 from bs4 import BeautifulSoup
 import yaml
+from datetime import datetime, timezone, timedelta
+import calendar
 
 
 class NewsCrawler:
@@ -16,6 +18,17 @@ class NewsCrawler:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries[:max_items]:
+                # Apply date filtering (keep only items from the last 36 hours)
+                struct_time = entry.get("published_parsed") or entry.get("updated_parsed")
+                if struct_time:
+                    try:
+                        dt = datetime.fromtimestamp(calendar.timegm(struct_time), timezone.utc)
+                        now = datetime.now(timezone.utc)
+                        if now - dt > timedelta(hours=36):
+                            continue
+                    except Exception as e:
+                        print(f"  ⚠ Error parsing date for {entry.get('title')}: {e}")
+
                 summary = getattr(entry, "summary", "")
                 # Strip HTML from summary
                 if summary:

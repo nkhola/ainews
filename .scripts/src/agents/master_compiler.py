@@ -64,6 +64,24 @@ class MasterCompiler:
             )
         return self._client
 
+    def _create_completion_with_retry(self, messages, temperature, max_tokens, max_retries=3, backoff=5):
+        import time
+        for attempt in range(max_retries):
+            try:
+                return self.client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
+            except Exception as e:
+                print(f"[MasterCompiler] API call failed (attempt {attempt + 1}/{max_retries}): {e}")
+                if attempt == max_retries - 1:
+                    raise
+                print(f"[MasterCompiler] Retrying in {backoff} seconds...")
+                time.sleep(backoff)
+                backoff *= 2
+
     def synthesize_news(self, raw_data, topic="ai", time_label="Morning"):
         guidance = AI_GUIDANCE if topic == "ai" else FINANCE_GUIDANCE
         
@@ -77,55 +95,48 @@ class MasterCompiler:
         time_context = f"This is a {time_label} briefing."
         full_system_prompt = f"{system_prompt}\n\n{time_context}"
 
-        try:
-            print(f"[MasterCompiler] Synthesizing {topic} ({time_label}) briefing with {self.model}...")
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": full_system_prompt},
-                    {
-                        "role": "user",
-                        "content": (
-                            f"Here is today's raw data. Synthesize it into the briefing.\n\n"
-                            f"{raw_data}\n\n"
-                            f"IMPORTANT FINAL REMINDERS:\n"
-                            f"- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
-                            f"- NEVER use raw URLs in brackets like `[https://url]`. ALWAYS use standard inline markdown links."
-                        ),
-                    },
-                ],
-                temperature=0.4,
-                max_tokens=8192,
-            )
-            result = response.choices[0].message.content
-            print(f"[MasterCompiler] Done. ({len(result)} chars)")
-            
-            # EVAL LOOP: Ensure link formatting is flawless
-            print(f"[MasterCompiler] Running formatting eval loop...")
-            eval_system_prompt = (
-                "You are a strict formatting evaluator. Your job is to review the following markdown text "
-                "and ensure it perfectly adheres to the link formatting rules.\n\n"
-                "LINK FORMATTING RULES:\n"
-                "- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
-                "- NEVER use raw URLs in brackets like `[https://url]`. If you see them, convert them to `[Source](https://url)` "
-                "or infer a descriptive text from the context.\n"
-                "- NEVER use `[1]`, `[2]` etc.\n\n"
-                "Return ONLY the corrected markdown. Do not add any preamble, commentary, or backticks around the output."
-            )
-            eval_response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": eval_system_prompt},
-                    {"role": "user", "content": result},
-                ],
-                temperature=0.1,
-                max_tokens=8192,
-            )
-            final_result = eval_response.choices[0].message.content
-            print(f"[MasterCompiler] Eval loop done. ({len(final_result)} chars)")
-            return final_result
-        except Exception as e:
-            error_msg = f"Error during LLM synthesis: {e}"
-            print(f"[MasterCompiler] {error_msg}")
-            return error_msg
+        print(f"[MasterCompiler] Synthesizing {topic} ({time_label}) briefing with {self.model}...")
+        response = self._create_completion_with_retry(
+            messages=[
+                {"role": "system", "content": full_system_prompt},
+                {
+                    "role": "user",
+                    "content": (
+                        f"Here is today's raw data. Synthesize it into the briefing.\n\n"
+                        f"{raw_data}\n\n"
+                        f"IMPORTANT FINAL REMINDERS:\n"
+                        f"- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
+                        f"- NEVER use raw URLs in brackets like `[https://url]`. ALWAYS use standard inline markdown links."
+                    ),
+                },
+            ],
+            temperature=0.4,
+            max_tokens=8192,
+        )
+        result = response.choices[0].message.content
+        print(f"[MasterCompiler] Done. ({len(result)} chars)")
+        
+        # EVAL LOOP: Ensure link formatting is flawless
+        print(f"[MasterCompiler] Running formatting eval loop...")
+        eval_system_prompt = (
+            "You are a strict formatting evaluator. Your job is to review the following markdown text "
+            "and ensure it perfectly adheres to the link formatting rules.\n\n"
+            "LINK FORMATTING RULES:\n"
+            "- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
+            "- NEVER use raw URLs in brackets like `[https://url]`. If you see them, convert them to `[Source](https://url)` "
+            "or infer a descriptive text from the context.\n"
+            "- NEVER use `[1]`, `[2]` etc.\n\n"
+            "Return ONLY the corrected markdown. Do not add any preamble, commentary, or backticks around the output."
+        )
+        eval_response = self._create_completion_with_retry(
+            messages=[
+                {"role": "system", "content": eval_system_prompt},
+                {"role": "user", "content": result},
+            ],
+            temperature=0.1,
+            max_tokens=8192,
+        )
+        final_result = eval_response.choices[0].message.content
+        print(f"[MasterCompiler] Eval loop done. ({len(final_result)} chars)")
+        return final_result
 
