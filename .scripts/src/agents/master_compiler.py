@@ -48,6 +48,13 @@ class MasterCompiler:
     def __init__(self):
         self.model = os.getenv("LLM_MODEL", "deepseek/deepseek-chat")
         self._client = None
+        self._using_fallback = False
+
+        # Fallback configuration (OpenRouter + DeepSeek by default)
+        self.fallback_model = os.getenv("LLM_FALLBACK_MODEL", "deepseek/deepseek-chat")
+        self.fallback_base_url = os.getenv("LLM_FALLBACK_BASE_URL", "https://openrouter.ai/api/v1")
+        self.fallback_api_key = os.getenv("LLM_FALLBACK_API_KEY", os.getenv("LLM_API_KEY"))
+        self._fallback_client = None
 
     @property
     def client(self):
@@ -64,22 +71,87 @@ class MasterCompiler:
             )
         return self._client
 
+    @property
+    def fallback_client(self):
+        if self._fallback_client is None:
+            if not self.fallback_api_key:
+                return None
+            self._fallback_client = OpenAI(
+                api_key=self.fallback_api_key,
+                base_url=self.fallback_base_url,
+            )
+        return self._fallback_client
+
+    def _switch_to_fallback(self):
+        """Switch to fallback LLM provider."""
+        if self._using_fallback or self.fallback_client is None:
+            return False
+        self._using_fallback = True
+        print(f"[MasterCompiler] ⚠ Switching to fallback model: {self.fallback_model} via {self.fallback_base_url}")
+        return True
+
+    def _get_active_client(self):
+        return self.fallback_client if self._using_fallback else self.client
+
+    def _get_active_model(self):
+        return self.fallback_model if self._using_fallback else self.model
+
     def _create_completion_with_retry(self, messages, temperature, max_tokens, max_retries=3, backoff=5):
         import time
-        for attempt in range(max_retries):
+        import random
+        import re as _re
+        from openai import RateLimitError
+
+        # Rate limit errors get more retries and longer backoff
+        rate_limit_max_retries = max(max_retries, 5)
+        rate_limit_count = 0
+
+        for attempt in range(rate_limit_max_retries):
             try:
-                return self.client.chat.completions.create(
-                    model=self.model,
+                return self._get_active_client().chat.completions.create(
+                    model=self._get_active_model(),
                     messages=messages,
                     temperature=temperature,
                     max_tokens=max_tokens,
                 )
+            except RateLimitError as e:
+                rate_limit_count += 1
+                err_str = str(e)
+                is_quota_exhausted = "quota" in err_str.lower() or "exceeded" in err_str.lower()
+
+                # If quota is fully exhausted (not just a burst limit), try fallback immediately
+                if is_quota_exhausted and not self._using_fallback:
+                    print(f"[MasterCompiler] Quota exhausted on primary model: {e}")
+                    if self._switch_to_fallback():
+                        continue  # retry immediately with fallback
+
+                # Parse server-suggested retry delay if available
+                wait_time = backoff
+                delay_match = _re.search(r'retry\s*(?:in|after)\s*([\d.]+)\s*s', err_str, _re.IGNORECASE)
+                if delay_match:
+                    wait_time = max(float(delay_match.group(1)), backoff) + random.uniform(1, 5)
+                else:
+                    wait_time = max(60, backoff) + random.uniform(1, 10)
+
+                print(f"[MasterCompiler] Rate limited (attempt {attempt + 1}/{rate_limit_max_retries}): {e}")
+
+                # After 2 consecutive rate limits, try fallback before exhausting retries
+                if rate_limit_count >= 2 and not self._using_fallback:
+                    if self._switch_to_fallback():
+                        continue
+
+                if attempt == rate_limit_max_retries - 1:
+                    raise
+                print(f"[MasterCompiler] Waiting {wait_time:.1f}s before retry...")
+                time.sleep(wait_time)
+                backoff = min(backoff * 2, 300)  # cap at 5 minutes
             except Exception as e:
                 print(f"[MasterCompiler] API call failed (attempt {attempt + 1}/{max_retries}): {e}")
                 if attempt == max_retries - 1:
                     raise
-                print(f"[MasterCompiler] Retrying in {backoff} seconds...")
-                time.sleep(backoff)
+                jitter = random.uniform(0, backoff * 0.1)
+                print(f"[MasterCompiler] Retrying in {backoff + jitter:.1f} seconds...")
+                time.sleep(backoff + jitter)
                 backoff *= 2
 
     def synthesize_news(self, raw_data, topic="ai", time_label="Morning"):
@@ -95,7 +167,7 @@ class MasterCompiler:
         time_context = f"This is a {time_label} briefing."
         full_system_prompt = f"{system_prompt}\n\n{time_context}"
 
-        print(f"[MasterCompiler] Synthesizing {topic} ({time_label}) briefing with {self.model}...")
+        print(f"[MasterCompiler] Synthesizing {topic} ({time_label}) briefing with {self._get_active_model()}...")
         response = self._create_completion_with_retry(
             messages=[
                 {"role": "system", "content": full_system_prompt},
