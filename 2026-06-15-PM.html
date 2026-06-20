@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Post-Human Brief - 2026-06-15</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Post-Human Brief - 2026-06-15</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
         :root {
             --bg-color: #f9f9f9;
             --surface-color: #ffffff;
@@ -164,7 +165,7 @@
     </style>
 </head>
 <body>
-    <script>
+<script>
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.body.classList.add(savedTheme + '-theme');
@@ -190,18 +191,16 @@
             }
         }
     </script>
-    <div class="briefing-container">
-        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
-        <a href="index.html" class="nav-link">← Back to Archive</a>
-        
-        <div class="header-section">
-            <h1>The Post-Human Brief</h1>
-            <div class="meta">2026-06-15 &bull; Evening &bull; 8 min read</div>
-        </div>
-        
-        <div class="section-card" id="ai-news">
-            <h2>🧠 Artificial Intelligence</h2>
-            <p>The AI domain is currently navigating a significant inflection point, marked by foundational architectural shifts towards more efficient inference and advanced agentic control, while simultaneously confronting urgent practical challenges in model safety, interpretability, and the reliability of evaluation. The dynamic interplay between open and closed model ecosystems continues to shape research priorities and deployment strategies, pushing the boundaries of what these systems can achieve in complex, real-world applications.</p>
+<div class="briefing-container">
+<button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+<a class="nav-link" href="index.html">← Back to Archive</a>
+<div class="header-section">
+<h1>The Post-Human Brief</h1>
+<div class="meta">2026-06-15 • Evening • 8 min read</div>
+</div>
+<div class="section-card" id="ai-news">
+<h2>🧠 Artificial Intelligence</h2>
+<p>The AI domain is currently navigating a significant inflection point, marked by foundational architectural shifts towards more efficient inference and advanced agentic control, while simultaneously confronting urgent practical challenges in model safety, interpretability, and the reliability of evaluation. The dynamic interplay between open and closed model ecosystems continues to shape research priorities and deployment strategies, pushing the boundaries of what these systems can achieve in complex, real-world applications.</p>
 <h3>Scaling Inference and Reasoning Architectures</h3>
 <p>The quest for more efficient and scalable inference continues to drive core architectural innovation. <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Adaptive Parallel Reasoning</a> (APR) emerges as a significant paradigm shift, allowing models to dynamically decide when and how to parallelize subtasks, mitigating "context-rot" and reducing latency. This work highlights a fundamental trade-off: some approaches, like Multiverse, modify the inference engine for KV cache stitching but introduce distributional shifts, while others, like ThreadWeaver, prioritize engine-agnostic client-side orchestration, accepting re-prefill costs for broader compatibility. This mirrors the broader discussion in <a href="https://twimlai.com/podcast/twimlai/how-engineer-ai-inference-systems">inference engineering</a> about optimizing "knobs" like batching and KV cache reuse. Concurrently, efforts like <a href="https://machinelearning.apple.com/research/epicache">EpiCache</a> address KV cache growth for long contexts on resource-constrained devices, and projects such as <a href="https://github.com/jmaczan/tiny-vllm">Tiny-vLLM</a> and <a href="https://blog.kog.ai/real-time-llm-inference-on-standard-gpus-3-000-tokens-s-per-request/">real-time LLM inference breakthroughs</a> underscore the relentless pursuit of raw throughput.</p>
 <h4>Why it matters</h4>
@@ -219,12 +218,11 @@
 <h4>Why it matters</h4>
 <p>The increasing capability and accessibility of open models are democratizing AI development, intensifying competition, and pushing proprietary providers to innovate further, while also raising questions about shared infrastructure and governance.</p>
 <h3>AI as a Scientific and Engineering Accelerator</h3>
-<p>AI's transformative impact on scientific discovery and complex engineering problems is undeniable. <a href="http://bair.berkeley.edu/blog/2025/04/08/plaid/">PLAID</a> demonstrates a generative model for protein sequence and 3D structure, leveraging latent diffusion from protein folding models and training on vast sequence databases, a significant step towards controlled, all-atom protein design. In imaging, <a href="http://bair.berkeley.edu/blog/2026/01/10/information-driven-imaging/">IDEAL</a> introduces an information-driven framework for optimizing imaging systems based on mutual information, bypassing the need for complex decoder networks. A tangible real-world deployment saw <a href="http://bair.berkeley.edu/blog/2025/03/25/rl-av-smoothing/">100 RL-controlled cars deployed on a highway</a> to smooth traffic flow, reducing congestion and fuel consumption by learning from local sensor data. Further applications include <a href="https://arxiv.org/abs/2606.13682">DRL-based Transformers for Open Shop Scheduling</a>, [LLMs for medical</p>
-        </div>
-
-        <div class="section-card" id="finance-news">
-            <h2>📈 Markets &amp; Macro</h2>
-            <p><strong>EXECUTIVE SUMMARY</strong></p>
+<p>AI's transformative impact on scientific discovery and complex engineering problems is undeniable. <a href="http://bair.berkeley.edu/blog/2025/04/08/plaid/">PLAID</a> demonstrates a generative model for protein sequence and 3D structure, leveraging latent diffusion from protein folding models and training on vast sequence databases, a significant step towards controlled, all-atom protein design. In imaging, <a href="http://bair.berkeley.edu/blog/2026/01/10/information-driven-imaging/">IDEAL</a> introduces an information-driven framework for optimizing imaging systems based on mutual information, bypassing the need for complex decoder networks. A tangible real-world deployment saw <a href="http://bair.berkeley.edu/blog/2025/03/25/rl-av-smoothing/">100 RL-controlled cars deployed on a highway</a> to smooth traffic flow, reducing congestion and fuel consumption by learning from local sensor data. Further applications include <a href="https://arxiv.org/abs/2606.13682">DRL-based Transformers for Open Shop Scheduling</a>, [LLMs for medical diagnosis and clinical decision support.]</p><p><strong>The Bottom Line:</strong> From protein design and advanced imaging to traffic optimization and medical applications, AI is demonstrating tangible, transformative impacts across a diverse range of scientific and real-world engineering challenges.</p>
+</div>
+<div class="section-card" id="finance-news">
+<h2>📈 Markets &amp; Macro</h2>
+<p><strong>EXECUTIVE SUMMARY</strong></p>
 <p>Today's market rally was primarily driven by a geopolitical de-escalation with the US-Iran deal, easing immediate energy concerns and boosting broad sentiment, even as underlying economic data showed continued labor market weakness and a mixed housing picture. Concurrently, the AI narrative intensified with Intel and AMD making inroads against Nvidia's dominance, while SpaceX's blockbuster IPO underscored a surging appetite for high-growth, transformative ventures.</p>
 <p><strong>Dominant Narratives</strong></p>
 <ol>
@@ -248,8 +246,8 @@
 <h4>Why it matters</h4>
 <p>The escalating AI arms race is driving massive capital expenditure, diversifying the beneficiaries beyond just GPU manufacturers, and highlighting critical infrastructure constraints (especially power) that will shape future investment and innovation.</p>
 <h3>Market Structure: IPO Mania and Liquidity Shifts</h3>
-<p>Today saw the continuation of SpaceX's blockbuster debut, with its market cap breaching <a href="https://stocktwits.com/news-articles/markets/equity/space-x-marketcap-breaches-2-5-t-goes-past-tesla-tsmc-and-broadcom/cZKW4MAR73z?.tsrc=rss">$2.5 trillion</a>, surpassing Tesla, TSMC, and Broadcom. Shares <a href="https://www.ft.com/content/55fe2a70-4cf1-4749-a2c2-f0a598dd281">gained for a second day</a>, adding another <a href="https://www.bloomberg.com/news/articles/2026-06-15/spacex-shares-rise-set-to-extend-gains-after-record-ipo-mqexlibz">$412 billion in value</a>. Notably, the IPO was structured to give individual investors a significant role, with customers at major retail brokerage firms receiving <a href="https://www.bloomberg.com/news/articles/2026-06-15/spacex-investors-at-us-retail-brokers-got-at-least-one-ipo-share">at least one share</a>. Options traders are now bracing for a "triple witching" week, with the <a href="https://www.marketwatch.com/story/options-traders-are-bracing-for-a-very-busy-week-with-june-triple-witching-and-launch-of-spacex-contracts-on-deck-b38fbf62?mod=mw_rss_topstories">launch of SpaceX contracts</a> adding to the potential volatility. In M&amp;A news, Fox announced its acquisition of Roku for approximately <a href="https://www.fool.com/investing/2026/06/15/roku-stock-hits-a-new-52-week-high-is-it-a-buy/">$22 billion</a>, sending Roku's stock to a new 52-week high. Meanwhile, Standard Chartered is making an aggressive call on DeFi, predicting Uniswap's UNI token could <a href="https://www.cryptoprowl.com/releases/standard-chartered-says-uni-could-hit-100-as-wall-street-moves-onchain-5877?.tsrc=rss">hit $100</a> as Wall Street increasingly moves onchain. On the credit front, Indonesia is experiencing its <a href="https://www.bloomberg.com/news/articles/2026-06-15/indonesia-s-credit-volatility-is-worst-in-asia-as-rupiah-slumps">worst credit volatility in Asia as the rupiah slumps</a>.</p>
-        </div>
-    </div>
+<p>Today saw the continuation of SpaceX's blockbuster debut, with its market cap breaching <a href="https://stocktwits.com/news-articles/markets/equity/space-x-marketcap-breaches-2-5-t-goes-past-tesla-tsmc-and-broadcom/cZKW4MAR73z?.tsrc=rss">$2.5 trillion</a>, surpassing Tesla, TSMC, and Broadcom. Shares <a href="https://www.ft.com/content/55fe2a70-4cf1-4749-a2c2-f0a598dd281">gained for a second day</a>, adding another <a href="https://www.bloomberg.com/news/articles/2026-06-15/spacex-shares-rise-set-to-extend-gains-after-record-ipo-mqexlibz">$412 billion in value</a>. Notably, the IPO was structured to give individual investors a significant role, with customers at major retail brokerage firms receiving <a href="https://www.bloomberg.com/news/articles/2026-06-15/spacex-investors-at-us-retail-brokers-got-at-least-one-ipo-share">at least one share</a>. Options traders are now bracing for a "triple witching" week, with the <a href="https://www.marketwatch.com/story/options-traders-are-bracing-for-a-very-busy-week-with-june-triple-witching-and-launch-of-spacex-contracts-on-deck-b38fbf62?mod=mw_rss_topstories">launch of SpaceX contracts</a> adding to the potential volatility. In M&amp;A news, Fox announced its acquisition of Roku for approximately <a href="https://www.fool.com/investing/2026/06/15/roku-stock-hits-a-new-52-week-high-is-it-a-buy/">$22 billion</a>, sending Roku's stock to a new 52-week high. Meanwhile, Standard Chartered is making an aggressive call on DeFi, predicting Uniswap's UNI token could <a href="https://www.cryptoprowl.com/releases/standard-chartered-says-uni-could-hit-100-as-wall-street-moves-onchain-5877?.tsrc=rss">hit $100</a> as Wall Street increasingly moves onchain. On the credit front, Indonesia is experiencing its <a href="https://www.bloomberg.com/news/articles/2026-06-15/indonesia-s-credit-volatility-is-worst-in-asia-as-rupiah-slumps">worst credit volatility in Asia as the rupiah slumps</a>.</p><p><strong>The Bottom Line:</strong> SpaceX's historic market debut continues to shatter valuation records and drive options market anticipation, overshadowing major corporate M&amp;A and emerging volatility in global credit and crypto markets.</p>
+</div>
+</div>
 </body>
 </html>
