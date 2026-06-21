@@ -51,7 +51,7 @@ class MasterCompiler:
         self._using_fallback = False
 
         # Fallback configuration (OpenRouter free tier by default)
-        self.fallback_model = os.getenv("LLM_FALLBACK_MODEL", "deepseek/deepseek-chat:free")
+        self.fallback_model = os.getenv("LLM_FALLBACK_MODEL", "meta-llama/llama-3.3-70b-instruct:free")
         self.fallback_base_url = os.getenv("LLM_FALLBACK_BASE_URL", "https://openrouter.ai/api/v1")
         self.fallback_api_key = os.getenv("LLM_FALLBACK_API_KEY", os.getenv("LLM_API_KEY"))
         self._fallback_client = None
