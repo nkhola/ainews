@@ -102,32 +102,66 @@
 
         /* Header Section */
         .header-section {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 40px;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         .header-section .logo {
-            width: 80px;
+            width: 48px;
             height: auto;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
         .header-section h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin: 0;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
         .header-section .meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .header-section .date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .header-section .reading-time {
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
             font-family: 'Outfit', sans-serif;
+        }
+        
+        @media (max-width: 600px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-section .meta {
+                align-items: flex-start;
+                text-align: left;
+            }
         }
 
         /* Section Cards */
@@ -142,15 +176,9 @@
             -webkit-backdrop-filter: blur(12px);
         }
         .section-header {
-            border-top: 2px solid var(--text-main);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 0;
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }
         .section-header h2 {
             font-family: 'Outfit', sans-serif;
@@ -161,37 +189,31 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .section-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
             color: #f0f4f8;
-            margin-top: 40px;
+            margin-top: 48px;
             margin-bottom: 16px;
             font-weight: 700;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .section-card p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.15rem;
+            margin-bottom: 24px;
             color: #d1d5db;
+            line-height: 1.8;
         }
         .section-card ul {
             padding-left: 24px;
             color: #d1d5db;
+            margin-bottom: 24px;
         }
         .section-card li {
-            margin-bottom: 10px;
-            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
         a {
             color: #3b82f6;
@@ -266,17 +288,21 @@
         </div>
         
         <div class="header-section">
-            <img src="img/logo_256.png" alt="Logo" class="logo">
-            <h1>The Post-Human Briefing</h1>
-            <div class="meta">2026-06-19 &bull; Evening &bull; 11 min read</div>
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">2026-06-19 &bull; Evening</span>
+                <span class="reading-time">5 min read</span>
+            </div>
         </div>
         
         <div class="section-card" id="ai-news">
             <div class="section-header">
                 <h2>Artificial Intelligence</h2>
-                <div class="section-meta">SYS.REF // 01</div>
             </div>
-<p>The AI landscape is currently defined by a dual thrust: a relentless pursuit of <strong>inference efficiency and architectural innovation</strong> to unlock truly complex reasoning and embodied agency, and a deepening exploration of <strong>trustworthy AI</strong> through enhanced interpretability, alignment, and robust governance. Simultaneously, the <strong>open-source model ecosystem is rapidly maturing</strong>, with new frontier models directly challenging the performance of proprietary systems, intensifying the strategic competition and regulatory debates.</p>
+            <p>The AI landscape is currently defined by a dual thrust: a relentless pursuit of <strong>inference efficiency and architectural innovation</strong> to unlock truly complex reasoning and embodied agency, and a deepening exploration of <strong>trustworthy AI</strong> through enhanced interpretability, alignment, and robust governance. Simultaneously, the <strong>open-source model ecosystem is rapidly maturing</strong>, with new frontier models directly challenging the performance of proprietary systems, intensifying the strategic competition and regulatory debates.</p>
 <h3>Inference Efficiency &amp; Architectural Innovation</h3>
 <p>The quest for more efficient and capable AI systems continues to drive significant architectural and algorithmic advancements. A major theme is the move towards dynamic, model-controlled computation. Berkeley's work on <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Adaptive Parallel Reasoning (APR)</a> for LLMs exemplifies this, shifting from fixed parallelization strategies (like simple fork-and-join or heuristic-based search) to models that decide <em>when</em> and <em>how</em> to decompose tasks into parallel sub-threads. This addresses the linear scaling of sequential reasoning with exploration, which leads to context rot and prohibitive latency. APR, as a paradigm, learns to dynamically allocate compute between parallel and serial operations, avoiding redundant computation and adapting to problem complexity.</p>
 <p>The implementation of APR highlights critical inference system challenges. Approaches like Multiverse modify the inference engine to "stitch" KV cache from parallel branches, aiming for memory reuse but introducing fragility and distributional shifts due to non-standard positional encoding. In contrast, <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">ThreadWeaver</a> maintains an engine-agnostic design, orchestrating parallel inference client-side by concatenating outputs and performing a second prefill for synthesis. While incurring some prefill cost, this avoids engine modifications and non-causal attention patterns, making it easier to adapt existing autoregressive models. Training these models requires careful reward design, moving beyond simple structure-only rewards to efficiency rewards that track the "critical path" (longest causally dependent token sequence) and are gated by correctness. This directly optimizes for the Pareto frontier of accuracy and latency.</p>
@@ -315,9 +341,8 @@
         <div class="section-card" id="finance-news">
             <div class="section-header">
                 <h2>Markets &amp; Macro</h2>
-                <div class="section-meta">SYS.REF // 02</div>
             </div>
-<p><strong>EXECUTIVE SUMMARY</strong></p>
+            <p><strong>EXECUTIVE SUMMARY</strong></p>
 <p>Today's market narrative is a complex interplay of geopolitical de-escalation attempts clashing with persistent inflationary concerns and hawkish central bank stances. While an interim US-Iran peace deal and Israel-Hezbollah ceasefire offered a fleeting dip in oil prices, renewed regional tensions and a hawkish Fed quickly reasserted caution, leaving global stocks to end a strong week on a tentative note. Meanwhile, the AI boom continues to drive chip sector valuations, even as underlying economic data presents a mixed picture for the US and a sputtering outlook for China.</p>
 <p><strong>MASTER COMPILER</strong></p>
 <p>The day's events coalesce around four dominant narratives: the fragile state of Middle East peace and its energy market implications, the unwavering hawkishness of central banks, the nuanced reality of the AI-driven tech rally, and the crosscurrents within the US economy.</p>

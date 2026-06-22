@@ -102,32 +102,66 @@
 
         /* Header Section */
         .header-section {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 40px;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         .header-section .logo {
-            width: 80px;
+            width: 48px;
             height: auto;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
         .header-section h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin: 0;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
         .header-section .meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .header-section .date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .header-section .reading-time {
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
             font-family: 'Outfit', sans-serif;
+        }
+        
+        @media (max-width: 600px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-section .meta {
+                align-items: flex-start;
+                text-align: left;
+            }
         }
 
         /* Section Cards */
@@ -142,15 +176,9 @@
             -webkit-backdrop-filter: blur(12px);
         }
         .section-header {
-            border-top: 2px solid var(--text-main);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 0;
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }
         .section-header h2 {
             font-family: 'Outfit', sans-serif;
@@ -161,37 +189,31 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .section-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
             color: #f0f4f8;
-            margin-top: 40px;
+            margin-top: 48px;
             margin-bottom: 16px;
             font-weight: 700;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .section-card p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.15rem;
+            margin-bottom: 24px;
             color: #d1d5db;
+            line-height: 1.8;
         }
         .section-card ul {
             padding-left: 24px;
             color: #d1d5db;
+            margin-bottom: 24px;
         }
         .section-card li {
-            margin-bottom: 10px;
-            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
         a {
             color: #3b82f6;
@@ -266,17 +288,21 @@
         </div>
         
         <div class="header-section">
-            <img src="img/logo_256.png" alt="Logo" class="logo">
-            <h1>The Post-Human Briefing</h1>
-            <div class="meta">2026-06-19 &bull; Morning &bull; 15 min read</div>
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">2026-06-19 &bull; Morning</span>
+                <span class="reading-time">5 min read</span>
+            </div>
         </div>
         
         <div class="section-card" id="ai-news">
             <div class="section-header">
                 <h2>Artificial Intelligence</h2>
-                <div class="section-meta">SYS.REF // 01</div>
             </div>
-<p>This morning's intelligence points to a significant acceleration in both the <strong>efficiency of AI inference</strong> and the <strong>sophistication of AI agents</strong>, particularly in their ability to reason, plan, and interact with complex, real-world environments. Concurrently, the <strong>open-source model ecosystem</strong> continues its rapid evolution, challenging established closed-source leaders with increasingly capable and specialized architectures.</p>
+            <p>This morning's intelligence points to a significant acceleration in both the <strong>efficiency of AI inference</strong> and the <strong>sophistication of AI agents</strong>, particularly in their ability to reason, plan, and interact with complex, real-world environments. Concurrently, the <strong>open-source model ecosystem</strong> continues its rapid evolution, challenging established closed-source leaders with increasingly capable and specialized architectures.</p>
 <h3>Inference Efficiency &amp; Reasoning Architectures</h3>
 <p>The quest for more efficient and capable inference continues to drive architectural innovation. A major development is <strong>Adaptive Parallel Reasoning (APR)</strong>, where models dynamically decide when and how to parallelize subtasks during inference, spawning concurrent threads and coordinating them based on problem complexity <a href="https://bair.berkeley.edu/blog/2024/07/22/adaptive-parallel-reasoning/">Berkeley Artificial Intelligence Research Blog: Adaptive Parallel Reasoning</a>. This moves beyond fixed parallelization strategies (like simple fork-and-join or heuristic-based search) by allowing the model to learn general decomposition strategies, avoiding redundant computation, and adjusting parallelization levels to match task demands. Implementations like Multiverse modify the inference engine for KV cache reuse, while ThreadWeaver opts for client-side orchestration, trading some recomputation for engine-agnostic deployment. Training these models involves rewarding parallelization efficiency, specifically minimizing the critical path length relative to total tokens, but only when the answer is correct.</p>
 <p>Complementing this, new work explores <strong>Diffusion Language Models (DLMs)</strong>, which generate text through iterative denoising, allowing parallel refinement of entire sequences, contrasting with autoregressive generation <a href="https://arxiv.org/abs/2407.16335">Diffusion Language Models: An Experimental Analysis</a>. Experimental analysis highlights trade-offs between generation quality and computational efficiency, emphasizing the impact of inference-time factors like denoising steps and parallel unmasking. For long-context scenarios, <strong>EpiCache</strong> introduces episodic KV cache management for resource-constrained environments, addressing the linear growth of KV cache with context length <a href="https://machinelearning.apple.com/research/epicache">Apple Machine Learning Research: EpiCache</a>. This is critical for sustaining coherent, personalized responses in extended dialogues without exceeding device memory limits. The broader field of inference engineering is also seeing rapid advancements, with new engines like <strong>Tiny-vLLM</strong> pushing real-time LLM inference to 3,000 tokens/second per request on standard GPUs <a href="https://news.ycombinator.com/item?id=40995543">Hacker News: Tiny-vLLM – high performance LLM inference engine in C++ and CUDA</a>.</p>
@@ -318,9 +344,8 @@
         <div class="section-card" id="finance-news">
             <div class="section-header">
                 <h2>Markets &amp; Macro</h2>
-                <div class="section-meta">SYS.REF // 02</div>
             </div>
-<p><strong>EXECUTIVE SUMMARY</strong></p>
+            <p><strong>EXECUTIVE SUMMARY</strong></p>
 <p>Geopolitical tensions in the Middle East persist despite a ceasefire, keeping energy markets volatile, while the AI sector continues its rapid evolution with major players vying for chip dominance and index rebalances reflecting this shift. Meanwhile, domestic economic data paints a mixed picture of slowing employment and housing activity against a backdrop of rising household net worth.</p>
 <h3>Geopolitical Friction and Energy Market Volatility</h3>
 <p>An initial agreement for an <a href="https://www.ft.com/content/ad95de96-4849-479e-b4e5-c5f15fcad581">Israel-Hezbollah ceasefire</a> briefly lowered oil prices on hopes of a broader US-Iran deal. However, this relief was short-lived as Iran immediately countered, announcing it would seek <a href="https://www.ft.com/content/e1068044-5124-47d9-81ba-c4a3efc15fcad581">“insurance fees” for passage through the Strait of Hormuz</a>, a critical global oil chokepoint. This assertion of authority <a href="https://www.marketwatch.com/story/oil-prices-under-new-wave-of-pressure-amid-lingering-questions-over-a-strait-of-hormuz-reopening-c58fc9e8?mod=mw_rss_topstories">re-pressured oil prices</a> and caused <a href="https://www.bloomberg.com/news/articles/2026-06-19/emerging-equities-touch-record-high-as-iran-deal-takes-effect">emerging market currencies to retrace gains</a>. The situation underscores the <a href="https://www.marketwatch.com/story/oil-prices-under-new-wave-of-pressure-amid-lingering-questions-over-a-strait-of-hormuz-reopening-c58fc9e8?mod=mw_rss_topstories">fragile nature of any US-Iran understanding</a> and highlights the immediate impact on global energy supply chains, making marine insurance a key factor for <a href="https://www.netinterest.co/p/the-underwriters-of-hormuz">underwriters of Hormuz passage</a>.</p>

@@ -106,32 +106,66 @@ TEMPLATE = """<!DOCTYPE html>
 
         /* Header Section */
         .header-section {{
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 40px;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }}
+        .header-title {{
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }}
         .header-section .logo {{
-            width: 80px;
+            width: 48px;
             height: auto;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }}
         .header-section h1 {{
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin: 0;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }}
         .header-section .meta {{
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }}
+        .header-section .date {{
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }}
+        .header-section .reading-time {{
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
             font-family: 'Outfit', sans-serif;
+        }}
+        
+        @media (max-width: 600px) {{
+            .header-section {{
+                flex-direction: column;
+                align-items: flex-start;
+            }}
+            .header-section .meta {{
+                align-items: flex-start;
+                text-align: left;
+            }}
         }}
 
         /* Section Cards */
@@ -146,15 +180,9 @@ TEMPLATE = """<!DOCTYPE html>
             -webkit-backdrop-filter: blur(12px);
         }}
         .section-header {{
-            border-top: 2px solid var(--text-main);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 0;
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }}
         .section-header h2 {{
             font-family: 'Outfit', sans-serif;
@@ -165,37 +193,31 @@ TEMPLATE = """<!DOCTYPE html>
             text-transform: uppercase;
             letter-spacing: 1px;
         }}
-        .section-meta {{
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }}
         .section-card h3 {{
             font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
             color: #f0f4f8;
-            margin-top: 40px;
+            margin-top: 48px;
             margin-bottom: 16px;
             font-weight: 700;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }}
         .section-card p {{
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.15rem;
+            margin-bottom: 24px;
             color: #d1d5db;
+            line-height: 1.8;
         }}
         .section-card ul {{
             padding-left: 24px;
             color: #d1d5db;
+            margin-bottom: 24px;
         }}
         .section-card li {{
-            margin-bottom: 10px;
-            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }}
         a {{
             color: #3b82f6;
@@ -270,15 +292,19 @@ TEMPLATE = """<!DOCTYPE html>
         </div>
         
         <div class="header-section">
-            <img src="img/logo_256.png" alt="Logo" class="logo">
-            <h1>The Post-Human Briefing</h1>
-            <div class="meta">{date_str} &bull; {time_label} &bull; {reading_time} min read</div>
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">{date_str} &bull; {time_label}</span>
+                <span class="reading-time">{reading_time} min read</span>
+            </div>
         </div>
         
         <div class="section-card" id="ai-news">
             <div class="section-header">
                 <h2>Artificial Intelligence</h2>
-                <div class="section-meta">SYS.REF // 01</div>
             </div>
             {ai_html}
         </div>
@@ -286,7 +312,6 @@ TEMPLATE = """<!DOCTYPE html>
         <div class="section-card" id="finance-news">
             <div class="section-header">
                 <h2>Markets &amp; Macro</h2>
-                <div class="section-meta">SYS.REF // 02</div>
             </div>
             {fin_html}
         </div>
@@ -347,16 +372,20 @@ def main():
             reading_time = "5"
             
         # Extract AI html
-        ai_match = re.search(r'(?:<h2>.*?Artificial Intelligence.*?</h2>|SYS\.REF // 01</div>\s*</div>)(.*?)</div>\s*<div class="section-card" id="finance-news">', content, re.DOTALL)
+        ai_match = re.search(r'(?:<div class="section-header">\s*<h2>Artificial Intelligence</h2>\s*</div>|SYS\.REF // 01</div>\s*</div>|<h2>.*?Artificial Intelligence.*?</h2>)(.*?)</div>\s*<div class="section-card" id="finance-news">', content, re.DOTALL)
         if ai_match:
             ai_html = ai_match.group(1).strip()
+            ai_html = re.sub(r'<div class="section-meta">SYS\.REF // 01</div>\s*</div>\s*', '', ai_html, flags=re.DOTALL)
+            ai_html = re.sub(r'<div class="section-meta">SYS\.REF // 02</div>\s*</div>\s*', '', ai_html, flags=re.DOTALL)
         else:
             ai_html = ""
             
         # Extract Finance html
-        fin_match = re.search(r'(?:<h2>.*?Markets &amp; Macro.*?</h2>|SYS\.REF // 02</div>\s*</div>)(.*?)</div>\s*(?:<div class="recent-briefings"|</div>\s*</body>)', content, re.DOTALL)
+        fin_match = re.search(r'(?:<div class="section-header">\s*<h2>Markets &amp; Macro</h2>\s*</div>|SYS\.REF // 02</div>\s*</div>|<h2>.*?Markets &amp; Macro.*?</h2>)(.*?)</div>\s*(?:<div class="recent-briefings"|</div>\s*</body>)', content, re.DOTALL)
         if fin_match:
             fin_html = fin_match.group(1).strip()
+            fin_html = re.sub(r'<div class="section-meta">SYS\.REF // 02</div>\s*</div>\s*', '', fin_html, flags=re.DOTALL)
+            fin_html = re.sub(r'<div class="section-meta">SYS\.REF // 01</div>\s*</div>\s*', '', fin_html, flags=re.DOTALL)
         else:
             fin_html = ""
             

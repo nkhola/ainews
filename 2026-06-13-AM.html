@@ -102,32 +102,66 @@
 
         /* Header Section */
         .header-section {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 40px;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         .header-section .logo {
-            width: 80px;
+            width: 48px;
             height: auto;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
         .header-section h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin: 0;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
         .header-section .meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .header-section .date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .header-section .reading-time {
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
             font-family: 'Outfit', sans-serif;
+        }
+        
+        @media (max-width: 600px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-section .meta {
+                align-items: flex-start;
+                text-align: left;
+            }
         }
 
         /* Section Cards */
@@ -142,15 +176,9 @@
             -webkit-backdrop-filter: blur(12px);
         }
         .section-header {
-            border-top: 2px solid var(--text-main);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 0;
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }
         .section-header h2 {
             font-family: 'Outfit', sans-serif;
@@ -161,37 +189,31 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .section-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
             color: #f0f4f8;
-            margin-top: 40px;
+            margin-top: 48px;
             margin-bottom: 16px;
             font-weight: 700;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .section-card p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.15rem;
+            margin-bottom: 24px;
             color: #d1d5db;
+            line-height: 1.8;
         }
         .section-card ul {
             padding-left: 24px;
             color: #d1d5db;
+            margin-bottom: 24px;
         }
         .section-card li {
-            margin-bottom: 10px;
-            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
         a {
             color: #3b82f6;
@@ -266,17 +288,21 @@
         </div>
         
         <div class="header-section">
-            <img src="img/logo_256.png" alt="Logo" class="logo">
-            <h1>The Post-Human Briefing</h1>
-            <div class="meta">2026-06-13 &bull; Morning &bull; 5 min read</div>
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">2026-06-13 &bull; Morning</span>
+                <span class="reading-time">5 min read</span>
+            </div>
         </div>
         
         <div class="section-card" id="ai-news">
             <div class="section-header">
                 <h2>Artificial Intelligence</h2>
-                <div class="section-meta">SYS.REF // 01</div>
             </div>
-<p>The discourse on AI capabilities and their deployment continues to evolve rapidly, with notable developments in efficient reasoning, system robustness, long-horizon control, and the broader ecosystem dynamics.</p>
+            <p>The discourse on AI capabilities and their deployment continues to evolve rapidly, with notable developments in efficient reasoning, system robustness, long-horizon control, and the broader ecosystem dynamics.</p>
 <h3>Scaling AI Reasoning and Inference</h3>
 <p>The pursuit of more efficient and capable reasoning in large language models (LLMs) is driving innovation in inference-time scaling. Recent work on <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Adaptive Parallel Reasoning (APR)</a> proposes a paradigm where models dynamically decide when to decompose tasks into parallel subtasks, manage concurrent threads, and coordinate results. This moves beyond fixed parallelism strategies, such as self-consistency or heuristic-based tree searches, by allowing the model to learn general decomposition strategies through reinforcement learning, thereby avoiding redundant computation and adapting to problem complexity.</p>
 <p>Implementing APR introduces challenges for inference systems. Approaches like <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Multiverse</a> modify the inference engine to reuse KV cache across parallel branches, stitching together non-contiguous memory blocks. This, however, necessitates engine modifications and can create distributional shifts due to non-standard positional encoding and attention patterns. In contrast, <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">ThreadWeaver</a> maintains an engine-agnostic design, orchestrating parallel inference client-side by concatenating text outputs and performing a second prefill for synthesis. While this introduces computational redundancy, it simplifies adoption and leverages existing inference engine optimizations. Training models for APR involves supervised fine-tuning to learn control flow syntax and reinforcement learning with rewards that incentivize parallelization efficiency, often by minimizing critical path length while ensuring correctness. Beyond LLMs, advancements like <a href="https://deepmind.google/blog/diffusiongemma-4x-faster-text-generation/">DiffusionGemma</a> demonstrate significant speedups (4x faster text generation) in other generative model architectures, highlighting a broader trend towards faster inference.</p>
@@ -296,9 +322,8 @@
         <div class="section-card" id="finance-news">
             <div class="section-header">
                 <h2>Markets &amp; Macro</h2>
-                <div class="section-meta">SYS.REF // 02</div>
             </div>
-<h3>AI Sector Re-calibration and Regulatory Headwinds</h3>
+            <h3>AI Sector Re-calibration and Regulatory Headwinds</h3>
 <p>The investment thesis surrounding artificial intelligence (AI) is undergoing a re-calibration, moving beyond initial speculative fervor towards a more nuanced assessment of valuations and regulatory risks. While AI and robotics remain prominent investment themes, a shift is observed <a href="https://247wallst.com/investing/2026/06/13/if-you-have-10000-and-want-to-bet-on-ai-and-robotics-these-are-the-investments-id-pick/?.tsrc=rss">from identifying nascent startups to favoring thematic ETFs for broader exposure</a>. This re-evaluation is partly driven by recent performance, as evidenced by a "fresh dent" in semiconductor stocks following <a href="https://247wallst.com/investing/2026/06/13/3-semiconductor-stocks-to-buy-while-they-are-down-in-june/?.tsrc=rss">Broadcom's Q3 AI revenue guidance which fell short of analyst expectations</a>. In this context, <a href="https://www.fool.com/investing/2026/06/13/apple-is-mostly-sitting-out-the-ai-spending-arms-r/?.tsrc=rss">Apple's comparatively conservative approach to the AI spending arms race</a> is now viewed as a strategic advantage amidst broader AI stock sell-offs.</p>
 <p>Concurrently, the AI sector faces increasing regulatory scrutiny and geopolitical pressures. Anthropic, a significant AI model developer, suspended its latest models after a <a href="https://www.ft.com/content/2a27300a-b90d-4649-8c09-f7e7cd426dbb">US government directive to restrict foreign access on national security grounds</a>. This action highlights the emerging intersection of advanced technology and national security policy, potentially impacting the global commercialization pathways for AI. Separately, <a href="https://seekingalpha.com/news/4603100-openai-being-probed-group-state-ags?utm_source=feed_news_all&amp;utm_medium=referral&amp;feed_item_type=news">OpenAI is under investigation by a consortium of state attorneys general</a>. Despite these headwinds, established AI platforms continue to attract institutional capital, with <a href="https://finance.yahoo.com/markets/stocks/articles/alphabet-googl-still-undervalued-144236757.html?.tsrc=rss">Alphabet (GOOGL) ranking as a top holding for investors like Chase Coleman</a> and receiving a substantial investment from the <a href="https://finance.yahoo.com/markets/stocks/articles/greg-abel-era-berkshire-hathaway-141010574.html?.tsrc=rss">Greg Abel era at Berkshire Hathaway</a>. This suggests a bifurcation in market confidence, favoring companies with diversified revenue streams and robust governance structures over pure-play, early-stage AI ventures.</p>
 <h3>Monetary Policy and Inflation Persistence</h3>

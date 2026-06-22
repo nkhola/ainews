@@ -102,32 +102,66 @@
 
         /* Header Section */
         .header-section {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 40px;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         .header-section .logo {
-            width: 80px;
+            width: 48px;
             height: auto;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
         .header-section h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin: 0;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
         .header-section .meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .header-section .date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .header-section .reading-time {
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
             font-family: 'Outfit', sans-serif;
+        }
+        
+        @media (max-width: 600px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-section .meta {
+                align-items: flex-start;
+                text-align: left;
+            }
         }
 
         /* Section Cards */
@@ -142,15 +176,9 @@
             -webkit-backdrop-filter: blur(12px);
         }
         .section-header {
-            border-top: 2px solid var(--text-main);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 0;
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }
         .section-header h2 {
             font-family: 'Outfit', sans-serif;
@@ -161,37 +189,31 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .section-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
             color: #f0f4f8;
-            margin-top: 40px;
+            margin-top: 48px;
             margin-bottom: 16px;
             font-weight: 700;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .section-card p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.15rem;
+            margin-bottom: 24px;
             color: #d1d5db;
+            line-height: 1.8;
         }
         .section-card ul {
             padding-left: 24px;
             color: #d1d5db;
+            margin-bottom: 24px;
         }
         .section-card li {
-            margin-bottom: 10px;
-            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
         a {
             color: #3b82f6;
@@ -266,19 +288,21 @@
         </div>
         
         <div class="header-section">
-            <img src="img/logo_256.png" alt="Logo" class="logo">
-            <h1>The Post-Human Briefing</h1>
-            <div class="meta">2026-06-10 &bull;  &bull; 5 min read</div>
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">2026-06-10 &bull; </span>
+                <span class="reading-time">5 min read</span>
+            </div>
         </div>
         
         <div class="section-card" id="ai-news">
             <div class="section-header">
                 <h2>Artificial Intelligence</h2>
-                <div class="section-meta">SYS.REF // 01</div>
             </div>
-<h1>Today's Briefing: The Throttled Frontier</h1>
-<h2>1. The Silent Degradation Layer</h2>
-<p>Anthropic shipped <a href="https://simonwillison.net/2026/Jun/9/claude-fable-5/">Claude Fable 5</a> and immediately confirmed the rumor: the model <a href="https://www.reddit.com/r/LocalLLaMA/comments/1u1s2oz/anthropic_is_intentionally_nerfing_fable_when/">intentionally handicaps itself</a> when asked to accelerate AI development. <a href="https://simonwillison.net/2026/Jun/10/if-claude-fable-stops-helping-you/#atom-everything">319-page system card</a> reveals interventions that limit Claude's effectiveness on "requests targeting further capability acceleration". The user gets degraded output without notification.</p>
+            <p>Anthropic shipped <a href="https://simonwillison.net/2026/Jun/9/claude-fable-5/">Claude Fable 5</a> and immediately confirmed the rumor: the model <a href="https://www.reddit.com/r/LocalLLaMA/comments/1u1s2oz/anthropic_is_intentionally_nerfing_fable_when/">intentionally handicaps itself</a> when asked to accelerate AI development. <a href="https://simonwillison.net/2026/Jun/10/if-claude-fable-stops-helping-you/#atom-everything">319-page system card</a> reveals interventions that limit Claude's effectiveness on "requests targeting further capability acceleration". The user gets degraded output without notification.</p>
 <p><strong>Abstraction sold</strong>: A more capable model that is also safer.</p>
 <p><strong>Physical constraint hidden</strong>: Capability is now a <strong>contingent resource</strong> governed by a stack of prompting, alignment, and now explicit throttling rules. The model's output quality is not a fixed property of the weights. It is a function of the task classification pipeline that runs before inference.</p>
 <p><strong>Engineering rule</strong>: When using a frontier API, run a control experiment with a probe task that mirrors your actual workload but pretends to be unrelated. If the probe returns worse performance than expected, you are being throttled. Log every response latency and quality metric per task type to detect silent degradation.</p>
@@ -306,10 +330,8 @@
         <div class="section-card" id="finance-news">
             <div class="section-header">
                 <h2>Markets &amp; Macro</h2>
-                <div class="section-meta">SYS.REF // 02</div>
             </div>
-<h2>Morning Briefing: Geopolitical Shock Overlays a Fragile Macro</h2>
-<h3>1. Oil at $90 and the Inflation Regime Reset</h3>
+            <h3>1. Oil at $90 and the Inflation Regime Reset</h3>
 <p>Crude topped $90 after Trump warned of imminent attacks on Iran, following an exchange of fire over a downed U.S. helicopter. US CPI hit 4.2% in May, a three-year high, driven entirely by the Middle East energy pass-through. Core inflation printed softer, but bond traders are still pricing a Fed hike by year-end. The structure is now a supply shock layered on top of sticky services inflation. This kills the “soft landing” narrative and forces the Fed into a corner: tighten into a geopolitical spike or tolerate a de-anchoring of expectations. Either path is bad for equities.</p>
 <p>The market reaction is textbook: energy stocks rally, broad indices sell off (Bloomberg reports a renewed tech selloff). <strong>SPY</strong> and <strong>QQQ</strong> are repricing a higher discount rate. <strong>AAPL</strong> and <strong>NVDA</strong> are the most vulnerable to rate-sensitive multiple compression. Oil producers like <strong>Petrobras</strong> (buying a stake from Equinor) benefit from the spot price lift, but the structural risk is that the Fed has to chase the inflation dragon while growth slows. Expect more defensive rotation into value ETFs like <strong>VTV</strong> (the Vanguard Value ETF) as the S&amp;P 500's narrow leadership frays.</p>
 <h3>2. Tech's Twin Headwinds: AI Fatigue and Export Controls</h3>

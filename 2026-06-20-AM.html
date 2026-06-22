@@ -102,32 +102,66 @@
 
         /* Header Section */
         .header-section {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 40px;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         .header-section .logo {
-            width: 80px;
+            width: 48px;
             height: auto;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
         .header-section h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin: 0;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
         .header-section .meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .header-section .date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .header-section .reading-time {
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
             font-family: 'Outfit', sans-serif;
+        }
+        
+        @media (max-width: 600px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-section .meta {
+                align-items: flex-start;
+                text-align: left;
+            }
         }
 
         /* Section Cards */
@@ -142,15 +176,9 @@
             -webkit-backdrop-filter: blur(12px);
         }
         .section-header {
-            border-top: 2px solid var(--text-main);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 0;
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }
         .section-header h2 {
             font-family: 'Outfit', sans-serif;
@@ -161,37 +189,31 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .section-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
             color: #f0f4f8;
-            margin-top: 40px;
+            margin-top: 48px;
             margin-bottom: 16px;
             font-weight: 700;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .section-card p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.15rem;
+            margin-bottom: 24px;
             color: #d1d5db;
+            line-height: 1.8;
         }
         .section-card ul {
             padding-left: 24px;
             color: #d1d5db;
+            margin-bottom: 24px;
         }
         .section-card li {
-            margin-bottom: 10px;
-            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
         a {
             color: #3b82f6;
@@ -266,17 +288,21 @@
         </div>
         
         <div class="header-section">
-            <img src="img/logo_256.png" alt="Logo" class="logo">
-            <h1>The Post-Human Briefing</h1>
-            <div class="meta">2026-06-20 &bull; Morning &bull; 11 min read</div>
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">2026-06-20 &bull; Morning</span>
+                <span class="reading-time">5 min read</span>
+            </div>
         </div>
         
         <div class="section-card" id="ai-news">
             <div class="section-header">
                 <h2>Artificial Intelligence</h2>
-                <div class="section-meta">SYS.REF // 01</div>
             </div>
-<h3>EXECUTIVE SUMMARY</h3>
+            <h3>EXECUTIVE SUMMARY</h3>
 <p>Today's intelligence highlights a significant shift in the competitive landscape, with open models like GLM-5.2 demonstrating superior reliability against larger, proprietary counterparts, challenging the "bigger is better" axiom. Concurrently, foundational architectural research is unifying disparate neural network paradigms, while the critical challenge of governing increasingly autonomous agents drives innovation in runtime policy enforcement and uncertainty quantification.</p>
 <h3>Dominant Narratives &amp; Trade-offs</h3>
 <ol>
@@ -313,9 +339,8 @@
         <div class="section-card" id="finance-news">
             <div class="section-header">
                 <h2>Markets &amp; Macro</h2>
-                <div class="section-meta">SYS.REF // 02</div>
             </div>
-<p>Geopolitical tensions in the Middle East are flaring with Iran's Strait of Hormuz closure, even as diplomatic efforts for an oil deal progress, creating a volatile backdrop for energy markets. Concurrently, the AI sector sees significant talent migration and continued investor enthusiasm, while the nascent space economy grapples with post-IPO valuation realities and the broader industrial complex pushes for reindustrialization and green tech adoption.</p>
+            <p>Geopolitical tensions in the Middle East are flaring with Iran's Strait of Hormuz closure, even as diplomatic efforts for an oil deal progress, creating a volatile backdrop for energy markets. Concurrently, the AI sector sees significant talent migration and continued investor enthusiasm, while the nascent space economy grapples with post-IPO valuation realities and the broader industrial complex pushes for reindustrialization and green tech adoption.</p>
 <p><strong>MASTER COMPILER:</strong></p>
 <p>The market is navigating a complex interplay of geopolitical risk, technological disruption, and a renewed focus on industrial capacity. We observe a clear tension between immediate regional flare-ups and longer-term diplomatic overtures, particularly in the Middle East. The AI sector, while booming, is experiencing a subtle but significant talent redistribution, indicating intense competition for top minds. Meanwhile, the "new economy" sectors (Space, AI) are seeing their initial froth cool, prompting a more discerning look at underlying value, even as the "old economy" (industrials, energy transition) is being actively re-engineered.</p>
 <p><strong>Trade-offs &amp; Evolution: Middle East Diplomacy vs. Escalation</strong>

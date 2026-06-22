@@ -102,32 +102,66 @@
 
         /* Header Section */
         .header-section {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 40px;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         .header-section .logo {
-            width: 80px;
+            width: 48px;
             height: auto;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
         .header-section h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin: 0;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
         .header-section .meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .header-section .date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .header-section .reading-time {
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
             font-family: 'Outfit', sans-serif;
+        }
+        
+        @media (max-width: 600px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-section .meta {
+                align-items: flex-start;
+                text-align: left;
+            }
         }
 
         /* Section Cards */
@@ -142,15 +176,9 @@
             -webkit-backdrop-filter: blur(12px);
         }
         .section-header {
-            border-top: 2px solid var(--text-main);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 0;
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }
         .section-header h2 {
             font-family: 'Outfit', sans-serif;
@@ -161,37 +189,31 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .section-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
             color: #f0f4f8;
-            margin-top: 40px;
+            margin-top: 48px;
             margin-bottom: 16px;
             font-weight: 700;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .section-card p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.15rem;
+            margin-bottom: 24px;
             color: #d1d5db;
+            line-height: 1.8;
         }
         .section-card ul {
             padding-left: 24px;
             color: #d1d5db;
+            margin-bottom: 24px;
         }
         .section-card li {
-            margin-bottom: 10px;
-            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
         a {
             color: #3b82f6;
@@ -266,17 +288,21 @@
         </div>
         
         <div class="header-section">
-            <img src="img/logo_256.png" alt="Logo" class="logo">
-            <h1>The Post-Human Briefing</h1>
-            <div class="meta">2026-06-21 &bull; Morning &bull; 3 min read</div>
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">2026-06-21 &bull; Morning</span>
+                <span class="reading-time">5 min read</span>
+            </div>
         </div>
         
         <div class="section-card" id="ai-news">
             <div class="section-header">
                 <h2>Artificial Intelligence</h2>
-                <div class="section-meta">SYS.REF // 01</div>
             </div>
-<p>Good morning,</p>
+            <p>Good morning,</p>
 <p>Today's signals point to a deepening bifurcation in the AI ecosystem: while local inference capabilities continue to impress with efficiency gains, the economic realities of compute and model distribution are creating friction, pushing the community towards decentralized solutions and re-evaluating the sustainability of current cloud-based offerings.</p>
 <h3>The Ascendance of Local Inference and Edge AI</h3>
 <p>The local AI frontier shows significant progress, driven by both model quality and optimization techniques. <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ub4ods/gemma_4_26b_a4b_is_genuinely_the_best_model_i/">Gemma 4 26b a4b is garnering praise</a> for its performance in language learning and scientific queries, suggesting that smaller, quantized models are becoming genuinely competitive for specific tasks. This is further bolstered by findings that <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ubl0df/gemma_4_qat_seems_to_respond_significantly_better/">Gemma 4 QAT (Quantization Aware Training) responds significantly better to KV cache quantization</a>, a critical optimization for reducing memory footprint and increasing inference speed on consumer hardware. Similarly, <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ub69xu/glm_52_what_speeds_are_we_getting_locally/">GLM 5.2 is showing promising local speeds</a>, indicating that efficient architectures are translating into practical, real-time local applications. Beyond text, the potential for local processing extends to novel multimodal applications, as demonstrated by a <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ub2kmt/deep_neural_network_that_can_turn_any_image_into/">deep neural network capable of turning any image into a playable game locally</a>. This points to a future where complex AI tasks, traditionally confined to data centers, become accessible on edge devices, fundamentally shifting the locus of computation.</p>
@@ -296,9 +322,8 @@
         <div class="section-card" id="finance-news">
             <div class="section-header">
                 <h2>Markets &amp; Macro</h2>
-                <div class="section-meta">SYS.REF // 02</div>
             </div>
-<p>The market is grappling with a stark divergence: an S&amp;P 500 stretched to its second-highest CAPE ratio in history, signaling extreme valuation, while geopolitical tensions in the Middle East and Eastern Europe continue to simmer despite a perceived US-Iran deal. This creates a complex backdrop where concentrated tech growth, driven by AI and ambitious ventures, clashes with broader market fragility and persistent global instability.</p>
+            <p>The market is grappling with a stark divergence: an S&amp;P 500 stretched to its second-highest CAPE ratio in history, signaling extreme valuation, while geopolitical tensions in the Middle East and Eastern Europe continue to simmer despite a perceived US-Iran deal. This creates a complex backdrop where concentrated tech growth, driven by AI and ambitious ventures, clashes with broader market fragility and persistent global instability.</p>
 <h3>Geopolitical Tensions &amp; Energy Dynamics</h3>
 <p>The US and Iran are engaged in <a href="https://www.ft.com/content/c1014643-940c-4874-998a-0a52eb517c49">high-stakes negotiations in Switzerland</a>, with Vice President JD Vance participating in talks aimed at nuclear issues and regional security, including the Lebanon conflict. While a <a href="https://www.bloomberg.com/news/articles/2026-06-21/oil-glut-bets-are-back-in-play-as-crude-sinks-after-us-iran-deal">US-Iran deal has led to bets on an oil glut</a> and a subsequent dip in crude futures, the situation remains volatile. Iran's <a href="https://seekingalpha.com/news/4605302-iran-oil-exports-poised-for-return-under-new-u-s-deal-but-recovery-faces-hurdles">oil exports are poised for a return</a> under the new deal, but recovery faces hurdles.</p>
         </div>

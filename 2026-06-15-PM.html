@@ -102,32 +102,66 @@
 
         /* Header Section */
         .header-section {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 40px;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
         .header-section .logo {
-            width: 80px;
+            width: 48px;
             height: auto;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
         }
         .header-section h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin: 0;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
         .header-section .meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .header-section .date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .header-section .reading-time {
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
             font-family: 'Outfit', sans-serif;
+        }
+        
+        @media (max-width: 600px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-section .meta {
+                align-items: flex-start;
+                text-align: left;
+            }
         }
 
         /* Section Cards */
@@ -142,15 +176,9 @@
             -webkit-backdrop-filter: blur(12px);
         }
         .section-header {
-            border-top: 2px solid var(--text-main);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 0;
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }
         .section-header h2 {
             font-family: 'Outfit', sans-serif;
@@ -161,37 +189,31 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .section-meta {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
             color: #f0f4f8;
-            margin-top: 40px;
+            margin-top: 48px;
             margin-bottom: 16px;
             font-weight: 700;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .section-card p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.15rem;
+            margin-bottom: 24px;
             color: #d1d5db;
+            line-height: 1.8;
         }
         .section-card ul {
             padding-left: 24px;
             color: #d1d5db;
+            margin-bottom: 24px;
         }
         .section-card li {
-            margin-bottom: 10px;
-            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
         a {
             color: #3b82f6;
@@ -266,17 +288,21 @@
         </div>
         
         <div class="header-section">
-            <img src="img/logo_256.png" alt="Logo" class="logo">
-            <h1>The Post-Human Briefing</h1>
-            <div class="meta">2026-06-15 &bull; Evening &bull; 5 min read</div>
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">2026-06-15 &bull; Evening</span>
+                <span class="reading-time">5 min read</span>
+            </div>
         </div>
         
         <div class="section-card" id="ai-news">
             <div class="section-header">
                 <h2>Artificial Intelligence</h2>
-                <div class="section-meta">SYS.REF // 01</div>
             </div>
-<p>The AI domain is currently navigating a significant inflection point, marked by foundational architectural shifts towards more efficient inference and advanced agentic control, while simultaneously confronting urgent practical challenges in model safety, interpretability, and the reliability of evaluation. The dynamic interplay between open and closed model ecosystems continues to shape research priorities and deployment strategies, pushing the boundaries of what these systems can achieve in complex, real-world applications.</p>
+            <p>The AI domain is currently navigating a significant inflection point, marked by foundational architectural shifts towards more efficient inference and advanced agentic control, while simultaneously confronting urgent practical challenges in model safety, interpretability, and the reliability of evaluation. The dynamic interplay between open and closed model ecosystems continues to shape research priorities and deployment strategies, pushing the boundaries of what these systems can achieve in complex, real-world applications.</p>
 <h3>Scaling Inference and Reasoning Architectures</h3>
 <p>The quest for more efficient and scalable inference continues to drive core architectural innovation. <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Adaptive Parallel Reasoning</a> (APR) emerges as a significant paradigm shift, allowing models to dynamically decide when and how to parallelize subtasks, mitigating "context-rot" and reducing latency. This work highlights a fundamental trade-off: some approaches, like Multiverse, modify the inference engine for KV cache stitching but introduce distributional shifts, while others, like ThreadWeaver, prioritize engine-agnostic client-side orchestration, accepting re-prefill costs for broader compatibility. This mirrors the broader discussion in <a href="https://twimlai.com/podcast/twimlai/how-engineer-ai-inference-systems">inference engineering</a> about optimizing "knobs" like batching and KV cache reuse. Concurrently, efforts like <a href="https://machinelearning.apple.com/research/epicache">EpiCache</a> address KV cache growth for long contexts on resource-constrained devices, and projects such as <a href="https://github.com/jmaczan/tiny-vllm">Tiny-vLLM</a> and <a href="https://blog.kog.ai/real-time-llm-inference-on-standard-gpus-3-000-tokens-s-per-request/">real-time LLM inference breakthroughs</a> underscore the relentless pursuit of raw throughput.</p>
 <h4>Why it matters</h4>
@@ -300,9 +326,8 @@
         <div class="section-card" id="finance-news">
             <div class="section-header">
                 <h2>Markets &amp; Macro</h2>
-                <div class="section-meta">SYS.REF // 02</div>
             </div>
-<p><strong>EXECUTIVE SUMMARY</strong></p>
+            <p><strong>EXECUTIVE SUMMARY</strong></p>
 <p>Today's market rally was primarily driven by a geopolitical de-escalation with the US-Iran deal, easing immediate energy concerns and boosting broad sentiment, even as underlying economic data showed continued labor market weakness and a mixed housing picture. Concurrently, the AI narrative intensified with Intel and AMD making inroads against Nvidia's dominance, while SpaceX's blockbuster IPO underscored a surging appetite for high-growth, transformative ventures.</p>
 <p><strong>Dominant Narratives</strong></p>
 <ol>
