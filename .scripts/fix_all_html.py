@@ -113,7 +113,8 @@ TEMPLATE = """<!DOCTYPE html>
         }}
         .header-section .logo {{
             width: 80px;
-            border-radius: 50%;
+            height: auto;
+            border-radius: 8px;
             margin-bottom: 16px;
             box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
         }}
