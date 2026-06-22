@@ -154,6 +154,34 @@ class MasterCompiler:
                 time.sleep(backoff + jitter)
                 backoff *= 2
 
+    def _generate_with_continuation(self, messages, temperature):
+        """Generates content and automatically handles truncation by asking the model to continue."""
+        current_messages = list(messages)
+        full_result = ""
+        
+        while True:
+            response = self._create_completion_with_retry(
+                messages=current_messages,
+                temperature=temperature,
+                max_tokens=8192,
+            )
+            
+            chunk = response.choices[0].message.content
+            full_result += chunk
+            finish_reason = response.choices[0].finish_reason
+            
+            if finish_reason != "length":
+                break
+                
+            print(f"[MasterCompiler] Truncation detected (finish_reason='length'). Continuing generation...")
+            current_messages.append({"role": "assistant", "content": chunk})
+            current_messages.append({
+                "role": "user", 
+                "content": "Your previous response was truncated due to length limits. Please continue exactly where you left off. Do not repeat anything from your previous response, just output the very next characters to seamlessly continue the text."
+            })
+            
+        return full_result
+
     def synthesize_news(self, raw_data, topic="ai", time_label="Morning"):
         guidance = AI_GUIDANCE if topic == "ai" else FINANCE_GUIDANCE
         
@@ -168,24 +196,22 @@ class MasterCompiler:
         full_system_prompt = f"{system_prompt}\n\n{time_context}"
 
         print(f"[MasterCompiler] Synthesizing {topic} ({time_label}) briefing with {self._get_active_model()}...")
-        response = self._create_completion_with_retry(
-            messages=[
-                {"role": "system", "content": full_system_prompt},
-                {
-                    "role": "user",
-                    "content": (
-                        f"Here is today's raw data. Synthesize it into the briefing.\n\n"
-                        f"{raw_data}\n\n"
-                        f"IMPORTANT FINAL REMINDERS:\n"
-                        f"- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
-                        f"- NEVER use raw URLs in brackets like `[https://url]`. ALWAYS use standard inline markdown links."
-                    ),
-                },
-            ],
-            temperature=0.4,
-            max_tokens=8192,
-        )
-        result = response.choices[0].message.content
+        
+        messages = [
+            {"role": "system", "content": full_system_prompt},
+            {
+                "role": "user",
+                "content": (
+                    f"Here is today's raw data. Synthesize it into the briefing.\n\n"
+                    f"{raw_data}\n\n"
+                    f"IMPORTANT FINAL REMINDERS:\n"
+                    f"- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
+                    f"- NEVER use raw URLs in brackets like `[https://url]`. ALWAYS use standard inline markdown links."
+                ),
+            },
+        ]
+        
+        result = self._generate_with_continuation(messages, temperature=0.4)
         print(f"[MasterCompiler] Done. ({len(result)} chars)")
         
         # EVAL LOOP: Ensure link formatting is flawless
@@ -200,15 +226,13 @@ class MasterCompiler:
             "- NEVER use `[1]`, `[2]` etc.\n\n"
             "Return ONLY the corrected markdown. Do not add any preamble, commentary, or backticks around the output."
         )
-        eval_response = self._create_completion_with_retry(
-            messages=[
-                {"role": "system", "content": eval_system_prompt},
-                {"role": "user", "content": result},
-            ],
-            temperature=0.1,
-            max_tokens=8192,
-        )
-        final_result = eval_response.choices[0].message.content
+        
+        eval_messages = [
+            {"role": "system", "content": eval_system_prompt},
+            {"role": "user", "content": result},
+        ]
+        
+        final_result = self._generate_with_continuation(eval_messages, temperature=0.1)
         print(f"[MasterCompiler] Eval loop done. ({len(final_result)} chars)")
         return final_result
 
