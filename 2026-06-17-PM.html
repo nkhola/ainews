@@ -1,213 +1,264 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>The Post-Human Brief - 2026-06-17</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Post-Human Brief - 2026-06-17</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/logo_favicon.png">
+    <style>
         :root {
-            --bg-color: #f9f9f9;
-            --surface-color: #ffffff;
-            --text-main: #2b2b2b;
-            --text-muted: #555555;
-            --accent-color: #0056b3;
-            --border-color: #e5e5e5;
-            --shadow: 0 4px 12px rgba(0,0,0,0.05);
-            --callout-bg: #f0f7ff;
-            --callout-border: #0056b3;
+            --bg-color: #0b0f19;
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1a1b35 100%);
+            --surface-color: rgba(30, 32, 50, 0.6);
+            --surface-hover: rgba(45, 48, 75, 0.8);
+            --text-main: #f0f4f8;
+            --text-muted: #a0aec0;
+            --accent-glow: #3b82f6;
+            --accent-glow-secondary: #8b5cf6;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
         }
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #121212;
-                --surface-color: #1e1e1e;
-                --text-main: #e0e0e0;
-                --text-muted: #a0a0a0;
-                --accent-color: #58a6ff;
-                --border-color: #333333;
-                --shadow: 0 4px 12px rgba(0,0,0,0.2);
-                --callout-bg: #162638;
-                --callout-border: #58a6ff;
-            }
-        }
-        body.light-theme {
-            --bg-color: #f9f9f9;
-            --surface-color: #ffffff;
-            --text-main: #2b2b2b;
-            --text-muted: #555555;
-            --accent-color: #0056b3;
-            --border-color: #e5e5e5;
-            --shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        body.dark-theme {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --text-main: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --accent-color: #58a6ff;
-            --border-color: #333333;
-            --shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
+        
         body {
             margin: 0;
             padding: 0;
+            background: var(--bg-gradient);
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
         }
-        .theme-toggle {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            float: right;
-            transition: all 0.2s ease;
-            font-family: 'Inter', sans-serif;
+
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
         }
-        .theme-toggle:hover {
-            background: var(--surface-color);
-            box-shadow: var(--shadow);
+        .ambient-glow::before, .ambient-glow::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            animation: float 20s infinite alternate;
         }
+        .ambient-glow::before {
+            background: var(--accent-glow);
+            top: -100px; left: -100px;
+        }
+        .ambient-glow::after {
+            background: var(--accent-glow-secondary);
+            bottom: -100px; right: -100px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
         .briefing-container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px 20px 80px 20px;
+            position: relative;
         }
+
+        /* Navbar */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Header Section */
         .header-section {
             text-align: center;
             margin-bottom: 40px;
             padding-bottom: 20px;
             border-bottom: 2px solid var(--border-color);
         }
-        .header-section h1 {
-            font-family: 'Merriweather', serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-main);
+        .header-section .logo {
+            width: 80px;
+            border-radius: 50%;
+            margin-bottom: 16px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
         }
-        .header-section p {
+        .header-section h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+        .header-section .meta {
             color: var(--text-muted);
             font-size: 1.1rem;
+            font-family: 'Outfit', sans-serif;
         }
+
+        /* Section Cards */
         .section-card {
             background: var(--surface-color);
             padding: 40px;
-            border-radius: 12px;
+            border-radius: 16px;
             box-shadow: var(--shadow);
             margin-bottom: 40px;
             border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
         .section-card h2 {
             font-family: 'Merriweather', serif;
             font-size: 1.8rem;
-            color: var(--text-main);
+            color: #60a5fa;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 12px;
             margin-top: 0;
             margin-bottom: 24px;
         }
         .section-card h3 {
-            font-family: 'Merriweather', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 1.3rem;
             color: var(--text-main);
             margin-top: 32px;
             margin-bottom: 12px;
+            font-weight: 700;
         }
         .section-card p {
             font-size: 1.1rem;
             margin-bottom: 20px;
+            color: #d1d5db;
+        }
+        .section-card ul {
+            padding-left: 24px;
+            color: #d1d5db;
+        }
+        .section-card li {
+            margin-bottom: 10px;
+            font-size: 1.05rem;
         }
         a {
-            color: var(--accent-color);
+            color: #3b82f6;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s ease;
-            word-wrap: break-word;
         }
         a:hover {
             text-decoration: underline;
-        }
-        .nav-link {
-            display: inline-block;
-            margin-bottom: 30px;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        ul {
-            padding-left: 24px;
-        }
-        li {
-            margin-bottom: 8px;
+            color: #60a5fa;
         }
         blockquote {
-            border-left: 4px solid var(--accent-color);
+            border-left: 4px solid #8b5cf6;
             margin: 0;
             padding: 10px 20px;
-            background: rgba(0,0,0,0.03);
+            background: rgba(255,255,255,0.03);
             font-style: italic;
+            border-radius: 0 8px 8px 0;
+            color: #9ca3af;
         }
-        @media (prefers-color-scheme: dark) {
-            blockquote {
-                background: rgba(255,255,255,0.03);
-            }
+
+        /* Recent Briefings at bottom */
+        .recent-briefings {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border-color);
         }
+        .recent-briefings h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .recent-list a {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+        .recent-list a:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(96, 165, 250, 0.3);
+            transform: translateY(-2px);
+        }
+        .recent-list .date {
+            color: #9ca3af;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
     </style>
 </head>
 <body>
-<script>
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.body.classList.add(savedTheme + '-theme');
-        }
-        function toggleTheme() {
-            const body = document.body;
-            if (body.classList.contains('dark-theme')) {
-                body.classList.remove('dark-theme');
-                body.classList.add('light-theme');
-                localStorage.setItem('theme', 'light');
-            } else if (body.classList.contains('light-theme')) {
-                body.classList.remove('light-theme');
-                body.classList.add('dark-theme');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    body.classList.add('light-theme');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    body.classList.add('dark-theme');
-                    localStorage.setItem('theme', 'dark');
-                }
-            }
-        }
-    </script>
-<div class="briefing-container">
-<button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
-<a class="nav-link" href="index.html">← Back to Archive</a>
-<div class="header-section">
-<h1>The Post-Human Brief</h1>
-<div class="meta">2026-06-17 • Evening • 4 min read</div>
-</div>
-<div class="section-card" id="ai-news">
-<h2>🧠 Artificial Intelligence</h2>
-<h3>Executive Summary</h3>
+    <div class="ambient-glow"></div>
+    <div class="briefing-container">
+        <div class="nav-bar">
+            <a href="index.html" class="nav-link">← All Briefings</a>
+            <a href="https://www.khola.blog/" class="nav-link" target="_blank">Khola.Blog ↗</a>
+        </div>
+        
+        <div class="header-section">
+            <img src="img/logo_256.png" alt="Logo" class="logo">
+            <h1>The Post-Human Brief</h1>
+            <div class="meta">2026-06-17 &bull; Evening &bull; 5 min read</div>
+        </div>
+        
+        <div class="section-card" id="ai-news">
+            <h2>🧠 Artificial Intelligence</h2>
+            <h3>Executive Summary</h3>
 <p>Today's AI landscape is defined by a dual push: fundamental architectural shifts are making inference dramatically more efficient and reasoning more adaptive, while the rapid deployment of autonomous agents into complex, real-world domains necessitates advanced control, robust memory, and rigorous, multi-faceted safety mechanisms. This momentum is further complicated by an intensifying geopolitical and economic struggle between open and closed model ecosystems, with regulatory actions now directly impacting model availability and research directions.</p>
 <h3>Architectural Evolution &amp; Inference Efficiency</h3>
 <p>The quest for more efficient and capable inference continues to drive core architectural innovation. Berkeley's <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Adaptive Parallel Reasoning (APR)</a> paradigm represents a significant leap, allowing models to dynamically decide when and how to parallelize reasoning subtasks. This moves beyond fixed search strategies (like Tree-of-Thoughts or Best-of-N) by having the model itself output control tokens, optimizing for critical path length rather than just total tokens. The underlying systems problem of managing KV cache during fork-join operations highlights a key trade-off: <a href="https://yang-et-al-2025.com">Multiverse</a> modifies the inference engine for KV cache stitching, risking fragility and distributional shift, while <a href="https://lian-et-al-2025.com">ThreadWeaver</a> opts for client-side orchestration and re-prefilling, sacrificing some compute for engine-agnostic simplicity and easier adoption. This echoes broader efforts in <a href="https://simonwillison.net/atom/everything/">inference engineering</a>.</p><p><strong>The Bottom Line:</strong> Innovations in AI inference, such as Berkeley's Adaptive Parallel Reasoning, are enabling more dynamic and efficient model execution by allowing models to control their own reasoning processes, though system-level challenges in managing resources like KV cache present ongoing trade-offs between performance and implementation complexity.</p>
-</div>
-<div class="section-card" id="finance-news">
-<h2>📈 Markets &amp; Macro</h2>
-<p>The market's narrative shifted abruptly today as the Federal Reserve, under new Chair Kevin Warsh, delivered a surprisingly hawkish message, holding rates steady but signaling a potential hike rather than the anticipated cuts, sending ripples across global asset classes. This monetary pivot coincides with AI's escalating economic influence, driving both innovation and inflationary pressures in the tech sector, while a significant US-Iran peace deal promises to reshape energy markets and geopolitical stability.</p>
+        </div>
+
+        <div class="section-card" id="finance-news">
+            <h2>📈 Markets &amp; Macro</h2>
+            <p>The market's narrative shifted abruptly today as the Federal Reserve, under new Chair Kevin Warsh, delivered a surprisingly hawkish message, holding rates steady but signaling a potential hike rather than the anticipated cuts, sending ripples across global asset classes. This monetary pivot coincides with AI's escalating economic influence, driving both innovation and inflationary pressures in the tech sector, while a significant US-Iran peace deal promises to reshape energy markets and geopolitical stability.</p>
 <h3>Hawkish Fed Resets Global Monetary Expectations</h3>
 <p>The Federal Reserve, in Kevin Warsh's inaugural meeting as Chair, unanimously held its benchmark rate at 3.5%-3.75%, but crucially, its dot plot pointed towards a potential rate hike, not a cut, a stark departure from prior market expectations <a href="https://finance.yahoo.com/markets/stocks/articles/carvana-chewy-stocks-trade-down-234704733.html">Carvana and Chewy Stocks Trade Down</a>. Warsh adopted an aggressive stance on interest rates and inflation, vowing to restore price stability and initiating five task forces to reform the central bank's operations, including its inflation frameworks <a href="https://www.bloomberg.com/news/articles/2026-06-17/warsh-rocks-bond-market-in-debut-sparks-surge-in-rate-hike-bets">Warsh Rocks Bond Market in Debut, Sparks Surge in Rate-Hike Bets</a>, <a href="https://www.marketwatch.com/story/warsh-launches-his-push-to-change-how-the-fed-operates-3ddd9b90?mod=mw_rss_topstories">Warsh launches his push to change how the Fed operates</a>. This hawkish pivot, triggered in part by the "jolt of inflation" from the Iran war, immediately impacted markets, with US government bonds dropping and gold turning lower <a href="https://www.ft.com/content/f2463587-91e9-4da4-94b2-9cb9a270b74a">Fed officials tilt towards rate rise as Kevin Warsh era begins</a>, <a href="https://www.bloomberg.com/news/articles/2026-06-17/gold-holds-decline-after-bets-increase-on-fed-hike-this-year">Gold Holds Decline After Bets Increase on Fed Hike This Year</a>. Globally, Asian stocks and bonds are poised for declines, and the yen slid to its weakest level against the dollar since July 2024, raising the specter of intervention by Japan's finance ministry <a href="https://www.bloomberg.com/news/articles/2026-06-17/asian-stocks-bonds-to-fall-on-hawkish-fed-signals-markets-wrap">Asian Stocks, Bonds Poised to Fall on Hawkish Fed: Markets Wrap</a>, <a href="https://www.bloomberg.com/news/articles/2026-06-17/yen-slides-to-weakest-level-versus-dollar-since-july-2024-mqih9kot">Yen Slides to Weakest Level Versus Dollar Since July 2024</a>. Meanwhile, 90% of economists now expect the Bank of Japan to hike rates again by year-end <a href="https://www.bloomberg.com/news/articles/2026-06-17/boj-will-hike-rates-again-by-december-says-90-of-economists">BOJ Will Hike Rates Again by December, Says 90% of Economists</a>, while Pimco is betting on Australian rate cuts next year, highlighting divergent global monetary paths <a href="https://www.bloomberg.com/news/articles/2026-06-17/pimco-favors-australian-bonds-betting-on-rate-cuts-next-year">Pimco Favors Australian Bonds, Betting on Rate Cuts Next Year</a>.</p>
 <h4>Why it matters</h4>
@@ -220,7 +271,17 @@
 <p>The reported progress toward a US-Iran peace agreement has begun to re-price energy markets. While the Strait of Hormuz is starting to reopen for traffic, long-term stability remains to be seen as political tensions persist.</p>
 <h4>Why it matters</h4>
 <p>Easing tensions in the Middle East reduces the geopolitical risk premium in oil, which could help temper global inflation if sustained.</p><p><strong>The Bottom Line:</strong> Easing geopolitical tensions in the Middle East are contributing to a reduction in the risk premium associated with oil prices.</p>
-</div>
-</div>
+        </div>
+
+        <div class="recent-briefings">
+            <h3>Recent Briefings</h3>
+            <div class="recent-list">
+                <a href="2026-06-21-PM.html"><span>2026-06-21 Evening Briefing</span> <span class="date">Read →</span></a>
+                <a href="2026-06-21-AM.html"><span>2026-06-21 Morning Briefing</span> <span class="date">Read →</span></a>
+                <a href="2026-06-20-PM.html"><span>2026-06-20 Evening Briefing</span> <span class="date">Read →</span></a>
+
+            </div>
+        </div>
+    </div>
 </body>
 </html>
