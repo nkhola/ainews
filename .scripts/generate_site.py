@@ -77,7 +77,7 @@ def generate_daily_briefing():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Post-Human Brief - {date_str}</title>
+    <title>The Post-Human Briefing - {date_str}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
@@ -319,7 +319,7 @@ def generate_daily_briefing():
         
         <div class="header-section">
             <img src="img/logo_256.png" alt="Logo" class="logo">
-            <h1>The Post-Human Brief</h1>
+            <h1>The Post-Human Briefing</h1>
             <div class="meta">{date_str} &bull; {time_label} &bull; {reading_time} min read</div>
         </div>
         
