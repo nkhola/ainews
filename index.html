@@ -3,191 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intelligence Briefings</title>
+    <title>Post-Human News Briefings</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
-            --bg-color: #f9f9f9;
-            --surface-color: #ffffff;
-            --text-main: #2b2b2b;
-            --text-muted: #555555;
-            --accent-color: #0056b3;
-            --border-color: #e5e5e5;
+            --bg-color: #0b0f19;
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1a1b35 100%);
+            --surface-color: rgba(30, 32, 50, 0.6);
+            --surface-hover: rgba(45, 48, 75, 0.8);
+            --text-main: #f0f4f8;
+            --text-muted: #a0aec0;
+            --accent-glow: #3b82f6;
+            --accent-glow-secondary: #8b5cf6;
+            --border-color: rgba(255, 255, 255, 0.1);
         }
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #121212;
-                --surface-color: #1e1e1e;
-                --text-main: #e0e0e0;
-                --text-muted: #a0a0a0;
-                --accent-color: #58a6ff;
-                --border-color: #333333;
-            }
-        }
-        body.light-theme {
-            --bg-color: #f9f9f9;
-            --surface-color: #ffffff;
-            --text-main: #2b2b2b;
-            --text-muted: #555555;
-            --accent-color: #0056b3;
-            --border-color: #e5e5e5;
-        }
-        body.dark-theme {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --text-main: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --accent-color: #58a6ff;
-            --border-color: #333333;
-        }
+        
         body {
             margin: 0;
             padding: 0;
+            background: var(--bg-gradient);
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Inter', -apple-system, sans-serif;
             line-height: 1.6;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
         }
-        .theme-toggle {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            float: right;
-            transition: all 0.2s ease;
-            font-family: 'Inter', sans-serif;
+
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
         }
-        .theme-toggle:hover {
-            background: var(--surface-color);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        .ambient-glow::before, .ambient-glow::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            animation: float 20s infinite alternate;
         }
+        .ambient-glow::before {
+            background: var(--accent-glow);
+            top: -100px; left: -100px;
+        }
+        .ambient-glow::after {
+            background: var(--accent-glow-secondary);
+            bottom: -100px; right: -100px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
         .archive-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 20px;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px 20px 80px 20px;
+            position: relative;
         }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fade-in-down 0.8s ease-out;
+        }
+        
+        @keyframes fade-in-down {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+        
+        .logo-container img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .logo-container img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 45px rgba(139, 92, 246, 0.6);
+        }
+
         h1 {
-            font-family: 'Merriweather', serif;
-            font-size: 2.5rem;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 16px;
-            margin-bottom: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
         }
+
         p.subtitle {
             color: var(--text-muted);
-            font-size: 1.1rem;
-            margin-bottom: 40px;
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        .archive-list {
-            list-style-type: none;
-            padding: 0;
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
         }
-        .archive-list li {
-            margin-bottom: 16px;
-        }
-        .archive-list a {
+        
+        .nav-link {
+            display: inline-block;
+            color: var(--text-main);
             text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .archive-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .archive-list li {
+            animation: fade-in-up 0.6s ease-out both;
+        }
+        
+        .archive-list li:nth-child(1) { animation-delay: 0.1s; }
+        .archive-list li:nth-child(2) { animation-delay: 0.15s; }
+        .archive-list li:nth-child(3) { animation-delay: 0.2s; }
+        .archive-list li:nth-child(4) { animation-delay: 0.25s; }
+        .archive-list li:nth-child(5) { animation-delay: 0.3s; }
+        .archive-list li:nth-child(6) { animation-delay: 0.35s; }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .archive-list a {
             display: flex;
             align-items: center;
-            padding: 16px 20px;
+            padding: 20px 24px;
             background: var(--surface-color);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 16px;
             color: var(--text-main);
-            transition: all 0.2s ease;
-        }
-        .archive-list a:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .archive-list a span {
-            color: var(--accent-color);
-            font-size: 0.95rem;
-            margin-left: auto;
-            font-weight: 600;
-        }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: var(--accent-color);
-            font-weight: 600;
             text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-size: 0.9rem;
+            font-size: 1.15rem;
+            font-weight: 500;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .back-link:hover {
-            text-decoration: underline;
+
+        .archive-list a:hover {
+            background: var(--surface-hover);
+            border-color: rgba(96, 165, 250, 0.5);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
         }
+
+        .archive-list a span.date {
+            color: #94a3b8;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            margin-right: 16px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .archive-list a span.read-more {
+            margin-left: auto;
+            color: #60a5fa;
+            font-size: 0.95rem;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .archive-list a:hover span.read-more {
+            opacity: 1;
+            transform: translateX(4px);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
     </style>
 </head>
 <body>
-    <script>
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.body.classList.add(savedTheme + '-theme');
-        }
-        function toggleTheme() {
-            const body = document.body;
-            if (body.classList.contains('dark-theme')) {
-                body.classList.remove('dark-theme');
-                body.classList.add('light-theme');
-                localStorage.setItem('theme', 'light');
-            } else if (body.classList.contains('light-theme')) {
-                body.classList.remove('light-theme');
-                body.classList.add('dark-theme');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    body.classList.add('light-theme');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    body.classList.add('dark-theme');
-                    localStorage.setItem('theme', 'dark');
-                }
-            }
-        }
-    </script>
+    <div class="ambient-glow"></div>
+    
     <div class="archive-container">
-        <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
-        <a href="https://nkhola.github.io/" class="back-link">← Back to Main Site</a>
-        <h1>The Post-Human Brief</h1>
-        <p class="subtitle">A daily automated synthesis of the top AI and Finance news.</p>
+        <header>
+            <div class="logo-container">
+                <img src="img/logo_256.png" alt="Post-Human News Briefings Logo">
+            </div>
+            <h1>Post-Human News Briefings</h1>
+            <p class="subtitle">A daily automated synthesis of top-tier AI and Finance intelligence, generated entirely by autonomous agents.</p>
+            
+            <div class="nav-links">
+                <a href="https://nkhola.github.io/" class="nav-link">← Main Site</a>
+                <a href="https://www.khola.blog/" class="nav-link" target="_blank" rel="noopener">Read Khola.Blog ↗</a>
+            </div>
+        </header>
+
         <ul class="archive-list">
-            <li><a href="2026-06-21-PM.html">2026-06-21 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-21-AM.html">2026-06-21 &mdash; Morning Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-20-PM.html">2026-06-20 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-20-AM.html">2026-06-20 &mdash; Morning Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-19-PM.html">2026-06-19 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-19-AM.html">2026-06-19 &mdash; Morning Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-18-PM.html">2026-06-18 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-18-AM.html">2026-06-18 &mdash; Morning Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-17-PM.html">2026-06-17 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-17-AM.html">2026-06-17 &mdash; Morning Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-16-PM.html">2026-06-16 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-15-PM.html">2026-06-15 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-14-PM.html">2026-06-14 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-14-AM.html">2026-06-14 &mdash; Morning Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-13-PM.html">2026-06-13 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-13-AM.html">2026-06-13 &mdash; Morning Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-12-PM.html">2026-06-12 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-12-AM.html">2026-06-12 &mdash; Morning Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-11-PM.html">2026-06-11 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-11-AM.html">2026-06-11 &mdash; Morning Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-10-PM.html">2026-06-10 &mdash; Evening Briefing <span>Read →</span></a></li>
-            <li><a href="2026-06-10.html">Briefing for 2026-06-10 <span>Read →</span></a></li>
-            <li><a href="2026-06-09.html">Briefing for 2026-06-09 <span>Read →</span></a></li>
-            <li><a href="2026-06-08.html">Briefing for 2026-06-08 <span>Read →</span></a></li>
+            <li><a href="2026-06-21-PM.html"><span class="date">2026-06-21</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-21-AM.html"><span class="date">2026-06-21</span> Morning Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-20-PM.html"><span class="date">2026-06-20</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-20-AM.html"><span class="date">2026-06-20</span> Morning Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-19-PM.html"><span class="date">2026-06-19</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-19-AM.html"><span class="date">2026-06-19</span> Morning Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-18-PM.html"><span class="date">2026-06-18</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-18-AM.html"><span class="date">2026-06-18</span> Morning Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-17-PM.html"><span class="date">2026-06-17</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-17-AM.html"><span class="date">2026-06-17</span> Morning Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-16-PM.html"><span class="date">2026-06-16</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-15-PM.html"><span class="date">2026-06-15</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-14-PM.html"><span class="date">2026-06-14</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-14-AM.html"><span class="date">2026-06-14</span> Morning Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-13-PM.html"><span class="date">2026-06-13</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-13-AM.html"><span class="date">2026-06-13</span> Morning Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-12-PM.html"><span class="date">2026-06-12</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-12-AM.html"><span class="date">2026-06-12</span> Morning Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-11-PM.html"><span class="date">2026-06-11</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-11-AM.html"><span class="date">2026-06-11</span> Morning Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-10-PM.html"><span class="date">2026-06-10</span> Evening Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-10.html"><span class="date">2026-06-10</span> Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-09.html"><span class="date">2026-06-09</span> Briefing <span class="read-more">Read →</span></a></li>
+            <li><a href="2026-06-08.html"><span class="date">2026-06-08</span> Briefing <span class="read-more">Read →</span></a></li>
 
         </ul>
     </div>
