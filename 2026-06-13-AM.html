@@ -6,7 +6,7 @@
     <title>The Post-Human Briefing - 2026-06-13</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
@@ -141,22 +141,44 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        .section-card h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 1.8rem;
-            color: #60a5fa;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-top: 0;
-            margin-bottom: 24px;
+        .section-header {
+            border-top: 2px solid var(--text-main);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-top: 32px;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 40px;
+            margin-bottom: 16px;
             font-weight: 700;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .section-card p {
             font-size: 1.1rem;
@@ -250,7 +272,10 @@
         </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 Artificial Intelligence</h2>
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+                <div class="section-meta">SYS.REF // 01</div>
+            </div>
             <p>The discourse on AI capabilities and their deployment continues to evolve rapidly, with notable developments in efficient reasoning, system robustness, long-horizon control, and the broader ecosystem dynamics.</p>
 <h3>Scaling AI Reasoning and Inference</h3>
 <p>The pursuit of more efficient and capable reasoning in large language models (LLMs) is driving innovation in inference-time scaling. Recent work on <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Adaptive Parallel Reasoning (APR)</a> proposes a paradigm where models dynamically decide when to decompose tasks into parallel subtasks, manage concurrent threads, and coordinate results. This moves beyond fixed parallelism strategies, such as self-consistency or heuristic-based tree searches, by allowing the model to learn general decomposition strategies through reinforcement learning, thereby avoiding redundant computation and adapting to problem complexity.</p>
@@ -269,7 +294,10 @@
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Markets &amp; Macro</h2>
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+                <div class="section-meta">SYS.REF // 02</div>
+            </div>
             <h3>AI Sector Re-calibration and Regulatory Headwinds</h3>
 <p>The investment thesis surrounding artificial intelligence (AI) is undergoing a re-calibration, moving beyond initial speculative fervor towards a more nuanced assessment of valuations and regulatory risks. While AI and robotics remain prominent investment themes, a shift is observed <a href="https://247wallst.com/investing/2026/06/13/if-you-have-10000-and-want-to-bet-on-ai-and-robotics-these-are-the-investments-id-pick/?.tsrc=rss">from identifying nascent startups to favoring thematic ETFs for broader exposure</a>. This re-evaluation is partly driven by recent performance, as evidenced by a "fresh dent" in semiconductor stocks following <a href="https://247wallst.com/investing/2026/06/13/3-semiconductor-stocks-to-buy-while-they-are-down-in-june/?.tsrc=rss">Broadcom's Q3 AI revenue guidance which fell short of analyst expectations</a>. In this context, <a href="https://www.fool.com/investing/2026/06/13/apple-is-mostly-sitting-out-the-ai-spending-arms-r/?.tsrc=rss">Apple's comparatively conservative approach to the AI spending arms race</a> is now viewed as a strategic advantage amidst broader AI stock sell-offs.</p>
 <p>Concurrently, the AI sector faces increasing regulatory scrutiny and geopolitical pressures. Anthropic, a significant AI model developer, suspended its latest models after a <a href="https://www.ft.com/content/2a27300a-b90d-4649-8c09-f7e7cd426dbb">US government directive to restrict foreign access on national security grounds</a>. This action highlights the emerging intersection of advanced technology and national security policy, potentially impacting the global commercialization pathways for AI. Separately, <a href="https://seekingalpha.com/news/4603100-openai-being-probed-group-state-ags?utm_source=feed_news_all&amp;utm_medium=referral&amp;feed_item_type=news">OpenAI is under investigation by a consortium of state attorneys general</a>. Despite these headwinds, established AI platforms continue to attract institutional capital, with <a href="https://finance.yahoo.com/markets/stocks/articles/alphabet-googl-still-undervalued-144236757.html?.tsrc=rss">Alphabet (GOOGL) ranking as a top holding for investors like Chase Coleman</a> and receiving a substantial investment from the <a href="https://finance.yahoo.com/markets/stocks/articles/greg-abel-era-berkshire-hathaway-141010574.html?.tsrc=rss">Greg Abel era at Berkshire Hathaway</a>. This suggests a bifurcation in market confidence, favoring companies with diversified revenue streams and robust governance structures over pure-play, early-stage AI ventures.</p>

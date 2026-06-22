@@ -6,7 +6,7 @@
     <title>The Post-Human Briefing - 2026-06-12</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
@@ -141,22 +141,44 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        .section-card h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 1.8rem;
-            color: #60a5fa;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-top: 0;
-            margin-bottom: 24px;
+        .section-header {
+            border-top: 2px solid var(--text-main);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-top: 32px;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 40px;
+            margin-bottom: 16px;
             font-weight: 700;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .section-card p {
             font-size: 1.1rem;
@@ -250,7 +272,10 @@
         </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 Artificial Intelligence</h2>
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+                <div class="section-meta">SYS.REF // 01</div>
+            </div>
             <p>Evening Briefing,</p>
 <p>Today's technical discourse highlights significant advancements across several core areas of artificial intelligence, from fundamental algorithmic efficiency to the deployment of complex agentic systems and the ethical considerations that accompany them.</p>
 <h3>Optimizing LLM Inference and Reasoning</h3>
@@ -270,7 +295,10 @@
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Markets &amp; Macro</h2>
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+                <div class="section-meta">SYS.REF // 02</div>
+            </div>
             <p>Good evening. Today's market dynamics reflect a complex interplay of concentrated technological advancement, evolving geopolitical stability, and decelerating domestic economic indicators. These forces are collectively reshaping capital allocation and investor sentiment, warranting a detailed examination.</p>
 <h3>AI's Concentrated Influence and Valuation Disparity</h3>
 <p>The market continues to exhibit a bifurcated structure, heavily influenced by the artificial intelligence (AI) paradigm. A prominent illustration arrived with <a href="https://finance.yahoo.com/video/spacex-shares-soar-19-stock-221840712.html">SpaceX's initial public offering, which saw its shares surge 19% on debut</a>, propelling its valuation to over $2 trillion and its founder to the status of the world's first trillionaire. This rapid appreciation, largely attributed to AI-related excitement rather than immediate fundamental metrics, has prompted some analysts to question its valuation, with Morningstar suggesting a fair value closer to $780 billion and CFRA initiating coverage with a sell rating. Concerns have also been raised regarding the company's governance structure and its <a href="https://www.bloomberg.com/news/videos/2026-06-12/nyc-comptroller-s-concerns-over-spacex-index-inclusion-video">expedited inclusion into major indices</a>, potentially driving passive fund demand irrespective of traditional seasoning periods or earnings track records.</p>

@@ -6,7 +6,7 @@
     <title>The Post-Human Briefing - 2026-06-21</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
@@ -141,22 +141,44 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        .section-card h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 1.8rem;
-            color: #60a5fa;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-top: 0;
-            margin-bottom: 24px;
+        .section-header {
+            border-top: 2px solid var(--text-main);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-top: 32px;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 40px;
+            margin-bottom: 16px;
             font-weight: 700;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .section-card p {
             font-size: 1.1rem;
@@ -250,7 +272,10 @@
         </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 Artificial Intelligence</h2>
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+                <div class="section-meta">SYS.REF // 01</div>
+            </div>
             <h3>EXECUTIVE SUMMARY</h3>
 <p>Today's developments highlight a dual trajectory: significant enterprise adoption of frontier models, exemplified by Samsung's global rollout, alongside an intense community focus on local inference optimization and the development of external control mechanisms for powerful, sometimes unstable, proprietary agents. The tension between closed, high-performance models and the demand for transparent, controllable local solutions continues to shape the AI ecosystem.</p>
 <h3>Dominant Narratives &amp; Trade-offs</h3>
@@ -276,7 +301,10 @@
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Markets &amp; Macro</h2>
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+                <div class="section-meta">SYS.REF // 02</div>
+            </div>
             <p><strong>EXECUTIVE SUMMARY:</strong>
 Geopolitical tensions dominated headlines, with conflicting reports on US-Iran peace talks causing whipsaw reactions in oil and Treasuries, while China escalated trade friction with rare earth export controls. Concurrently, the AI narrative pivoted, highlighting electricity as the new bottleneck for growth, even as valuations for leading chip and infrastructure players continued to surge.</p>
 <h3>AI's Shifting Bottlenecks and Ecosystem Evolution</h3>

@@ -80,7 +80,7 @@ def generate_daily_briefing():
     <title>The Post-Human Briefing - {date_str}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {{
@@ -215,22 +215,44 @@ def generate_daily_briefing():
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }}
-        .section-card h2 {{
-            font-family: 'Merriweather', serif;
-            font-size: 1.8rem;
-            color: #60a5fa;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-top: 0;
-            margin-bottom: 24px;
+        .section-header {{
+            border-top: 2px solid var(--text-main);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+        }}
+        .section-header h2 {{
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }}
+        .section-meta {{
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }}
         .section-card h3 {{
             font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-top: 32px;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 40px;
+            margin-bottom: 16px;
             font-weight: 700;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }}
         .section-card p {{
             font-size: 1.1rem;
@@ -324,12 +346,18 @@ def generate_daily_briefing():
         </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 Artificial Intelligence</h2>
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+                <div class="section-meta">SYS.REF // 01</div>
+            </div>
             {ai_html}
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Markets &amp; Macro</h2>
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+                <div class="section-meta">SYS.REF // 02</div>
+            </div>
             {fin_html}
         </div>
 

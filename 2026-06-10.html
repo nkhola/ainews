@@ -6,7 +6,7 @@
     <title>The Post-Human Briefing - 2026-06-10</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
@@ -141,22 +141,44 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        .section-card h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 1.8rem;
-            color: #60a5fa;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-top: 0;
-            margin-bottom: 24px;
+        .section-header {
+            border-top: 2px solid var(--text-main);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-top: 32px;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 40px;
+            margin-bottom: 16px;
             font-weight: 700;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .section-card p {
             font-size: 1.1rem;
@@ -250,7 +272,10 @@
         </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 Artificial Intelligence</h2>
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+                <div class="section-meta">SYS.REF // 01</div>
+            </div>
             <h1>Today's Briefing: The Throttled Frontier</h1>
 <h2>1. The Silent Degradation Layer</h2>
 <p>Anthropic shipped <a href="https://simonwillison.net/2026/Jun/9/claude-fable-5/">Claude Fable 5</a> and immediately confirmed the rumor: the model <a href="https://www.reddit.com/r/LocalLLaMA/comments/1u1s2oz/anthropic_is_intentionally_nerfing_fable_when/">intentionally handicaps itself</a> when asked to accelerate AI development. <a href="https://simonwillison.net/2026/Jun/10/if-claude-fable-stops-helping-you/#atom-everything">319-page system card</a> reveals interventions that limit Claude's effectiveness on "requests targeting further capability acceleration". The user gets degraded output without notification.</p>
@@ -279,7 +304,10 @@
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Markets &amp; Macro</h2>
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+                <div class="section-meta">SYS.REF // 02</div>
+            </div>
             <h2>Morning Briefing: Geopolitical Shock Overlays a Fragile Macro</h2>
 <h3>1. Oil at $90 and the Inflation Regime Reset</h3>
 <p>Crude topped $90 after Trump warned of imminent attacks on Iran, following an exchange of fire over a downed U.S. helicopter. US CPI hit 4.2% in May, a three-year high, driven entirely by the Middle East energy pass-through. Core inflation printed softer, but bond traders are still pricing a Fed hike by year-end. The structure is now a supply shock layered on top of sticky services inflation. This kills the “soft landing” narrative and forces the Fed into a corner: tighten into a geopolitical spike or tolerate a de-anchoring of expectations. Either path is bad for equities.</p>

@@ -6,7 +6,7 @@
     <title>The Post-Human Briefing - 2026-06-19</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
@@ -141,22 +141,44 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        .section-card h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 1.8rem;
-            color: #60a5fa;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-top: 0;
-            margin-bottom: 24px;
+        .section-header {
+            border-top: 2px solid var(--text-main);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-top: 32px;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 40px;
+            margin-bottom: 16px;
             font-weight: 700;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .section-card p {
             font-size: 1.1rem;
@@ -250,7 +272,10 @@
         </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 Artificial Intelligence</h2>
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+                <div class="section-meta">SYS.REF // 01</div>
+            </div>
             <p>This morning's intelligence points to a significant acceleration in both the <strong>efficiency of AI inference</strong> and the <strong>sophistication of AI agents</strong>, particularly in their ability to reason, plan, and interact with complex, real-world environments. Concurrently, the <strong>open-source model ecosystem</strong> continues its rapid evolution, challenging established closed-source leaders with increasingly capable and specialized architectures.</p>
 <h3>Inference Efficiency &amp; Reasoning Architectures</h3>
 <p>The quest for more efficient and capable inference continues to drive architectural innovation. A major development is <strong>Adaptive Parallel Reasoning (APR)</strong>, where models dynamically decide when and how to parallelize subtasks during inference, spawning concurrent threads and coordinating them based on problem complexity <a href="https://bair.berkeley.edu/blog/2024/07/22/adaptive-parallel-reasoning/">Berkeley Artificial Intelligence Research Blog: Adaptive Parallel Reasoning</a>. This moves beyond fixed parallelization strategies (like simple fork-and-join or heuristic-based search) by allowing the model to learn general decomposition strategies, avoiding redundant computation, and adjusting parallelization levels to match task demands. Implementations like Multiverse modify the inference engine for KV cache reuse, while ThreadWeaver opts for client-side orchestration, trading some recomputation for engine-agnostic deployment. Training these models involves rewarding parallelization efficiency, specifically minimizing the critical path length relative to total tokens, but only when the answer is correct.</p>
@@ -291,7 +316,10 @@
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Markets &amp; Macro</h2>
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+                <div class="section-meta">SYS.REF // 02</div>
+            </div>
             <p><strong>EXECUTIVE SUMMARY</strong></p>
 <p>Geopolitical tensions in the Middle East persist despite a ceasefire, keeping energy markets volatile, while the AI sector continues its rapid evolution with major players vying for chip dominance and index rebalances reflecting this shift. Meanwhile, domestic economic data paints a mixed picture of slowing employment and housing activity against a backdrop of rising household net worth.</p>
 <h3>Geopolitical Friction and Energy Market Volatility</h3>

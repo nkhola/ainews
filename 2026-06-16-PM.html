@@ -6,7 +6,7 @@
     <title>The Post-Human Briefing - 2026-06-16</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
@@ -141,22 +141,44 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        .section-card h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 1.8rem;
-            color: #60a5fa;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-top: 0;
-            margin-bottom: 24px;
+        .section-header {
+            border-top: 2px solid var(--text-main);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-top: 32px;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 40px;
+            margin-bottom: 16px;
             font-weight: 700;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .section-card p {
             font-size: 1.1rem;
@@ -250,7 +272,10 @@
         </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 Artificial Intelligence</h2>
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+                <div class="section-meta">SYS.REF // 01</div>
+            </div>
             <p>Here is your private daily briefing.</p>
 <h3>Executive Summary</h3>
 <p>Today's developments underscore a dual imperative: pushing the boundaries of AI efficiency and autonomy while grappling with the escalating complexities of control, safety, and interpretability. We are seeing significant architectural and algorithmic innovations in inference scaling and planning, alongside a stark reminder of the geopolitical and technical challenges inherent in deploying increasingly capable, agentic models.</p>
@@ -265,7 +290,10 @@
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Markets &amp; Macro</h2>
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+                <div class="section-meta">SYS.REF // 02</div>
+            </div>
             <p>Today's market action reflected a stark divergence: the Dow hit a new high while AI and tech stocks broadly slipped, signaling investor caution ahead of Fed Chair Kevin Warsh's first policy meeting amidst persistent inflation concerns. Geopolitics offered a glimmer of relief as an interim US-Iran peace deal sent oil prices lower, yet the broader AI narrative remains a mix of speculative fervor, strategic corporate repositioning, and emerging regulatory and geopolitical fault lines.</p>
 <h3>AI's Divergent Path: Hype, Consolidation, and Geopolitical Stakes</h3>
 <p>The AI sector presented a complex picture, with pockets of extreme speculation contrasting with strategic corporate maneuvers and broader market skepticism. While the Dow Jones reached a new high, the Nasdaq and S&amp;P 500 slipped, with <a href="https://finance.yahoo.com/m/8db20d3f-802e-3d8a-9772-1c97be3d346b/dow-jones-hits-high%2C-spacex.html">chips and most AI stocks skidding</a>. This divergence underscores a rotation away from high-growth tech, particularly as interest rate uncertainty looms.</p>

@@ -6,7 +6,7 @@
     <title>The Post-Human Briefing - 2026-06-13</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
@@ -141,22 +141,44 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        .section-card h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 1.8rem;
-            color: #60a5fa;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-top: 0;
-            margin-bottom: 24px;
+        .section-header {
+            border-top: 2px solid var(--text-main);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .section-card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            color: var(--text-main);
-            margin-top: 32px;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 40px;
+            margin-bottom: 16px;
             font-weight: 700;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .section-card p {
             font-size: 1.1rem;
@@ -250,7 +272,10 @@
         </div>
         
         <div class="section-card" id="ai-news">
-            <h2>🧠 Artificial Intelligence</h2>
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+                <div class="section-meta">SYS.REF // 01</div>
+            </div>
             <p>Recent developments highlight significant progress in optimizing AI system efficiency, alongside deeper investigations into model interpretability. Concurrently, the discourse around AI safety and governance has intensified, particularly concerning the implications of model accessibility, while the deployment of agentic AI in complex real-world scenarios continues to expand.</p>
 <h3>Advancements in AI System Efficiency and Scalability</h3>
 <p>Efforts to enhance the computational efficiency and scalability of AI models are yielding notable results across various domains. In large language models (LLMs), a key challenge is the linear scaling of sequential reasoning with exploration, leading to increased latency and context limitations. Research into <a href="http://bair.berkeley.edu/blog/2026/05/08/adaptive-parallel-reasoning/">Adaptive Parallel Reasoning</a> proposes that models dynamically decide when and how to parallelize subtasks, moving beyond fixed parallelization strategies like fork-and-join or heuristic-based search. This adaptivity, often learned through reinforcement learning, aims to reduce redundant computation and optimize critical path length, directly impacting inference speed. Implementations like ThreadWeaver manage orchestration client-side, avoiding inference engine modifications, while others such as Multiverse explore KV cache stitching, albeit with challenges related to distributional shift and system fragility. Complementing these architectural advancements, practical tools like <a href="https://github.com/zdk/lowfat">Lowfat</a> demonstrate significant token savings (e.g., 91.8% in CLI outputs) by filtering verbose data, directly reducing LLM inference costs. Similarly, specialized inference engines like <a href="https://github.com/jmaczan/tiny-vllm">Tiny-vLLM</a> and techniques enabling <a href="https://blog.kog.ai/real-time-llm-inference-on-standard-gpus-3-000-tokens-s-per-request/">real-time LLM inference at 3k tokens/s</a> on standard GPUs underscore the focus on high-throughput, low-latency deployment. For long-horizon planning in learned dynamics models, <a href="http://bair.berkeley.edu/blog/2026/04/20/grasp/">GRASP</a> introduces a gradient-based planner that addresses issues like exploding/vanishing gradients and brittle state-input gradients by lifting trajectories into virtual states, adding stochasticity for exploration, and reshaping gradients to rely on more stable action Jacobians. In reinforcement learning, <a href="http://bair.berkeley.edu/blog/2025/11/01/rl-without-td-learning/">Transitive RL (TRL)</a> presents a "divide and conquer" paradigm for off-policy learning, aiming to logarithmically reduce Bellman recursions and mitigate error accumulation in long-horizon tasks, a fundamental limitation of traditional temporal difference (TD) learning.</p>
@@ -263,7 +288,10 @@
         </div>
 
         <div class="section-card" id="finance-news">
-            <h2>📈 Markets &amp; Macro</h2>
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+                <div class="section-meta">SYS.REF // 02</div>
+            </div>
             <h3>AI Infrastructure Expansion and Valuation Divergence</h3>
 <p>The market continues to exhibit a pronounced capital allocation towards artificial intelligence infrastructure, driving significant activity across major technology firms. NVIDIA (NasdaqGS:NVDA) is expanding its GPU infrastructure through a new capital-efficient, recurring revenue model in Australia, a strategic move to broaden access to AI compute in underserved regions <a href="https://finance.yahoo.com/markets/stocks/articles/nvidia-tests-recurring-ai-data-231238173.html?.tsrc=rss">NVIDIA Tests Recurring AI Data Center Model With Australian GPU Expansion</a>. Concurrently, NVIDIA is fostering AI robotics development in Europe via a collaboration with Nebius <a href="https://finance.yahoo.com/sectors/technology/articles/nvidia-corporation-nvda-partners-nebius-192521134.html?.tsrc=rss">NVIDIA Corporation (NVDA) Partners with Nebius to Support AI Robotics Startup in Europe</a>. Similarly, Broadcom (NASDAQ:AVGO) has announced a $35 billion AI infrastructure platform initiative with Apollo Global Management and Blackstone, aiming to scale compute capacity <a href="https://finance.yahoo.com/markets/stocks/articles/35b-ai-infrastructure-platform-plan-192530880.html?.tsrc=rss">35B AI Infrastructure Platform Plan Affirms Broadcom Inc. (AVGO) As a Promising Growth Stock to Buy</a>. Amazon (NasdaqGS:AMZN) is pursuing a C$14 billion bond offering to finance a $200 billion AI data center investment spree, alongside acquiring a stake in Globalstar for its Project Leo satellite communications and expanding its AWS cloud partnerships <a href="https://finance.yahoo.com/markets/stocks/articles/amazon-com-inc-amzn-pursues-192511149.html?.tsrc=rss">Amazon.com, Inc. (AMZN) Pursues Canadian Bond to Finance $200B AI Data Center Investment Spree</a>. These investments reflect a structural shift towards distributed, high-capacity AI compute, with firms like NVIDIA and Amazon positioning themselves as foundational providers.</p>
 <p>This intense focus on AI infrastructure is mirrored in investor appetite for transformative technology, as evidenced by SpaceX's recent $75 billion initial public offering (IPO). The IPO saw shares close 19% higher on debut, underscoring a willingness to assign substantial valuations to companies perceived as future-defining, even with significant control vested in founders <a href="https://www.bloomberg.com/news/videos/2026-06-13/spacex-shares-close-higher-post-historic-75-billion-ipo-video">SpaceX Shares Close 19% Higher After Historic $75 Billion IPO</a>. Alphabet's (NasdaqGS:GOOGL) long-held private stake in SpaceX has now become a liquid asset, providing transparent market exposure to the commercial space and space-focused AI cloud sectors <a href="https://finance.yahoo.com/markets/stocks/articles/alphabet-spacex-exposure-adds-fresh-221028186.html?.tsrc=rss">Alphabet’s New SpaceX Exposure Adds A Fresh Dimension To Its Story</a>. However, this enthusiasm is tempered by emerging geopolitical considerations, such as the US government's directive for Anthropic to suspend foreign access to its latest AI models on national security grounds, a move reportedly influenced by Amazon's CEO <a href="https://www.ft.com/content/2a27300a-b90d-4649-8c09-f7e7cd426dbb">Anthropic suspends latest AI models after US blocks access to foreigners</a>. This introduces a regulatory dimension that could fragment the global AI development and deployment landscape.</p>
