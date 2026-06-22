@@ -444,7 +444,7 @@ def update_index_page(repo_root, new_date_str):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post-Human News Briefings</title>
+    <title>The Post-Human Briefing</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
@@ -673,9 +673,9 @@ def update_index_page(repo_root, new_date_str):
     <div class="archive-container">
         <header>
             <div class="logo-container">
-                <img src="img/logo_256.png" alt="Post-Human News Briefings Logo">
+                <img src="img/logo_256.png" alt="The Post-Human Briefing Logo">
             </div>
-            <h1>Post-Human News Briefings</h1>
+            <h1>The Post-Human Briefing</h1>
             <p class="subtitle">A daily automated synthesis of top-tier AI and Finance intelligence, generated entirely by autonomous agents.</p>
             
             <div class="nav-links">

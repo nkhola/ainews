@@ -74,5 +74,5 @@ def test_generate_daily_briefing(MockMasterCompiler, MockFinanceCrawler, MockNew
         # Check that the index.html file has content
         with open(os.path.join(temp_repo_root, "index.html"), 'r') as f:
             index_content = f.read()
-            assert "Post-Human News Briefings" in index_content
+            assert "The Post-Human Briefing" in index_content
             assert html_files[0] in index_content # the daily file should be linked
