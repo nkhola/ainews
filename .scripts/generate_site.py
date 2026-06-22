@@ -51,6 +51,26 @@ def generate_daily_briefing():
     ai_html = markdown.markdown(ai_md, extensions=['tables', 'fenced_code'])
     fin_html = markdown.markdown(fin_md, extensions=['tables', 'fenced_code'])
 
+    # 2.5 Generate Recent Briefings HTML
+    import re
+    existing_files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f)]
+    
+    def recent_sort_key(filename):
+        name = filename.replace('.html', '')
+        parts = name.split('-')
+        weight = 1 if len(parts) == 4 and parts[3] == "PM" else 0
+        return ("-".join(parts[:3]) if len(parts) == 4 else name, weight)
+        
+    existing_files.sort(key=recent_sort_key, reverse=True)
+    
+    recent_html = ""
+    for rf in existing_files[:3]:
+        rf_name = rf.replace('.html', '')
+        rf_parts = rf_name.split('-')
+        display_name = f"{rf_parts[0]}-{rf_parts[1]}-{rf_parts[2]} {'Evening' if len(rf_parts) == 4 and rf_parts[3] == 'PM' else 'Morning'} Briefing" if len(rf_parts) == 4 else f"{rf_name} Briefing"
+        recent_html += f'                <a href="{rf}"><span>{display_name}</span> <span class="date">Read →</span></a>\n'
+    recent_html += '                <a href="index.html"><span>View All Briefings</span> <span class="date">Archive →</span></a>\n'
+
     # 3. Create Daily HTML Page
     html_template = f"""<!DOCTYPE html>
 <html lang="en">
@@ -315,7 +335,7 @@ def generate_daily_briefing():
         <div class="recent-briefings">
             <h3>Recent Briefings</h3>
             <div class="recent-list">
-                <a href="index.html"><span>View All Briefings</span> <span class="date">Archive →</span></a>
+{recent_html}
             </div>
         </div>
     </div>

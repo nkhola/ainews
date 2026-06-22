@@ -350,6 +350,8 @@ def main():
             recent_html += f'                <a href="{os.path.basename(rf)}"><span>{display_name}</span> <span class="date">Read →</span></a>\n'
             count += 1
             
+        recent_html += '                <a href="index.html"><span>View All Briefings</span> <span class="date">Archive →</span></a>\n'
+            
         new_html = TEMPLATE.format(
             date_str=date_str,
             time_label=time_label,
