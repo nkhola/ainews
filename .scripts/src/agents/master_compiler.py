@@ -170,14 +170,28 @@ class MasterCompiler:
             full_result += chunk
             finish_reason = response.choices[0].finish_reason
             
-            if finish_reason != "length":
+            # Heuristic check: some APIs don't return 'length' reliably
+            chunk_stripped = chunk.strip()
+            # If it doesn't end with a common terminating character, it might be truncated
+            heuristic_truncated = not chunk_stripped.endswith((".", "!", "?", ">", '"', "'", "*", "`"))
+            
+            is_truncated = (finish_reason == "length") or (finish_reason == "stop" and heuristic_truncated)
+            
+            # Log the state to a persistent log file
+            log_path = os.path.join(os.path.dirname(__file__), "../../../generation.log")
+            with open(log_path, "a") as f:
+                import datetime
+                timestamp = datetime.datetime.now().isoformat()
+                f.write(f"[{timestamp}] Model: {self._get_active_model()} | Finish Reason: {finish_reason} | Heuristic Truncated: {heuristic_truncated} | Action: {'CONTINUING' if is_truncated else 'DONE'}\n")
+            
+            if not is_truncated:
                 break
                 
-            print(f"[MasterCompiler] Truncation detected (finish_reason='length'). Continuing generation...")
+            print(f"[MasterCompiler] Truncation detected (finish_reason={finish_reason}, heuristic={heuristic_truncated}). Continuing generation...")
             current_messages.append({"role": "assistant", "content": chunk})
             current_messages.append({
                 "role": "user", 
-                "content": "Your previous response was truncated due to length limits. Please continue exactly where you left off. Do not repeat anything from your previous response, just output the very next characters to seamlessly continue the text."
+                "content": "Your previous response was truncated. Please continue exactly where you left off. Do not repeat anything from your previous response, just output the very next characters to seamlessly continue the text."
             })
             
         return full_result
