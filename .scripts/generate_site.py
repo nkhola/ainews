@@ -536,9 +536,9 @@ def update_index_page(repo_root, new_date_str):
         }}
         
         .logo-container img {{
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
+            width: 120px;
+            height: auto;
+            border-radius: 12px;
             box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
             border: 2px solid rgba(255,255,255,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
