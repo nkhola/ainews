@@ -23,7 +23,13 @@ def generate_daily_briefing():
     eastern = timezone(timedelta(hours=-4))
     now = datetime.now(eastern)
     date_str = now.strftime('%Y-%m-%d')
-    is_evening = now.hour >= 14
+    force_time = os.getenv("FORCE_TIME_LABEL")
+    if force_time == "AM":
+        is_evening = False
+    elif force_time == "PM":
+        is_evening = True
+    else:
+        is_evening = now.hour >= 14
     time_label = "Evening" if is_evening else "Morning"
     file_suffix = "PM" if is_evening else "AM"
     base_name = f"{date_str}-{file_suffix}"

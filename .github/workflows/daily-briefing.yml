@@ -12,7 +12,17 @@ on:
     paths-ignore:
       - '*.html'
       - 'index.html'
-  workflow_dispatch: # Allow running manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      force_time:
+        description: 'Force AM or PM (leave empty for auto)'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - 'AM'
+          - 'PM'
 
 jobs:
   generate-site:
@@ -44,6 +54,7 @@ jobs:
 
       - name: Generate Briefing HTML
         env:
+          FORCE_TIME_LABEL: ${{ github.event.inputs.force_time }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
