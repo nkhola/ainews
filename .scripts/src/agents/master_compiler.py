@@ -46,14 +46,14 @@ FINANCE_GUIDANCE = {
 
 class MasterCompiler:
     def __init__(self):
-        self.model = os.getenv("LLM_MODEL", "deepseek/deepseek-chat")
+        self.model = os.getenv("LLM_MODEL") or "deepseek/deepseek-chat"
         self._client = None
         self._using_fallback = False
 
         # Fallback configuration (OpenRouter free tier by default)
-        self.fallback_model = os.getenv("LLM_FALLBACK_MODEL", "meta-llama/llama-3.3-70b-instruct:free")
-        self.fallback_base_url = os.getenv("LLM_FALLBACK_BASE_URL", "https://openrouter.ai/api/v1")
-        self.fallback_api_key = os.getenv("LLM_FALLBACK_API_KEY", os.getenv("LLM_API_KEY"))
+        self.fallback_model = os.getenv("LLM_FALLBACK_MODEL") or "meta-llama/llama-3.3-70b-instruct:free"
+        self.fallback_base_url = os.getenv("LLM_FALLBACK_BASE_URL") or "https://openrouter.ai/api/v1"
+        self.fallback_api_key = os.getenv("LLM_FALLBACK_API_KEY") or os.getenv("LLM_API_KEY")
         self._fallback_client = None
 
     @property
@@ -67,7 +67,7 @@ class MasterCompiler:
                 )
             self._client = OpenAI(
                 api_key=api_key,
-                base_url=os.getenv("LLM_BASE_URL", "https://openrouter.ai/api/v1"),
+                base_url=os.getenv("LLM_BASE_URL") or "https://openrouter.ai/api/v1",
             )
         return self._client
 
