@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 import os
+import subprocess
+import re
+import glob
 import sys
 from datetime import datetime, timezone, timedelta
 import markdown
@@ -378,10 +381,18 @@ def generate_daily_briefing():
             </div>
         </div>
         
-        <button id="readAloudBtn" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1rem; margin-bottom: 30px; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
-            <span id="readAloudText">Read Briefing Aloud</span>
-        </button>
+        <div style="background: rgba(30, 32, 50, 0.6); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
+            <div style="flex-shrink: 0; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+            </div>
+            <div style="flex-grow: 1;">
+                <h3 style="margin: 0 0 5px 0; font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: #f0f4f8;">Listen to the Briefing</h3>
+                <audio controls style="width: 100%; height: 36px; border-radius: 8px; outline: none;">
+                    <source src="audio/{base_name}.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
 
         <div class="section-card" id="ai-news">
             <div class="section-header">
@@ -405,51 +416,44 @@ def generate_daily_briefing():
         </div>
     </div>
 
-    <script>
-        const readAloudBtn = document.getElementById('readAloudBtn');
-        const readAloudText = document.getElementById('readAloudText');
-        let isReading = false;
-
-        readAloudBtn.addEventListener('click', function() {{
-            if (!('speechSynthesis' in window)) {{
-                alert("Sorry, your browser doesn't support text-to-speech!");
-                return;
-            }}
-
-            if (isReading) {{
-                window.speechSynthesis.cancel();
-                isReading = false;
-                readAloudText.textContent = "Read Briefing Aloud";
-                return;
-            }}
-
-            window.speechSynthesis.cancel();
-            
-            const sections = document.querySelectorAll('.section-card');
-            let textToRead = "";
-            sections.forEach(section => {{
-                textToRead += section.innerText + ". ";
-            }});
-
-            const utterance = new SpeechSynthesisUtterance(textToRead);
-            const voices = window.speechSynthesis.getVoices();
-            const preferredVoice = voices.find(v => v.lang.includes('en') && (v.name.includes('Samantha') || v.name.includes('Google')));
-            if(preferredVoice) utterance.voice = preferredVoice;
-            
-            utterance.onend = function() {{
-                isReading = false;
-                readAloudText.textContent = "Read Briefing Aloud";
-            }};
-
-            window.speechSynthesis.speak(utterance);
-            isReading = true;
-            readAloudText.textContent = "Stop Reading";
-        }});
-    </script>
-</body>
+    </body>
 </html>
 """
     
+
+    # --- AUDIO GENERATION ---
+    audio_dir = os.path.join(repo_root, "audio")
+    os.makedirs(audio_dir, exist_ok=True)
+    
+    # Extract plain text
+    plain_text = "Artificial Intelligence. " + re.sub(r'<[^>]+>', ' ', ai_html) + " Markets and Macro. " + re.sub(r'<[^>]+>', ' ', fin_html)
+    plain_text = re.sub(r'\s+', ' ', plain_text).strip()
+    
+    # Generate MP3 using edge-tts
+    audio_file_path = os.path.join(audio_dir, f"{base_name}.mp3")
+    print(f"Generating audio for {base_name}...")
+    try:
+        subprocess.run([
+            os.path.join(repo_root, ".venv/bin/edge-tts"),
+            "--text", plain_text,
+            "--write-media", audio_file_path,
+            "--voice", "en-US-ChristopherNeural"
+        ], check=True)
+    except Exception as e:
+        print(f"Error generating audio: {e}")
+
+    # Rolling window: Keep only the 5 most recent MP3s
+    mp3_files = glob.glob(os.path.join(audio_dir, "*.mp3"))
+    mp3_files.sort(key=os.path.getmtime, reverse=True)
+    if len(mp3_files) > 5:
+        for file_to_delete in mp3_files[5:]:
+            try:
+                os.remove(file_to_delete)
+                print(f"Deleted old audio file: {file_to_delete}")
+            except Exception as e:
+                pass
+    # ------------------------
+
     # Save daily file in the root
     daily_file = os.path.join(repo_root, f"{base_name}.html")
     with open(daily_file, "w", encoding="utf-8") as f:
