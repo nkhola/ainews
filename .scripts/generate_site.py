@@ -442,11 +442,11 @@ def generate_daily_briefing():
     except Exception as e:
         print(f"Error generating audio: {e}")
 
-    # Rolling window: Keep only the 5 most recent MP3s
+    # Rolling window: Keep only the 10 most recent MP3s
     mp3_files = glob.glob(os.path.join(audio_dir, "*.mp3"))
     mp3_files.sort(key=os.path.getmtime, reverse=True)
-    if len(mp3_files) > 5:
-        for file_to_delete in mp3_files[5:]:
+    if len(mp3_files) > 10:
+        for file_to_delete in mp3_files[10:]:
             try:
                 os.remove(file_to_delete)
                 print(f"Deleted old audio file: {file_to_delete}")
