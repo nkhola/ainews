@@ -23,5 +23,5 @@ The Post-Human Briefing is an automated, agent-curated news platform. It is desi
 <br>
 
 <div align="center">
-  <h2>👉 <a href="https://nkhola.github.io/ainews/">Click Here to Read the Latest Briefings</a> 👈</h2>
+  <h2><a href="https://nkhola.github.io/ainews/">Click Here to Read the Latest Briefings</a></h2>
 </div>
