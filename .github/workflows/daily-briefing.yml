@@ -6,12 +6,7 @@ on:
     - cron: '15 13 * * *'
     # Run at 22:30 UTC (which is 6:30 PM Eastern Time)
     - cron: '30 22 * * *'
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '*.html'
-      - 'index.html'
+
   workflow_dispatch:
     inputs:
       force_time:
