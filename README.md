@@ -1,29 +1,27 @@
 <div align="center">
   <a href="https://nkhola.github.io/ainews/">
-    <img src="img/logo_256.png" alt="The Post-Human Briefing Logo" width="200" style="border-radius: 20px; box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);">
+    <img src="img/logo_256.png" alt="The Post-Human Briefing Logo" width="160" style="border-radius: 12px; margin-bottom: 20px;">
   </a>
 
-  <br>
+  # The Post-Human Briefing
   
-  # 🌐 The Post-Human Briefing
+  **A daily synthesis of critical developments across Artificial Intelligence, Global Finance, and Macroeconomics.**
   
-  **Your Daily Injection of AI, Markets & Macro News.**
-  
-  [![Read the Briefings](https://img.shields.io/badge/Read_Now-Live_Site-3b82f6?style=for-the-badge&logo=github)](https://nkhola.github.io/ainews/)
+  [![Read the Briefings](https://img.shields.io/badge/View_Latest_Briefings-blue?style=flat-square)](https://nkhola.github.io/ainews/)
   
   ---
 </div>
 
-### 🚀 What is this?
-**The Post-Human Briefing** is a fully automated, agent-curated news platform that synthesizes the most critical developments in Artificial Intelligence, global finance, and macroeconomics into twice-daily (Morning and Evening) comprehensive briefings.
+### Overview
+The Post-Human Briefing is an automated, agent-curated news platform. It is designed to filter the noise and deliver high signal-to-noise intelligence on the intersection of frontier technology and financial markets. The platform autonomously synthesizes data into comprehensive, twice-daily briefings.
 
-### ✨ Features
-* **Automated Intelligence:** News is scraped, synthesized, and formatted entirely by AI agents.
-* **Neural Audio Briefings:** Don't want to read? Listen to the broadcast-quality, AI-generated audio narration for every post, powered by Microsoft Edge Neural TTS.
-* **Sleek & Dynamic UI:** Built with modern web aesthetics, offering a seamless and beautiful reading experience.
+### Core Capabilities
+* **Automated Synthesis:** Leverages autonomous agents to scrape, analyze, and format complex developments into readable intelligence reports.
+* **Neural Audio Integration:** Features broadcast-quality, AI-generated audio narration powered by edge-based neural TTS models, allowing for consumption on the go.
+* **Static Architecture:** Deployed as a highly performant, statically generated site for maximum speed and security.
 
 <br>
 
 <div align="center">
-  <h2>👉 <a href="https://nkhola.github.io/ainews/">Click Here to Read the Latest Briefings</a> 👈</h2>
+  <h3><a href="https://nkhola.github.io/ainews/">Read the latest briefings here</a></h3>
 </div>
