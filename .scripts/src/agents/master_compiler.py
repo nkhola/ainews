@@ -47,7 +47,7 @@ FINANCE_GUIDANCE = {
 class MasterCompiler:
     def __init__(self):
         self.vertex_project_id = os.getenv("VERTEX_PROJECT_ID")
-        self.vertex_location = os.getenv("VERTEX_LOCATION", "us-central1")
+        self.vertex_location = os.getenv("VERTEX_LOCATION") or "us-central1"
         
         if self.vertex_project_id:
             self.model = os.getenv("LLM_MODEL") or "google/gemini-1.5-flash"
