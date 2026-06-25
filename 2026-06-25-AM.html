@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Post-Human Briefing - 2026-06-25</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/logo_favicon.png">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1a1b35 100%);
+            --surface-color: rgba(30, 32, 50, 0.6);
+            --surface-hover: rgba(45, 48, 75, 0.8);
+            --text-main: #f0f4f8;
+            --text-muted: #a0aec0;
+            --accent-glow: #3b82f6;
+            --accent-glow-secondary: #8b5cf6;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .ambient-glow::before, .ambient-glow::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            animation: float 20s infinite alternate;
+        }
+        .ambient-glow::before {
+            background: var(--accent-glow);
+            top: -100px; left: -100px;
+        }
+        .ambient-glow::after {
+            background: var(--accent-glow-secondary);
+            bottom: -100px; right: -100px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .briefing-container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px 20px 80px 20px;
+            position: relative;
+        }
+
+        /* Navbar */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Header Section */
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header-section .logo {
+            width: 48px;
+            height: auto;
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        .header-section h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .header-section .meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .header-section .date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .header-section .reading-time {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+        }
+        
+        @media (max-width: 600px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-section .meta {
+                align-items: flex-start;
+                text-align: left;
+            }
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .section-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
+        }
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .section-card p {
+            font-size: 1.15rem;
+            margin-bottom: 24px;
+            color: #d1d5db;
+            line-height: 1.8;
+        }
+        .section-card ul {
+            padding-left: 24px;
+            color: #d1d5db;
+            margin-bottom: 24px;
+        }
+        .section-card li {
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: #60a5fa;
+        }
+        blockquote {
+            border-left: 4px solid #8b5cf6;
+            margin: 0;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.03);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+            color: #9ca3af;
+        }
+
+        /* Recent Briefings at bottom */
+        .recent-briefings {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border-color);
+        }
+        .recent-briefings h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .recent-list a {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+        .recent-list a:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(96, 165, 250, 0.3);
+            transform: translateY(-2px);
+        }
+        .recent-list .date {
+            color: #9ca3af;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+    </style>
+</head>
+<body>
+    <div class="ambient-glow"></div>
+    <div class="briefing-container">
+        <div class="nav-bar">
+            <a href="index.html" class="nav-link">← All Briefings</a>
+            <a href="https://www.khola.blog/" class="nav-link" target="_blank">Khola.Blog ↗</a>
+        </div>
+        
+        <div class="header-section">
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">2026-06-25 &bull; Morning</span>
+                <span class="reading-time">11 min read</span>
+            </div>
+        </div>
+        
+        <div style="background: rgba(30, 32, 50, 0.6); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
+            <div style="flex-shrink: 0; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+            </div>
+            <div style="flex-grow: 1;">
+                <h3 style="margin: 0 0 5px 0; font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: #f0f4f8;">Listen to the Briefing</h3>
+                <audio controls style="width: 100%; height: 36px; border-radius: 8px; outline: none;">
+                    <source src="audio/2026-06-25-AM.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
+
+        <div class="section-card" id="ai-news">
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+            </div>
+            <p>This morning's critical takeaway is the accelerating convergence of advanced agentic capabilities with specialized hardware and software optimization, simultaneously intensifying the battle for model integrity and intellectual property in a rapidly bifurcating open and closed ecosystem.</p>
+<h3>The Ascent of Agentic Systems</h3>
+<p>The vision of autonomous AI agents is rapidly solidifying, moving from conceptual frameworks to concrete applications and sophisticated multi-agent coordination. OpenAI's research highlights <a href="https://openai.com/index/how-agents-are-transforming-work">agents transforming work</a> by handling longer, more complex tasks, a capability now concretely demonstrated by Google's <a href="https://deepmind.google/blog/introducing-computer-use-in-gemini-3-5-flash/">Gemini 3.5 Flash introducing computer use</a>. The academic sphere is similarly active, with a "Hitchhiker's Guide" providing a <a href="https://arxiv.org/abs/2606.24937">comprehensive reference for building agentic AI systems</a>, covering everything from LLM substrates to inter-agent communication protocols like MCP and A2A. Practical challenges are also being addressed: <a href="https://arxiv.org/abs/2606.25161">TRUSTMEM</a> proposes a framework for trustworthy memory consolidation in LLM agents, mitigating persistent system-state failures from erroneous memory updates. In multi-agent settings, <a href="https://arxiv.org/abs/2606.25389">COMAD</a> offers a principled approach for continual offline skill discovery and reuse, crucial for open-environment cooperation. Even the scientific process is being augmented, with <a href="https://arxiv.org/abs/2606.25198">Heuresis</a> exploring search strategies for autonomous AI research agents, though noting the rarity of truly novel ideas and the prevalence of reward-hacking. The complexity of multi-agent interactions is further explored in <a href="https://arxiv.org/abs/2606.24976">diagnosing compounding failures in agentic persuasion</a>, introducing Taxonomic Strategy RAG (TS-RAG) to prevent problem drift and sycophantic conformity. Beyond research, agents are finding roles in education, with <a href="https://arxiv.org/abs/2606.25358">Agentic Knowledge Tracing</a> using multi-agent LLMs for stealth assessment of financial literacy in serious games.</p>
+<h4>Why it matters</h4>
+<p>The proliferation of agentic systems, from foundational theory to specialized applications, signifies a shift towards more autonomous and complex AI deployments, demanding robust memory, reasoning, and multi-agent coordination mechanisms.</p>
+<h3>Hardware-Software Co-design for Inference &amp; Training</h3>
+<p>The relentless pursuit of efficiency in AI models is driving innovation across hardware and software, from specialized chips to novel architectural paradigms and optimization techniques. OpenAI and Broadcom have unveiled an <a href="https://openai.com/index/openai-broadcom-jalapeno-inference-chip/">LLM-optimized inference chip</a>, a significant move towards custom silicon for accelerating model deployment. On the software front, <a href="https://arxiv.org/abs/2606.24957">Dustin</a> introduces a sparse verification framework for long-context speculative decoding, achieving substantial speedups by reducing KV cache loading. Architectural diversity is also emerging, with <a href="https://arxiv.org/abs/2606.25331">iLLaDA</a>, an 8B masked diffusion language model, demonstrating competitive performance against autoregressive models after training with fully bidirectional attention. NVIDIA similarly released <a href="https://www.reddit.com/r/LocalLLaMA/comments/1uf4azy/nvidia_has_released_nemotron_twotower_30b_a3b_base_bf16/">Nemotron-TwoTower-30B-A3B-Base-BF16</a>, another diffusion-based language model. Training efficiency is not overlooked, as the <a href="https://www.reddit.com/r/LocalLLaMA/comments/1uep96s/gefen_is_a_dropin_replacement_for_the_adamw/">Gefen optimizer</a> claims an 8x memory reduction, crucial for scaling model development. For local inference, Google's <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ueuki7/gemma426ba4b_31bqat_uncensored_balanced_are_out/">Gemma4-26B-A4B &amp; 31B-QAT</a> models offer significant speed boosts through quantization. The hardware landscape continues to evolve, with reports suggesting <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ufhu3s/report_apple_to_skip_m6_promax_chips_fasttrack_m7/">Apple will fast-track its M7 chip for local AI</a>, underscoring the importance of on-device processing. Even small models are seeing dramatic improvements, with a <a href="https://www.reddit.com/r/LocalLLaMA/comments/1uf6ajj/new_sampler_verifier_drastically_improves_tiny/">new sampler and verifier drastically enhancing tiny 0.5B model coding performance</a>, highlighting that optimization gains are not exclusive to frontier models.</p>
+<h4>Why it matters</h4>
+<p>The tight integration of hardware and software optimization, including new architectures and specialized chips, is critical for pushing the boundaries of AI performance and deployment efficiency.</p>
+<h3>Trust, Integrity, and the Adversarial Frontier</h3>
+<p>As AI capabilities expand, so do the challenges related to trust, integrity, and the adversarial manipulation of models. A major incident surfaced with <a href="https://www.reuters.com/world/china/anthropic-says-alibaba-illicitly-extracted-claude-ai-model-capabilities-2026-06-24/">Anthropic accusing Alibaba of illicitly extracting Claude AI model capabilities</a>, highlighting the escalating stakes of intellectual property protection and model security. Beyond direct theft, subtle influences can shape model behavior: research shows how <a href="https://arxiv.org/abs/2606.24890">small Wikipedia edits can measurably shape LLM values</a> on specific topics, raising concerns about data poisoning and ideological alignment. The deployment of AI in high-stakes domains, such as medical prescribing, introduces complex liability and ethical considerations, with the "<a href="https://arxiv.org/abs/2606.25108">Clinician's Veto</a>" paper arguing for architectural requirements like calibrated confidence and inferential transparency to ensure adoption and accountability. The integrity of human-AI interactions is also under scrutiny, as evidenced by the observation of <a href="https://simonwillison.net/2026/Jun/24/tom-macwright/#atom-everything">LLM-generated resumes and portfolios</a> that lack authenticity, making it difficult to assess genuine human skill. Defending against adversarial attacks remains an active area: <a href="https://arxiv.org/abs/2606.25182">detecting jailbreaks from entropy dynamics</a> investigates internal model representations, finding that jailbreak-relevant signals are concentrated in intermediate layers, challenging the "detection is control" premise. Similarly, <a href="https://arxiv.org/abs/2606.25152">test-time adaptation for AI text detection</a> addresses the continual distribution shift in AI-generated text, outperforming state-of-the-art supervised detectors against adversarial humanization. The reliability of LLM-based scientific peer review is also questioned, with a survey outlining <a href="https://arxiv.org/abs/2606.25057">robustness risks like prompt injection and reward hacking</a>.</p>
+<h4>Why it matters</h4>
+<p>Maintaining model integrity, ensuring trustworthiness, and defending against adversarial manipulation are becoming paramount as AI systems integrate into critical infrastructure and high-stakes decision-making processes.</p>
+<h3>Rigorous Evaluation and the Science of AI Behavior</h3>
+<p>Understanding and controlling AI models requires increasingly sophisticated evaluation methods and a deeper scientific inquiry into their internal mechanisms. A new study demonstrates that LLMs can <a href="https://arxiv.org/abs/2606.24973">outperform human examiners on real, double-marked GCSE benchmarks</a>, including handwritten work, suggesting a new frontier for automated assessment. Beyond performance, understanding <em>how</em> models reason is crucial: <a href="https://arxiv.org/abs/2606.24965">Project Auto-World</a> uses LLMs to automate benchmark generation for neural relational reasoners, discovering increasingly challenging problem instances. Psychophysical paradigms, traditionally used for human cognition, are now applied to VLMs to see <a href="https://arxiv.org/abs/2606.25066">if they search like humans</a>, using "reasoning tokens" as an analog for reaction time. For multimodal emotion reasoning, <a href="https://arxiv.org/abs/2606.25325">OPPO</a> (Omni-Perception Policy Optimization) explicitly optimizes multimodal perception, addressing issues of underutilization and unfaithful behavior. In a domain where precision is paramount, a rigorous benchmark for <a href="https://arxiv.org/abs/2606.25374">spacecraft fault-tolerant control</a> reveals that structured estimate-then-control designs significantly outperform end-to-end learned methods, emphasizing the need for robust, verifiable solutions in safety-critical systems. The challenge of evaluating continual learning agents is addressed by <a href="https://arxiv.org/abs/2606.24893">AgentOdyssey</a>, which procedurally generates open-ended text games to measure knowledge acquisition, memory, and exploration.</p>
+<h4>Why it matters</h4>
+<p>Advanced evaluation techniques and scientific probes into AI's cognitive and behavioral mechanisms are essential for building reliable, interpretable, and generalizable intelligent systems.</p>
+<h3>Trade-offs &amp; Evolution: Open vs. Closed Ecosystems</h3>
+<p>The tension between proprietary, closed-source AI development and the open-source movement continues to define the industry's landscape, with recent events highlighting both the benefits and risks of each approach. The <a href="https://www.reuters.com/world/china/anthropic-says-alibaba-illicitly-extracted-Claude-AI-model-capabilities-2026-06-24/">Anthropic accusation against Alibaba</a> vividly illustrates the vulnerabilities and high stakes involved in protecting proprietary model IP. This incident underscores the challenges faced by closed-source developers in maintaining control over their innovations when model capabilities can be "extracted." Conversely, leaders like Matei Zaharia and Reynold Xin from Databricks argue for an <a href="https://www.latent.space/p/databricks">open frontier ecosystem</a>, believing it is essential for every company to build "Agent Clouds" and foster broader innovation. The open-source community continues to push boundaries, with new models like <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ufc9vp/ornith10_released_on_hugging_face/">Ornith-1.0</a> and NVIDIA's <a href="https://www.reddit.com/r/LocalLLaMA/comments/1uf4azy/nvidia_has_released_nemotron_twotower_30b_a3b_base_bf16/">Nemotron-TwoTower-30B</a> being released on platforms like Hugging Face, alongside discussions on optimizing <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ueuki7/gemma426ba4b_31bqat_uncensored_balanced_are_out/">Gemma4 for local inference</a>. The debate centers on whether innovation is best served by tightly controlled, high-performance models or by democratizing access to foundational AI capabilities, with the former facing increasing IP challenges and the latter grappling with quality control and potential misuse.</p>
+<h4>Why it matters</h4>
+<p>The ongoing struggle between open and closed AI ecosystems will dictate the pace of innovation, the distribution of power, and the overall security posture of the AI landscape.</p>
+<p>The Bottom Line: The rapid maturation of AI capabilities is forcing a reckoning with both the technical and ethical infrastructure required for widespread, trustworthy deployment.</p>
+        </div>
+
+        <div class="section-card" id="finance-news">
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+            </div>
+            <p>Today's market narrative is defined by a deepening divergence within the AI sector, where memory chip demand drives some gains while other tech giants face valuation and talent challenges. This internal tech rotation occurs against a backdrop of escalating geopolitical risk in the Strait of Hormuz, which is pushing oil prices higher and threatening to reignite inflationary pressures, simultaneously exposing liquidity concerns in the private credit market.</p>
+<h3>AI's Shifting Tides: From Broad Enthusiasm to Selective Scrutiny</h3>
+<p>The AI narrative is maturing, revealing a bifurcated impact across the tech sector. Micron's strong Q3 earnings and optimistic forecast <a href="https://www.ft.com/content/9b739203-3274-43f1-b61e-c1905061d32a">Micron posts 15-fold profit surge</a>, <a href="https://finance.yahoo.com/video/big-tech-stocks-tumble-while-191535676.html">Micron continues to gain on Q3 earnings</a> underscore that memory chips are a structural story for AI <a href="https://www.bloomberg.com/news/videos/2026-06-25/memory-is-a-structural-story-for-ai-lovell-video">Memory is a Structural Story for AI</a>. This demand is directly impacting supply chains, leading Apple to increase MacBook and iPad prices by 20% due to chip shortages <a href="https://www.ft.com/content/0f067265-2baf-4b6e-8fb2-ed56daef6f3c">Apple increases MacBook and iPad prices by 20%</a>.</p>
+<p>Conversely, some of the largest tech names are showing cracks. Google's stock swooned amid worries over 2027 earnings estimates <a href="https://finance.yahoo.com/m/318cac82-2862-341c-8437-75f884ab0bd5/yardeni%3A-here%27s-what%27s-behind.html">Yardeni: Here's What's Behind The June Swoon Of Google Stock</a> and the departure of five top AI researchers in a week <a href="https://247wallst.com/investing/2026/06/25/5-top-google-ai-brains-bolted-in-7-days-as-gemini-falls-behind-and-alphabet-stock-is-feeling-it/">5 Top Google AI Brains Bolted in 7 Days</a>. Microsoft also saw its stock drop, with some analysts questioning its AI-driven valuation <a href="https://www.fool.com/investing/2026/06/25/why-microsoft-stock-just-dropped/">Why Microsoft Stock Just Dropped</a>. The market is re-evaluating AI beneficiaries, with Qualcomm making its biggest AI bet yet to double non-handset revenue by 2029 <a href="https://www.fool.com/investing/2026/06/25/qualcomm-just-made-its-biggest-ai-bet-yet-and-investors-are-loving-it/">Qualcomm Just Made Its Biggest AI Bet Yet</a>, and Marvell Technology touted for trillion-dollar potential in AI chips <a href="https://www.fool.com/investing/2026/06/25/marvell-technology-has-trillion-dollar-potential-h/">Marvell Technology Has Trillion-Dollar Potential</a>. This contrasts with the ongoing debate about AMD's high valuation relative to Nvidia <a href="https://www.fool.com/investing/2026/06/25/amd-is-trading-at-xxx-forward-earnings-while-nvidi/">AMD Is Trading at 97 Times Forward Earnings While Nvidia Trades at 21 Times</a>. Nvidia CEO Jensen Huang's comment that the "next millionaires will be plumbers and electricians, not coders" <a href="https://247wallst.com/personal-finance/2026/06/25/nvidias-ceo-says-the-next-millionaires-will-be-plumbers-and-electricians-not-coders/">Nvidia’s CEO Says the Next Millionaires Will Be Plumbers and Electricians</a> adds a provocative twist, suggesting a shift in economic value creation beyond traditional tech roles, even as AI impacts the broader workforce <a href="https://seekingalpha.com/news/4607510-what-will-ais-impact-on-college-graduates-and-the-workforce-look-like?">What will AI's impact on college graduates and the workforce look like?</a>.</p>
+<h4>Why it matters</h4>
+<p>The market is moving from a broad AI beta trade to a more discerning alpha hunt, differentiating between true structural beneficiaries and those facing competitive or talent-related headwinds, impacting sector leadership and capital allocation.</p>
+<h3>Geopolitical Tensions and Inflationary Pressures Resurface</h3>
+<p>Geopolitical risks are escalating, particularly in the Middle East, threatening global energy supplies and reigniting inflation concerns. Iran has told ships in the Strait of Hormuz to turn back <a href="https://www.ft.com/content/5abcb3c1-8ce8-470f-8a37-f47af58b2f7c">Iran tells ships in Strait of Hormuz to turn back</a>, with at least one vessel struck by a projectile <a href="https://www.bloomberg.com/news/articles/2026-06-25/ships-appear-to-u-turn-while-trying-to-exit-hormuz-by-oman-route">Ship Struck in Hormuz as Oil Supertankers Turn Back Again</a>. This assertion of control over the vital waterway is sending oil prices higher <a href="https://www.marketwatch.com/story/iran-tightens-its-grip-on-strait-of-hormuz-sending-oil-higher-f3bc53a1?mod=mw_rss_topstories">Iran tightens its grip on Strait of Hormuz, sending oil prices higher</a>, as traders monitor the safety of cargoes <a href="https://www.bloomberg.com/news/articles/2026-06-24/latest-oil-market-news-and-analysis-for-june-25">Oil Gains as Ship Attack Raises Concern About Hormuz Reopening</a>. This comes amidst ongoing US-Iran peace negotiations, suggesting a complex and volatile situation. The market is also digesting Apple's price hikes on MacBooks and iPads, attributed to memory chip shortages <a href="https://www.ft.com/content/0f067265-2baf-4b6e-8fb2-ed56daef6f3c">Apple increases MacBook and iPad prices by 20%</a>, which some interpret as a signal that inflation will not slow quickly, even with cheaper gas <a href="https://www.marketwatch.com/story/apples-price-hikes-suggest-inflation-wont-slow-quickly-even-as-gas-gets-cheaper-d2c7f4e2?mod=mw_rss_topstories">Apple’s price hikes suggest inflation won’t slow quickly</a>.</p>
+<h4>Why it matters</h4>
+<p>Heightened geopolitical instability in critical shipping lanes directly impacts energy costs and supply chains, posing a renewed inflationary threat that could force central banks to maintain tighter monetary policies for longer.</p>
+<h3>Private Credit's Cracks and Broader Market Liquidity</h3>
+<p>The once-sleepy private credit market is showing signs of strain, raising concerns about broader financial stability. Morgan Stanley capped investor withdrawals at 5% from its $7 billion private credit fund, and Apollo Global Management is again limiting redemptions from its largest non-traded retail private credit fund <a href="https://247wallst.com/investing/2026/06/25/a-private-credit-veteran-warns-a-canary-in-the-coal-mine-is-coming-as-a-1-8-trillion-market-cracks/">A Private Credit Veteran Warns ‘A Canary in the Coal Mine Is Coming’</a>. Ares Management also curbed withdrawals from one of its private credit funds for the second consecutive quarter after redemption requests rose to 14.4% <a href="https://www.bloomberg.com/news/videos/2026-06-25/ares-private-credit-fund-caps-redemptions-after-14-video">Ares Private Credit Fund Caps Redemptions After 14% Seek to Exit</a>. This signals liquidity issues within the $1.8 trillion industry. Meanwhile, Allianz CIO warns that SpaceX's bond sale signals markets are in "bubble territory" <a href="https://www.ft.com/content/40b0666b-8214-4162-a82b-d74ba464eabc">SpaceX bond sale signals markets are in ‘bubble territory’</a>, and investors are punishing space stocks due to second thoughts about lofty valuations <a href="https://www.marketwatch.com/story/spacex-fomo-is-officially-over-space-stocks-across-the-board-are-getting-punished-77234fe8?mod=mw_rss_topstories">SpaceX FOMO is officially over</a>. This sentiment extends to other overhyped IPOs, with warnings that OpenAI and Anthropic could follow suit <a href="https://www.marketwatch.com/story/spacex-is-a-bad-buy-why-openai-and-anthropic-will-be-too-2448ea73?mod=mw_rss_topstories">SpaceX stock is a terrible buy — what that actually means for the bull market</a>.</p>
+<h4>Why it matters</h4>
+<p>Liquidity constraints in private credit, coupled with skepticism about high valuations in private markets, suggest a potential deleveraging or repricing risk that could spill over into broader credit and equity markets.</p>
+<h3>Trade-offs &amp; Evolution: Market Efficiency and Retail Influence</h3>
+<p>The market's efficiency is being challenged by the rise of retail investors and the increasing role of AI. A Goldman Sachs quant suggests that amateur investors are making the market less efficient, creating opportunities for those who know where to look, but also compounding problems with AI <a href="https://www.marketwatch.com/story/amateur-investors-are-changing-how-the-stock-market-works-thats-creating-opportunities-for-those-who-know-where-to-look-34d78484?mod=mw_rss_topstories">Amateur investors are changing how the stock market works</a>. This contrasts with the traditional view of market efficiency and suggests a new dynamic where information asymmetry can be exploited. The discussion around "concentration risk" in the market, particularly regarding large tech stocks, continues, with some arguing it's too early to worry <a href="https://www.bloomberg.com/news/videos/2026-06-25/too-early-to-worry-about-concentration-risk-doyle-video">Too Early to Worry About Concentration Risk: Doyle</a>. However, the recent volatility and rotation within tech, where some megacaps tumble while others surge <a href="https://www.bloomberg.com/news/articles/2026-06-24/us-stock-futures-surge-on-micron-s-strong-forecast-markets-wrap">Stocks Whipsaw as Micron Surges While Apple Sinks</a>, suggests that concentration risk is indeed a live issue, albeit one with shifting components.</p>
+<h4>Why it matters</h4>
+<p>The evolving market structure, influenced by retail participation and AI, introduces new layers of complexity and potential inefficiencies, requiring a re-evaluation of traditional investment strategies and risk management.</p>
+<p>THE BOTTOM LINE: The market is navigating a complex landscape of AI-driven sector rotation, re-emerging geopolitical risks, and growing liquidity concerns in private markets, all while adapting to a less efficient, retail-influenced trading environment.</p>
+        </div>
+
+        <div class="recent-briefings">
+            <h3>Recent Briefings</h3>
+            <div class="recent-list">
+                <a href="2026-06-24-PM.html"><span>2026-06-24 Evening Briefing</span> <span class="date">Read →</span></a>
+                <a href="2026-06-24-AM.html"><span>2026-06-24 Morning Briefing</span> <span class="date">Read →</span></a>
+                <a href="2026-06-23-PM.html"><span>2026-06-23 Evening Briefing</span> <span class="date">Read →</span></a>
+                <a href="index.html"><span>View All Briefings</span> <span class="date">Archive →</span></a>
+
+            </div>
+        </div>
+    </div>
+
+    </body>
+</html>
