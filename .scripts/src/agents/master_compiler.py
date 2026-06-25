@@ -104,18 +104,20 @@ class MasterCompiler:
 
         # Rate limit errors get more retries and longer backoff
         rate_limit_max_retries = max(max_retries, 5)
-        rate_limit_count = 0
+        consecutive_errors = 0
 
         for attempt in range(rate_limit_max_retries):
             try:
-                return self._get_active_client().chat.completions.create(
+                res = self._get_active_client().chat.completions.create(
                     model=self._get_active_model(),
                     messages=messages,
                     temperature=temperature,
                     max_tokens=max_tokens,
                 )
+                consecutive_errors = 0
+                return res
             except RateLimitError as e:
-                rate_limit_count += 1
+                consecutive_errors += 1
                 err_str = str(e)
                 is_quota_exhausted = "quota" in err_str.lower() or "exceeded" in err_str.lower()
 
@@ -136,7 +138,7 @@ class MasterCompiler:
                 print(f"[MasterCompiler] Rate limited (attempt {attempt + 1}/{rate_limit_max_retries}): {e}")
 
                 # After 2 consecutive rate limits, try fallback before exhausting retries
-                if rate_limit_count >= 2 and not self._using_fallback:
+                if consecutive_errors >= 2 and not self._using_fallback:
                     if self._switch_to_fallback():
                         continue
 
@@ -146,8 +148,16 @@ class MasterCompiler:
                 time.sleep(wait_time)
                 backoff = min(backoff * 2, 300)  # cap at 5 minutes
             except Exception as e:
-                print(f"[MasterCompiler] API call failed (attempt {attempt + 1}/{max_retries}): {e}")
-                if attempt == max_retries - 1:
+                consecutive_errors += 1
+                print(f"[MasterCompiler] API call failed (attempt {attempt + 1}/{rate_limit_max_retries}): {e}")
+                
+                # FOOL PROOF FIX: switch to fallback on ANY repeated error, not just rate limits!
+                if consecutive_errors >= 2 and not self._using_fallback:
+                    print(f"[MasterCompiler] Persistent errors detected. Switching to fallback...")
+                    if self._switch_to_fallback():
+                        continue
+                        
+                if attempt == rate_limit_max_retries - 1:
                     raise
                 jitter = random.uniform(0, backoff * 0.1)
                 print(f"[MasterCompiler] Retrying in {backoff + jitter:.1f} seconds...")
