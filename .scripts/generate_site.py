@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+os.environ['OBJC_DISABLE_INITIALIZE_FORK_SAFETY'] = 'YES'
 import subprocess
 import re
 import glob
