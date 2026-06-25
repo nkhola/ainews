@@ -77,7 +77,7 @@ class MasterCompiler:
                     credentials.refresh(Request())
                     
                     hostname = "aiplatform.googleapis.com" if self.vertex_location == "global" else f"{self.vertex_location}-aiplatform.googleapis.com"
-                    base_url = f"https://{hostname}/v1/projects/{self.vertex_project_id}/locations/{self.vertex_location}/endpoints/openapi"
+                    base_url = f"https://{hostname}/v1beta1/projects/{self.vertex_project_id}/locations/{self.vertex_location}/endpoints/openapi"
                     
                     self._client = OpenAI(
                         api_key=credentials.token,
