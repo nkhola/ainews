@@ -197,83 +197,56 @@ class MasterCompiler:
         return full_result
 
     def synthesize_news(self, raw_data, topic="ai", time_label="Morning"):
-        print(f"[MasterCompiler] Pretending to synthesize {topic} ({time_label}) briefing...")
-        if topic == "ai" and time_label == "Morning":
-            return """### Executive Summary
-The frontier model landscape is increasingly defined by a convergence of hardware optimization and specialized agentic capabilities. While OpenAI and Broadcom's custom silicon venture signals a long-term strategic shift towards vertical integration for inference efficiency, Anthropic's integration of persistent, multiplayer agents via Claude Tag and DeepMind's introduction of computer use in Gemini 3.5 Flash point to a near-term future dominated by autonomous, proactive systems embedded directly within enterprise workflows.
+        guidance = AI_GUIDANCE if topic == "ai" else FINANCE_GUIDANCE
+        
+        system_prompt = MASTER_SYSTEM_PROMPT.format(
+            persona=guidance["persona"],
+            context_requirement=guidance["context_requirement"],
+            topic_specific_guidance=guidance["topic_specific_guidance"]
+        )
+        
+        # Inject time context into the system prompt
+        time_context = f"This is a {time_label} briefing."
+        full_system_prompt = f"{system_prompt}\n\n{time_context}"
 
-### Hardware Vertical Integration & The Inference Bottleneck
-The announcement of [Jalapeño, a custom LLM-optimized inference chip co-developed by OpenAI and Broadcom](https://openai.com/index/openai-broadcom-jalapeno-inference-chip), marks a critical inflection point in the AI hardware supply chain. As model sizes scale logarithmically and token generation demands scale exponentially, relying solely on general-purpose GPUs for inference is becoming economically untenable. This custom silicon play is a direct attempt to bend the inference cost curve, optimizing for memory bandwidth and low-latency token generation at scale.
-
-#### Why it matters
-By securing proprietary silicon optimized specifically for transformer architectures, OpenAI is moving to insulate itself from broader supply chain volatility while fundamentally improving the unit economics of deploying frontier models at enterprise scale.
-
-### Agentic Architectures: From Chatbots to Proactive Participants
-The paradigm is shifting from reactive, single-turn chat interfaces to proactive, persistent agentic workflows. DeepMind's [introduction of computer use in Gemini 3.5 Flash](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-computer-use-gemini-3-5-flash/) represents a significant leap in a model's ability to navigate unstructured UI environments. Concurrently, Anthropic has launched [Claude Tag, bringing multiplayer, proactive, and persistent agents directly into Slack](https://www.anthropic.com/news/introducing-claude-tag). This moves the LLM from an external tool to a continuously participating collaborator within existing communication channels.
-
-#### Why it matters
-These developments indicate a rapid maturation of the "Agent Cloud." The value of a model is no longer just its parametric knowledge, but its ability to execute complex, multi-step actions and maintain stateful context within human-in-the-loop systems.
-
-### Trade-offs & Evolution: Intellectual Property vs. Open Ecosystems
-As capabilities advance, the tension over intellectual property and model extraction is escalating. [Anthropic's allegation that Alibaba illicitly extracted Claude's capabilities](https://www.reuters.com/world/china/anthropic-says-alibaba-illicitly-extracted-claude-ai-model-capabilities-2026-06-24/) highlights the vulnerability of API-based business models to model distillation and data scraping by sophisticated state-backed actors. This contrasts sharply with the [Databricks perspective that the frontier ecosystem must remain open](https://www.latent.space/p/databricks) to foster broader adoption of agentic architectures. We are witnessing a bifurcation: closed labs fiercely defending their proprietary weights and training data, while the open-source community, driven by platforms like Databricks, pushes for commoditized foundation models to enable localized, sovereign AI deployments.
-
-### The Bottom Line
-The competitive moat in AI is shifting from pure parameter count to the combined advantages of proprietary inference silicon and deep integration into stateful, multi-agent enterprise workflows."""
-        elif topic == "finance" and time_label == "Morning":
-            return """### Executive Summary
-The geopolitical fragmentation of global supply chains continues to manifest in market volatility, particularly as the US-China tech rivalry intensifies and resource nationalism takes center stage. Concurrently, shifting macroeconomic indicators, specifically regarding inflation and central bank policy, are forcing a rapid re-evaluation of long-duration asset valuations and sector rotations.
-
-### The Weaponization of the Supply Chain
-The "Pax Silica" initiative, which sees [EU allies joining a US pact to break reliance on Chinese AI supply chains](https://www.ft.com/content/681c33a0-dcb4-4a81-9aa0-8a9172f7e5bc), represents a structural, likely permanent, realignment of global trade. The immediate retaliation by Beijing, which included [targeting US rare earths firms](https://www.bloomberg.com/news/videos/2026-06-23/china-targets-us-rare-earths-firms-in-signal-to-pentagon-video) and [throttling key mineral exports to Japan](https://www.bloomberg.com/news/articles/2026-06-23/xi-pressures-takaichi-by-throttling-key-mineral-exports-to-japan), underscores the vulnerability of the technology sector to strategic resource embargoes. 
-
-#### Why it matters
-This tit-for-tat escalation confirms that the semiconductor and critical mineral supply chains are now primary theaters of geopolitical conflict, mandating that investors price a significant "sovereignty premium" into hardware manufacturers and resource extractors.
-
-### Capital Allocation Amidst Uncertainty
-The market's appetite for high-growth, capital-intensive ventures remains robust, yet increasingly discerning. The successful pricing of [SpaceX's $25 billion debt deal, one of the year's largest AI-adjacent offerings](https://www.marketwatch.com/story/spacex-reveals-pricing-details-for-what-could-be-one-of-the-years-biggest-debt-deals-8c027a85?mod=mw_rss_topstories), indicates ample liquidity for perceived category winners. However, the broader market structure is shifting. The inclusion of [Alphabet's stock in the Dow Jones Industrial Average](https://www.marketwatch.com/story/alphabets-stock-is-set-to-join-the-dow-heres-which-company-is-getting-the-boot-73453ca7?mod=mw_rss_topstories) reflects the undeniable macroeconomic dominance of mega-cap tech, even as warnings surface regarding the [hidden decay and concentration risks in passive tech ETFs](https://247wallst.com/investing/2026/06/23/youre-probably-paying-twice-for-nvidia-apple-and-microsoft-without-realizing-it/).
-
-#### Why it matters
-Investors are navigating a complex bifurcation: enormous capital is available for structural winners, but the concentration of market cap in a few tech giants increases the systemic vulnerability to sector-specific shocks or regulatory interventions.
-
-### The Bottom Line
-Geopolitical friction is no longer a tail risk but the primary driver of supply chain restructuring and capital reallocation, fundamentally altering the risk profile of the technology and materials sectors."""
-        elif topic == "ai" and time_label == "Evening":
-            return """### Executive Summary
-The rapid proliferation of local LLMs and browser-based inference is democratizing advanced capabilities, challenging the dominance of centralized cloud APIs. Simultaneously, the integration of rigorous, neuro-symbolic reasoning into agentic workflows is addressing the critical flaws of current LLM-based autonomous systems.
-
-### The Rise of the Sovereign Agent
-The barrier to entry for robust local inference continues to plummet. We are seeing remarkable optimization, such as [the porting of the Moebius 0.2B image model to run entirely in the browser via WebGPU](https://simonwillison.net/2026/Jun/22/porting-moebius/#atom-everything). Furthermore, the development of [persistent SQLite databases in the browser using OPFS and Pyodide](https://simonwillison.net/2026/Jun/23/opfs-pyodide/#atom-everything) creates a foundation for sophisticated, offline-first web applications that leverage local models for data processing without privacy compromises. 
-
-#### Why it matters
-This decoupling of capability from cloud infrastructure enables "sovereign agents" that can process sensitive local data with minimal latency, unlocking use cases in healthcare, legal, and personal finance that were previously blocked by data residency concerns.
-
-### Neuro-Symbolic Integration for Reliable Autonomy
-Current LLM agents struggle with hallucinations and logical drift during multi-step execution. The introduction of [Neuro-Symbolic Drive, a framework that supervises a driving VLA with rule-grounded reasoning traces](https://arxiv.org/abs/2606.23938), represents a vital correction. By forcing the neural model to adhere to the explicit, deterministic logic of classical rule-based planners, the system achieves a structurally sound connection between its reasoning rationale and its generated motion.
-
-#### Why it matters
-The transition from fragile, purely probabilistic LLM agents to reliable, neuro-symbolic autonomous systems is the necessary prerequisite for deploying AI in safety-critical environments like autonomous driving and robotic surgery.
-
-### Trade-offs & Evolution: Red-Teaming the Agentic System
-As models transition into autonomous agents, traditional evaluation metrics fail. The [introduction of RIFT-Bench for dynamic red-teaming of Agentic AI Systems](https://arxiv.org/abs/2606.23927) highlights that vulnerabilities now lie in the system's architecture and decision-making loop, not just the base model's weights. We are evolving from evaluating *what a model knows* to evaluating *what a system can be tricked into doing*, requiring a shift from static benchmarks to adversarial, graph-based security audits.
-
-### The Bottom Line
-The future of AI deployment is increasingly local, specialized, and neuro-symbolic, prioritizing verifiable reliability and privacy over raw, unstructured scale."""
-        elif topic == "finance" and time_label == "Evening":
-            return """### Executive Summary
-Energy security and infrastructure resilience are emerging as the defining macro constraints on continued economic expansion and technological scaling. The intersection of surging power demand from the AI sector and the fragility of global energy transit routes is creating a new paradigm for infrastructure investment.
-
-### The AI Power Squeeze and Nuclear Renaissance
-The staggering energy requirements of frontier AI models are forcing a structural shift in corporate energy procurement. The [landmark agreement between Constellation Energy and Walmart for 176 megawatts of nuclear power](https://www.fool.com/investing/2026/06/23/constellation-energy-inks-a-nuclear-power-deal-with-walmart-heres-what-investors-need-to-know/?.tsrc=rss) exemplifies the desperation for reliable, carbon-free baseload generation. This is occurring against a backdrop of increasing grid instability, as highlighted by the [UK's rare summer power supply warning amidst heat wave strains](https://www.bloomberg.com/news/articles/2026-06-23/uk-issues-energy-supply-warning-as-heat-wave-strains-power-grid).
-
-#### Why it matters
-The technological bottleneck for AI scaling is shifting from silicon fabrication to power generation and transmission, making long-term purchase agreements with nuclear and diverse renewable providers a critical strategic moat for hyperscalers and heavy industry.
-
-### Geopolitical Chokepoints and Energy Logistics
-While the AI sector scrambles for domestic power, the broader economy remains hostage to vulnerable global transit routes. The revelation that [nearly 1,200 cargo ships and $125 billion in goods were stranded by the closure of the Strait of Hormuz](https://www.ft.com/content/4d3dd2b7-cb6b-410b-8c15-203904f32294) exposes the extreme fragility of maritime logistics. Even with [reports of peace talks easing transit](https://www.bloomberg.com/news/articles/2026-06-23/latest-oil-market-news-and-analysis-for-june-24), the systemic risk has prompted calls from industry leaders, like the CEO of TotalEnergies, to [invest heavily in bypass pipelines across the Middle East](https://seekingalpha.com/news/4606441-totalenergies-must-spend-on-middle-east-pipelines-that-bypass-hormuz-ceo-says?utm_source=feed_news_all&amp;utm_medium=referral&amp;feed_item_type=news).
-
-#### Why it matters
-The persistent threat to maritime chokepoints is driving a massive, long-term capital expenditure cycle aimed at rerouting global energy logistics and building redundant infrastructure, structurally increasing the baseline cost of global trade.
-
-### The Bottom Line
-The dual imperatives of securing massive power generation for the AI transition and mitigating the risk of geopolitical chokepoints in the fossil fuel supply chain are initiating a historic, multi-decade infrastructure supercycle."""
+        print(f"[MasterCompiler] Synthesizing {topic} ({time_label}) briefing with {self._get_active_model()}...")
+        
+        messages = [
+            {"role": "system", "content": full_system_prompt},
+            {
+                "role": "user",
+                "content": (
+                    f"Here is today's raw data. Synthesize it into the briefing.\n\n"
+                    f"{raw_data}\n\n"
+                    f"IMPORTANT FINAL REMINDERS:\n"
+                    f"- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
+                    f"- NEVER use raw URLs in brackets like `[https://url]`. ALWAYS use standard inline markdown links."
+                ),
+            },
+        ]
+        
+        result = self._generate_with_continuation(messages, temperature=0.4)
+        print(f"[MasterCompiler] Done. ({len(result)} chars)")
+        
+        # EVAL LOOP: Ensure link formatting is flawless
+        print(f"[MasterCompiler] Running formatting eval loop...")
+        eval_system_prompt = (
+            "You are a strict formatting evaluator. Your job is to review the following markdown text "
+            "and ensure it perfectly adheres to the link formatting rules.\n\n"
+            "LINK FORMATTING RULES:\n"
+            "- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
+            "- NEVER use raw URLs in brackets like `[https://url]`. If you see them, convert them to `[Source](https://url)` "
+            "or infer a descriptive text from the context.\n"
+            "- NEVER use `[1]`, `[2]` etc.\n\n"
+            "Return ONLY the corrected markdown. Do not add any preamble, commentary, or backticks around the output."
+        )
+        
+        eval_messages = [
+            {"role": "system", "content": eval_system_prompt},
+            {"role": "user", "content": result},
+        ]
+        
+        final_result = self._generate_with_continuation(eval_messages, temperature=0.1)
+        print(f"[MasterCompiler] Eval loop done. ({len(final_result)} chars)")
+        return final_result
 
