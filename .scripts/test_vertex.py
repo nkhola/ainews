@@ -4,7 +4,7 @@ from openai import OpenAI
 
 def test_vertex():
     vertex_project_id = os.getenv("VERTEX_PROJECT_ID")
-    vertex_location = os.getenv("VERTEX_LOCATION") or "us-central1"
+    vertex_location = os.getenv("VERTEX_LOCATION") or "global"
     
     print(f"Testing Vertex AI integration for project: {vertex_project_id}")
     print(f"Location: {vertex_location}")
@@ -28,9 +28,9 @@ def test_vertex():
             base_url=base_url,
         )
         
-        print("Sending 'hello' to google/gemini-3.5-flash-001...")
+        print("Sending 'hello' to google/gemini-3.5-flash...")
         response = client.chat.completions.create(
-            model="google/gemini-3.5-flash-001",
+            model="google/gemini-3.5-flash",
             messages=[{"role": "user", "content": "Hello, this is a test. Reply with 'vertex success'."}],
             temperature=0.0
         )

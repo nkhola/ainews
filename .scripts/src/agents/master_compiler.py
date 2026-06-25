@@ -47,10 +47,10 @@ FINANCE_GUIDANCE = {
 class MasterCompiler:
     def __init__(self):
         self.vertex_project_id = os.getenv("VERTEX_PROJECT_ID")
-        self.vertex_location = os.getenv("VERTEX_LOCATION") or "us-central1"
+        self.vertex_location = os.getenv("VERTEX_LOCATION") or "global"
         
         if self.vertex_project_id:
-            self.model = os.getenv("LLM_MODEL") or "google/gemini-3.5-flash-001"
+            self.model = os.getenv("LLM_MODEL") or "google/gemini-3.5-flash"
         else:
             self.model = os.getenv("LLM_MODEL") or "deepseek/deepseek-chat"
             
