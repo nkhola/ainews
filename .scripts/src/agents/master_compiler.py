@@ -70,7 +70,10 @@ class MasterCompiler:
                 try:
                     import google.auth
                     from google.auth.transport.requests import Request
-                    credentials, project_id = google.auth.default()
+                    # MUST specify scopes, otherwise generateAccessToken returns 400 Invalid Argument
+                    credentials, project_id = google.auth.default(
+                        scopes=['https://www.googleapis.com/auth/cloud-platform']
+                    )
                     credentials.refresh(Request())
                     
                     base_url = f"https://{self.vertex_location}-aiplatform.googleapis.com/v1beta1/projects/{self.vertex_project_id}/locations/{self.vertex_location}/endpoints/openapi"
