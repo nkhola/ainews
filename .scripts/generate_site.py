@@ -43,13 +43,13 @@ def generate_daily_briefing():
     # 1. Fetch & Compile AI News
     print("Fetching AI News...")
     ai_crawler = NewsCrawler()
-    ai_raw = ai_crawler.get_latest_news(time_label=time_label)
+    ai_raw = ai_crawler.get_latest_news()
     ai_md = compiler.synthesize_news(ai_raw, topic="ai", time_label=time_label)
 
     # 2. Fetch & Compile Finance News
     print("Fetching Finance News...")
     fin_crawler = FinanceCrawler()
-    fin_raw = fin_crawler.get_latest_news(time_label=time_label)
+    fin_raw = fin_crawler.get_latest_news()
     fin_md = compiler.synthesize_news(fin_raw, topic="finance", time_label=time_label)
 
     # Calculate reading time (rough estimate: 200 words per minute)
