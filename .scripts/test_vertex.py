@@ -28,9 +28,9 @@ def test_vertex():
             base_url=base_url,
         )
         
-        print("Sending 'hello' to google/gemini-3.5-flash...")
+        print("Sending 'hello' to google/gemini-3.5-flash-001...")
         response = client.chat.completions.create(
-            model="google/gemini-3.5-flash",
+            model="google/gemini-3.5-flash-001",
             messages=[{"role": "user", "content": "Hello, this is a test. Reply with 'vertex success'."}],
             temperature=0.0
         )
