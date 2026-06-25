@@ -10,10 +10,13 @@ class FinanceCrawler:
         with open(config_path, "r") as f:
             self.config = yaml.safe_load(f)["sources"]["finance"]
 
-    def get_latest_news(self):
+    def get_latest_news(self, time_label=None):
         """Aggregate all finance sources into a structured text block for the LLM."""
         print("[FinanceCrawler] Fetching finance news from all sources...")
         items = []
+        eastern = timezone(timedelta(hours=-4))
+        now_est = datetime.now(eastern)
+        
         for url in self.config.get("rss_feeds", []):
             try:
                 feed = feedparser.parse(url)
@@ -23,9 +26,21 @@ class FinanceCrawler:
                     if struct_time:
                         try:
                             dt = datetime.fromtimestamp(calendar.timegm(struct_time), timezone.utc)
-                            now = datetime.now(timezone.utc)
-                            if now - dt > timedelta(hours=36):
+                            dt_est = dt.astimezone(eastern)
+                            
+                            if now_est - dt_est > timedelta(hours=36):
                                 continue
+                                
+                            # Apply time cutoffs
+                            if time_label == "Morning":
+                                cutoff = now_est.replace(hour=9, minute=0, second=0, microsecond=0)
+                                if dt_est >= cutoff:
+                                    continue
+                            elif time_label == "Evening":
+                                cutoff = now_est.replace(hour=18, minute=0, second=0, microsecond=0)
+                                if dt_est >= cutoff:
+                                    continue
+                                    
                         except Exception as e:
                             print(f"  ⚠ Error parsing date for {entry.get('title')}: {e}")
 

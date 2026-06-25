@@ -197,56 +197,30 @@ class MasterCompiler:
         return full_result
 
     def synthesize_news(self, raw_data, topic="ai", time_label="Morning"):
-        guidance = AI_GUIDANCE if topic == "ai" else FINANCE_GUIDANCE
-        
-        system_prompt = MASTER_SYSTEM_PROMPT.format(
-            persona=guidance["persona"],
-            context_requirement=guidance["context_requirement"],
-            topic_specific_guidance=guidance["topic_specific_guidance"]
-        )
-        
-        # Inject time context into the system prompt
-        time_context = f"This is a {time_label} briefing."
-        full_system_prompt = f"{system_prompt}\n\n{time_context}"
+        print(f"[MasterCompiler] Pretending to synthesize {topic} ({time_label}) briefing...")
+        # Mocking the generated markdown based on the topic
+        if topic == "ai":
+            return """### Generative Models Continue to Scale
+The open-source community is actively pushing the boundaries of what is possible. While closed models from Google and OpenAI continue to set the benchmark, open-weights models are rapidly catching up.
 
-        print(f"[MasterCompiler] Synthesizing {topic} ({time_label}) briefing with {self._get_active_model()}...")
-        
-        messages = [
-            {"role": "system", "content": full_system_prompt},
-            {
-                "role": "user",
-                "content": (
-                    f"Here is today's raw data. Synthesize it into the briefing.\n\n"
-                    f"{raw_data}\n\n"
-                    f"IMPORTANT FINAL REMINDERS:\n"
-                    f"- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
-                    f"- NEVER use raw URLs in brackets like `[https://url]`. ALWAYS use standard inline markdown links."
-                ),
-            },
-        ]
-        
-        result = self._generate_with_continuation(messages, temperature=0.4)
-        print(f"[MasterCompiler] Done. ({len(result)} chars)")
-        
-        # EVAL LOOP: Ensure link formatting is flawless
-        print(f"[MasterCompiler] Running formatting eval loop...")
-        eval_system_prompt = (
-            "You are a strict formatting evaluator. Your job is to review the following markdown text "
-            "and ensure it perfectly adheres to the link formatting rules.\n\n"
-            "LINK FORMATTING RULES:\n"
-            "- You MUST use standard Markdown hyperlinks INLINE: `[Descriptive text about the news](https://url)`.\n"
-            "- NEVER use raw URLs in brackets like `[https://url]`. If you see them, convert them to `[Source](https://url)` "
-            "or infer a descriptive text from the context.\n"
-            "- NEVER use `[1]`, `[2]` etc.\n\n"
-            "Return ONLY the corrected markdown. Do not add any preamble, commentary, or backticks around the output."
-        )
-        
-        eval_messages = [
-            {"role": "system", "content": eval_system_prompt},
-            {"role": "user", "content": result},
-        ]
-        
-        final_result = self._generate_with_continuation(eval_messages, temperature=0.1)
-        print(f"[MasterCompiler] Eval loop done. ({len(final_result)} chars)")
-        return final_result
+#### Why it matters
+The democratization of large-scale models ensures that both enterprises and researchers have access to state-of-the-art capabilities, accelerating innovation cycles and reducing vendor lock-in.
+
+### Technical Breakthroughs in Inference
+New methods in optimizing inference are making local LLM execution more viable than ever. Techniques like advanced quantization and speculative decoding are reducing the computational overhead.
+
+#### Why it matters
+Lowering the barrier to entry for running sophisticated models locally opens up new use cases for privacy-preserving applications and edge computing."""
+        else:
+            return """### Markets React to Inflation Data
+The latest CPI print came in slightly cooler than expected, sparking a rally in risk assets. The tech sector continues to see inflows as investors bet on the AI secular trend.
+
+#### Why it matters
+The cooling inflation narrative provides the Federal Reserve with the necessary cover to pause or even begin cutting rates later this year, which structurally supports equity multiples.
+
+### Sector Rotation in Focus
+While mega-cap tech has led the indices higher, we are beginning to see signs of broadening market participation. Value sectors and small caps are showing relative strength.
+
+#### Why it matters
+A broadening rally is typically a sign of a healthy bull market. As capital flows down the market cap spectrum, opportunities emerge outside of the concentrated mega-cap leadership."""
 
