@@ -51,6 +51,8 @@ class MasterCompiler:
         
         if self.vertex_project_id:
             self.model = os.getenv("LLM_MODEL") or "google/gemini-3.5-flash"
+            if "/" not in self.model:
+                self.model = f"google/{self.model}"
         else:
             self.model = os.getenv("LLM_MODEL") or "deepseek/deepseek-chat"
             
