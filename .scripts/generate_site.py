@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 import os
-os.environ['OBJC_DISABLE_INITIALIZE_FORK_SAFETY'] = 'YES'
+import sys
+import platform
+
+if platform.system() == "Darwin" and os.environ.get('OBJC_DISABLE_INITIALIZE_FORK_SAFETY') != 'YES':
+    os.environ['OBJC_DISABLE_INITIALIZE_FORK_SAFETY'] = 'YES'
+    os.execv(sys.executable, [sys.executable] + sys.argv)
+
 import subprocess
 import re
 import glob
-import sys
 from datetime import datetime, timezone, timedelta
 import markdown
 
