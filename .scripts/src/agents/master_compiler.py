@@ -50,7 +50,7 @@ class MasterCompiler:
         self.vertex_location = os.getenv("VERTEX_LOCATION", "us-central1")
         
         if self.vertex_project_id:
-            self.model = os.getenv("LLM_MODEL") or "gemini-1.5-flash"
+            self.model = os.getenv("LLM_MODEL") or "google/gemini-1.5-flash"
         else:
             self.model = os.getenv("LLM_MODEL") or "deepseek/deepseek-chat"
             
