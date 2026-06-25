@@ -47,9 +47,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r .scripts/requirements.txt
 
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        # Optional: Only run if GCP_CREDENTIALS are provided
+        if: ${{ env.HAS_GCP_CREDS != '' }}
+        env:
+          HAS_GCP_CREDS: ${{ secrets.GCP_CREDENTIALS }}
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
       - name: Generate Briefing HTML
         env:
           FORCE_TIME_LABEL: ${{ github.event.inputs.force_time }}
+          VERTEX_PROJECT_ID: ${{ secrets.VERTEX_PROJECT_ID }}
+          VERTEX_LOCATION: ${{ secrets.VERTEX_LOCATION }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
           LLM_MODEL: ${{ secrets.LLM_MODEL }}

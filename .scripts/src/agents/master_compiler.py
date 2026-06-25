@@ -46,7 +46,14 @@ FINANCE_GUIDANCE = {
 
 class MasterCompiler:
     def __init__(self):
-        self.model = os.getenv("LLM_MODEL") or "deepseek/deepseek-chat"
+        self.vertex_project_id = os.getenv("VERTEX_PROJECT_ID")
+        self.vertex_location = os.getenv("VERTEX_LOCATION", "us-central1")
+        
+        if self.vertex_project_id:
+            self.model = os.getenv("LLM_MODEL") or "gemini-1.5-flash"
+        else:
+            self.model = os.getenv("LLM_MODEL") or "deepseek/deepseek-chat"
+            
         self._client = None
         self._using_fallback = False
 
@@ -59,16 +66,33 @@ class MasterCompiler:
     @property
     def client(self):
         if self._client is None:
-            api_key = os.getenv("LLM_API_KEY")
-            if not api_key or api_key == "your_api_key_here":
-                raise RuntimeError(
-                    "LLM_API_KEY is not set. Copy .env.example to .env and add your free API key.\n"
-                    "  Get one free at: https://openrouter.ai/keys"
+            if self.vertex_project_id:
+                try:
+                    import google.auth
+                    from google.auth.transport.requests import Request
+                    credentials, project_id = google.auth.default()
+                    credentials.refresh(Request())
+                    
+                    base_url = f"https://{self.vertex_location}-aiplatform.googleapis.com/v1beta1/projects/{self.vertex_project_id}/locations/{self.vertex_location}/endpoints/openapi"
+                    
+                    self._client = OpenAI(
+                        api_key=credentials.token,
+                        base_url=base_url,
+                    )
+                    print(f"[MasterCompiler] Initialized Vertex AI client for project {self.vertex_project_id} in {self.vertex_location}")
+                except Exception as e:
+                    raise RuntimeError(f"Failed to initialize Vertex AI client: {e}. Make sure google-auth is installed and GCP credentials are set.")
+            else:
+                api_key = os.getenv("LLM_API_KEY")
+                if not api_key or api_key == "your_api_key_here":
+                    raise RuntimeError(
+                        "LLM_API_KEY is not set. Copy .env.example to .env and add your free API key.\n"
+                        "  Get one free at: https://openrouter.ai/keys"
+                    )
+                self._client = OpenAI(
+                    api_key=api_key,
+                    base_url=os.getenv("LLM_BASE_URL") or "https://openrouter.ai/api/v1",
                 )
-            self._client = OpenAI(
-                api_key=api_key,
-                base_url=os.getenv("LLM_BASE_URL") or "https://openrouter.ai/api/v1",
-            )
         return self._client
 
     @property

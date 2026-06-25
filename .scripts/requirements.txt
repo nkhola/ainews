@@ -9,3 +9,4 @@ python-dotenv>=1.0.0
 markdown>=3.6
 pytest>=8.0.0
 edge-tts>=7.0.0
+google-auth>=2.27.0
