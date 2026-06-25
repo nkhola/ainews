@@ -21,16 +21,16 @@ def test_vertex():
         )
         credentials.refresh(Request())
         
-        base_url = f"https://{vertex_location}-aiplatform.googleapis.com/v1beta1/projects/{vertex_project_id}/locations/{vertex_location}/endpoints/openapi"
+        base_url = f"https://{vertex_location}-aiplatform.googleapis.com/v1/projects/{vertex_project_id}/locations/{vertex_location}/endpoints/openapi"
         
         client = OpenAI(
             api_key=credentials.token,
             base_url=base_url,
         )
         
-        print("Sending 'hello' to google/gemini-1.5-flash-001...")
+        print("Sending 'hello' to google/gemini-3.5-flash...")
         response = client.chat.completions.create(
-            model="google/gemini-1.5-flash-001",
+            model="google/gemini-3.5-flash",
             messages=[{"role": "user", "content": "Hello, this is a test. Reply with 'vertex success'."}],
             temperature=0.0
         )

@@ -50,7 +50,7 @@ class MasterCompiler:
         self.vertex_location = os.getenv("VERTEX_LOCATION") or "us-central1"
         
         if self.vertex_project_id:
-            self.model = os.getenv("LLM_MODEL") or "google/gemini-1.5-flash-001"
+            self.model = os.getenv("LLM_MODEL") or "google/gemini-3.5-flash"
         else:
             self.model = os.getenv("LLM_MODEL") or "deepseek/deepseek-chat"
             
@@ -76,7 +76,7 @@ class MasterCompiler:
                     )
                     credentials.refresh(Request())
                     
-                    base_url = f"https://{self.vertex_location}-aiplatform.googleapis.com/v1beta1/projects/{self.vertex_project_id}/locations/{self.vertex_location}/endpoints/openapi"
+                    base_url = f"https://{self.vertex_location}-aiplatform.googleapis.com/v1/projects/{self.vertex_project_id}/locations/{self.vertex_location}/endpoints/openapi"
                     
                     self._client = OpenAI(
                         api_key=credentials.token,
