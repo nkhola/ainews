@@ -21,7 +21,8 @@ def test_vertex():
         )
         credentials.refresh(Request())
         
-        base_url = f"https://{vertex_location}-aiplatform.googleapis.com/v1/projects/{vertex_project_id}/locations/{vertex_location}/endpoints/openapi"
+        hostname = "aiplatform.googleapis.com" if vertex_location == "global" else f"{vertex_location}-aiplatform.googleapis.com"
+        base_url = f"https://{hostname}/v1/projects/{vertex_project_id}/locations/{vertex_location}/endpoints/openapi"
         
         client = OpenAI(
             api_key=credentials.token,
