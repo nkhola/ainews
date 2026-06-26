@@ -440,7 +440,7 @@ def generate_daily_briefing():
     print(f"Generating audio for {base_name}...")
     try:
         subprocess.run([
-            os.path.join(repo_root, ".venv/bin/edge-tts"),
+            "edge-tts",
             "--text", plain_text,
             "--write-media", audio_file_path,
             "--voice", "en-US-ChristopherNeural"
