@@ -25,3 +25,12 @@ The Post-Human Briefing is an automated, agent-curated news platform. It is desi
 <div align="center">
   <h2><a href="https://nkhola.github.io/ainews/">Click Here to Read the Latest Briefings</a></h2>
 </div>
+
+---
+
+### ⚖️ Legal & Copyright
+**© 2026 Nitin Khola / Post-Human Engineering. All Rights Reserved.**
+
+This repository and the generated output are proprietary. The source code, automation scripts, visual aesthetics, and content structure are **NOT** open source. 
+* **Copyright:** You may not copy, clone, distribute, or create derivative works from this codebase. See the [LICENSE](LICENSE) file for full details.
+* **Trademarks:** "Post-Human Engineering™" and "The Post-Human Briefing™" are trademarks. Unauthorized use of this branding, name, or logo is strictly prohibited.

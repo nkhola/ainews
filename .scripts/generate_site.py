@@ -456,6 +456,11 @@ def generate_daily_briefing():
             </div>
         </div>
     </div>
+    
+    <div style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); color: #8a9bb3; font-size: 0.85rem; font-family: 'Inter', sans-serif;">
+        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
+        "The Post-Human Briefing&trade;" and "AI News" are proprietary trademarks.
+    </div>
 
     </body>
 </html>
@@ -777,6 +782,12 @@ def update_index_page(repo_root, new_date_str):
 {links_html}
         </ul>
     </div>
+    
+    <div style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); color: #8a9bb3; font-size: 0.85rem; font-family: 'Inter', sans-serif;">
+        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
+        "The Post-Human Briefing&trade;" and "AI News" are proprietary trademarks.
+    </div>
+
 </body>
 </html>
 """
