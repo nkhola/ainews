@@ -25,7 +25,6 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
     try:
         from google.cloud import texttospeech
         client = texttospeech.TextToSpeechClient()
-        synthesis_input = texttospeech.SynthesisInput(text=plain_text)
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
             name="en-US-Journey-D"
@@ -33,11 +32,35 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
         audio_config = texttospeech.AudioConfig(
             audio_encoding=texttospeech.AudioEncoding.MP3
         )
-        response = client.synthesize_speech(
-            input=synthesis_input, voice=voice, audio_config=audio_config
-        )
+        
+        # Google Cloud TTS has a 5000 byte limit per request. We must chunk the text.
+        import re
+        sentences = re.split(r'(?<=[.!?])\s+', plain_text)
+        chunks = []
+        current_chunk = ""
+        for s in sentences:
+            # Safe margin below 5000
+            if len(current_chunk) + len(s) < 4000:
+                current_chunk += s + " "
+            else:
+                if current_chunk:
+                    chunks.append(current_chunk.strip())
+                current_chunk = s + " "
+        if current_chunk:
+            chunks.append(current_chunk.strip())
+            
+        full_audio_content = b""
+        for idx, chunk in enumerate(chunks):
+            if not chunk: continue
+            print(f"  Synthesizing chunk {idx+1}/{len(chunks)}...")
+            synthesis_input = texttospeech.SynthesisInput(text=chunk)
+            response = client.synthesize_speech(
+                input=synthesis_input, voice=voice, audio_config=audio_config
+            )
+            full_audio_content += response.audio_content
+            
         with open(audio_file_path, "wb") as out:
-            out.write(response.audio_content)
+            out.write(full_audio_content)
         print("Vertex AI TTS successful.")
         return
     except Exception as e:
