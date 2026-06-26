@@ -20,6 +20,41 @@ from src.fetchers.news_crawler import NewsCrawler
 from src.fetchers.finance_crawler import FinanceCrawler
 from src.agents.master_compiler import MasterCompiler
 
+def generate_audio_with_fallback(plain_text, audio_file_path):
+    print(f"Attempting Vertex AI TTS (Journey voice) for {audio_file_path}...")
+    try:
+        from google.cloud import texttospeech
+        client = texttospeech.TextToSpeechClient()
+        synthesis_input = texttospeech.SynthesisInput(text=plain_text)
+        voice = texttospeech.VoiceSelectionParams(
+            language_code="en-US",
+            name="en-US-Journey-D"
+        )
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3
+        )
+        response = client.synthesize_speech(
+            input=synthesis_input, voice=voice, audio_config=audio_config
+        )
+        with open(audio_file_path, "wb") as out:
+            out.write(response.audio_content)
+        print("Vertex AI TTS successful.")
+        return
+    except Exception as e:
+        print(f"Vertex AI TTS failed: {e}. Falling back to edge-tts...")
+    
+    # Fallback to edge-tts
+    try:
+        subprocess.run([
+            "edge-tts",
+            "--text", plain_text,
+            "--write-media", audio_file_path,
+            "--voice", "en-US-ChristopherNeural"
+        ], check=True)
+        print("edge-tts fallback successful.")
+    except Exception as e:
+        print(f"Error generating audio via edge-tts: {e}")
+
 def generate_daily_briefing():
     # Setup directories
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -435,18 +470,9 @@ def generate_daily_briefing():
     plain_text = "Artificial Intelligence. " + re.sub(r'<[^>]+>', ' ', ai_html) + " Markets and Macro. " + re.sub(r'<[^>]+>', ' ', fin_html)
     plain_text = re.sub(r'\s+', ' ', plain_text).strip()
     
-    # Generate MP3 using edge-tts
+    # Generate MP3 using Vertex AI with edge-tts fallback
     audio_file_path = os.path.join(audio_dir, f"{base_name}.mp3")
-    print(f"Generating audio for {base_name}...")
-    try:
-        subprocess.run([
-            "edge-tts",
-            "--text", plain_text,
-            "--write-media", audio_file_path,
-            "--voice", "en-US-ChristopherNeural"
-        ], check=True)
-    except Exception as e:
-        print(f"Error generating audio: {e}")
+    generate_audio_with_fallback(plain_text, audio_file_path)
 
     # Rolling window: Keep only the 10 most recent MP3s
     mp3_files = glob.glob(os.path.join(audio_dir, "*.mp3"))
