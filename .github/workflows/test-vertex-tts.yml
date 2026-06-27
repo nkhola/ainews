@@ -1,0 +1,41 @@
+name: Test Vertex AI TTS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-tts:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-cloud-texttospeech>=2.15.0
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        if: ${{ env.HAS_GCP_PROJECT != '' }}
+        env:
+          HAS_GCP_PROJECT: ${{ secrets.VERTEX_PROJECT_ID }}
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+
+      - name: Run TTS Proof of Concept
+        env:
+          GOOGLE_CLOUD_PROJECT: ${{ secrets.VERTEX_PROJECT_ID }}
+        run: |
+          python3 .scripts/test_vertex_tts.py
