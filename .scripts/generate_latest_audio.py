@@ -14,7 +14,7 @@ def backfill_latest_audio():
     html_files = glob.glob(os.path.join(repo_root, "*.html"))
     # Filter out index.html
     html_files = [f for f in html_files if not f.endswith("index.html")]
-    html_files.sort(key=os.path.getmtime, reverse=True)
+    html_files.sort(reverse=True)
 
     if not html_files:
         print("No HTML files found.")

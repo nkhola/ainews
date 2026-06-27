@@ -14,9 +14,9 @@ def backfill_audio():
     html_files = glob.glob(os.path.join(repo_root, "*.html"))
     # Filter out index.html
     html_files = [f for f in html_files if not f.endswith("index.html")]
-    html_files.sort(key=os.path.getmtime, reverse=True)
+    html_files.sort(reverse=True)
 
-    for html_file in html_files[:4]:
+    for html_file in html_files[:2]:
         base_name = os.path.splitext(os.path.basename(html_file))[0]
         audio_file_path = os.path.join(audio_dir, f"{base_name}.mp3")
         
