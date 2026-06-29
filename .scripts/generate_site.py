@@ -27,7 +27,9 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
         client = texttospeech.TextToSpeechClient()
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
-            name="Puck"
+            name="Puck",
+            # Gemini voices require the underlying model to be explicitly provided
+            model_name="gemini-2.5-flash-tts"
         )
         audio_config = texttospeech.AudioConfig(
             audio_encoding=texttospeech.AudioEncoding.MP3

@@ -18,7 +18,8 @@ def test_vertex_tts():
         # Gemini voices: Puck, Charon, Kore, Aoede, etc.
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
-            name="Puck"
+            name="Puck",
+            model_name="gemini-2.5-flash-tts"
         )
         
         audio_config = texttospeech.AudioConfig(
