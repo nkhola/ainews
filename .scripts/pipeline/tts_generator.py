@@ -17,13 +17,14 @@ def synthesize_with_google_tts(plain_text, audio_file_path, use_gemini=True):
     
     if use_gemini:
         voice_prompt = "[professional, energetic news anchor. dynamic pacing.] "
-        steered_text = voice_prompt + plain_text
+        steered_text = plain_text
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
             name="Puck",
             model_name="gemini-2.5-flash-tts"
         )
     else:
+        voice_prompt = ""
         steered_text = plain_text
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
@@ -50,8 +51,11 @@ def synthesize_with_google_tts(plain_text, audio_file_path, use_gemini=True):
     full_audio_content = b""
     for idx, chunk in enumerate(chunks):
         if not chunk: continue
+        
+        steered_chunk = voice_prompt + chunk
+        
         print(f"  Synthesizing chunk {idx+1}/{len(chunks)}...")
-        synthesis_input = texttospeech.SynthesisInput(text=chunk)
+        synthesis_input = texttospeech.SynthesisInput(text=steered_chunk)
         response = client.synthesize_speech(
             input=synthesis_input, voice=voice, audio_config=audio_config
         )
