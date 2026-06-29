@@ -24,11 +24,20 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
     print(f"Attempting Vertex AI TTS (Gemini Puck voice) for {audio_file_path}...")
     try:
         from google.cloud import texttospeech
-        client = texttospeech.TextToSpeechClient()
+        
+        project_id = os.environ.get("VERTEX_PROJECT_ID") or os.environ.get("GOOGLE_CLOUD_PROJECT")
+        location = os.environ.get("VERTEX_LOCATION", "us-central1")
+        if not location:
+            location = "us-central1"
+            
+        endpoint = f"{location}-texttospeech.googleapis.com"
+        client = texttospeech.TextToSpeechClient(
+            client_options={"api_endpoint": endpoint}
+        )
+        
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
             name="Puck",
-            # Gemini voices require the underlying model to be explicitly provided
             model_name="gemini-2.5-flash-tts"
         )
         audio_config = texttospeech.AudioConfig(

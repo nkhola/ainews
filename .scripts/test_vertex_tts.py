@@ -4,13 +4,18 @@ import os
 def test_vertex_tts():
     try:
         from google.cloud import texttospeech
-    except ImportError:
-        print("google-cloud-texttospeech is not installed!")
-        sys.exit(1)
+        import os
         
-    try:
-        print("Initializing TextToSpeechClient...")
-        client = texttospeech.TextToSpeechClient()
+        project_id = os.environ.get("VERTEX_PROJECT_ID") or os.environ.get("GOOGLE_CLOUD_PROJECT")
+        location = os.environ.get("VERTEX_LOCATION", "us-central1")
+        if not location:
+            location = "us-central1"
+            
+        endpoint = f"{location}-texttospeech.googleapis.com"
+        print(f"Initializing TextToSpeechClient with endpoint: {endpoint}")
+        client = texttospeech.TextToSpeechClient(
+            client_options={"api_endpoint": endpoint}
+        )
         
         plain_text = "Hello! This is a test of the Google Cloud Text-to-Speech API using the Gemini Puck voice."
         synthesis_input = texttospeech.SynthesisInput(text=plain_text)
