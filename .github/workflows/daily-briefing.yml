@@ -82,11 +82,15 @@ jobs:
             echo "Running modular pipeline..."
             if python3 .scripts/pipeline.py; then
                echo "Canary run succeeded!"
-               git checkout main
+               mkdir -p /tmp/canary_out/audio
+               cp *.html /tmp/canary_out/ 2>/dev/null || true
+               cp audio/*.mp3 /tmp/canary_out/audio/ 2>/dev/null || true
+               git checkout --force main
+               cp -r /tmp/canary_out/* ./
             else
                echo "Canary run failed!"
                CANARY_FAILED=true
-               git checkout main
+               git checkout --force main
                # Reset any uncommitted garbage from the failed canary
                git clean -fd
                git checkout -- .
