@@ -1,9 +1,6 @@
 name: Generate Latest Audio
 
 on:
-  push:
-    paths:
-      - '.github/workflows/generate-latest-audio.yml'
   workflow_dispatch:
     inputs:
       description:
