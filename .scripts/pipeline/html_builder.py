@@ -8,7 +8,7 @@ def build_daily_html(date_str, time_label, reading_time, base_name, ai_md, fin_m
     fin_html = markdown.markdown(fin_md, extensions=['tables', 'fenced_code'])
 
     # 2.5 Generate Recent Briefings HTML
-    existing_files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\\d{4}-\\d{2}-\\d{2}', f)]
+    existing_files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f)]
     
     def recent_sort_key(filename):
         name = filename.replace('.html', '')
@@ -375,7 +375,7 @@ def build_daily_html(date_str, time_label, reading_time, base_name, ai_md, fin_m
 def update_index_page(repo_root, new_date_str):
     import re
     # Find all html files in the directory that look like dates (e.g. YYYY-MM-DD)
-    files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\\d{4}-\\d{2}-\\d{2}', f)]
+    files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f)]
     
     def get_sort_key(filename):
         name = filename.replace('.html', '')
