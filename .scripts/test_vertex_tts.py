@@ -12,13 +12,13 @@ def test_vertex_tts():
         print("Initializing TextToSpeechClient...")
         client = texttospeech.TextToSpeechClient()
         
-        plain_text = "Hello! This is a test of the Google Cloud Text-to-Speech API using the Journey voice."
+        plain_text = "Hello! This is a test of the Google Cloud Text-to-Speech API using the Gemini Puck voice."
         synthesis_input = texttospeech.SynthesisInput(text=plain_text)
         
-        # Journey voices: en-US-Journey-D, en-US-Journey-F, etc.
+        # Gemini voices: Puck, Charon, Kore, Aoede, etc.
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
-            name="en-US-Journey-D"
+            name="Puck"
         )
         
         audio_config = texttospeech.AudioConfig(

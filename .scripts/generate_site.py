@@ -21,13 +21,13 @@ from src.fetchers.finance_crawler import FinanceCrawler
 from src.agents.master_compiler import MasterCompiler
 
 def generate_audio_with_fallback(plain_text, audio_file_path):
-    print(f"Attempting Vertex AI TTS (Journey voice) for {audio_file_path}...")
+    print(f"Attempting Vertex AI TTS (Gemini Puck voice) for {audio_file_path}...")
     try:
         from google.cloud import texttospeech
         client = texttospeech.TextToSpeechClient()
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
-            name="en-US-Journey-D"
+            name="Puck"
         )
         audio_config = texttospeech.AudioConfig(
             audio_encoding=texttospeech.AudioEncoding.MP3
