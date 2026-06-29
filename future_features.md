@@ -15,3 +15,13 @@
 
 ## 3. The AI Wiki & Knowledge Weaving (Tabled for now)
 - **Description:** Use the `MasterCompiler` agent to extract persistent entities from the daily news and build an interlinked Wikipedia-style knowledge graph. Automatically updates "Trade-offs & Evolution" sections as stories develop over time.
+
+## Completed Features
+
+### 1. Automated Canary Deployments & CI/CD
+- **Description:** Implemented GitHub actions for running tests on a canary deployment and automatically promoting to production if tests pass. This ensures safe continuous delivery of AI-generated assets and code changes.
+
+### 2. Architectural Modularization & State Capture
+- **Description:** Broke down the 800-line monolithic `generate_site.py` script into discrete modules within `.scripts/pipeline/` (`crawler.py`, `summarizer.py`, `html_builder.py`, `tts_generator.py`).
+- **State Capture:** Implemented local state capturing (saving raw crawler JSON data and LLM summaries). The orchestrator `pipeline.py` automatically loads these artifacts if available, drastically reducing redundant calls to expensive APIs (Vertex AI) when re-running the pipeline on the same day.
+- **Dry-run Execution:** Added a `--dry-run` flag to `pipeline.py` which mocks LLM and TTS requests to allow safe, fast local testing without consuming AI quotas.
