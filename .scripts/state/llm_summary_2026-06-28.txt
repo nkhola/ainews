@@ -1,0 +1,4 @@
+{
+  "ai_md": "### Mock AI News\\n\\nThis is a mock summary of AI news.",
+  "fin_md": "### Mock Finance News\\n\\nThis is a mock summary of Finance news."
+}

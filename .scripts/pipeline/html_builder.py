@@ -1,148 +1,14 @@
-#!/usr/bin/env python3
 import os
-import sys
-import platform
-
-if platform.system() == "Darwin" and os.environ.get('OBJC_DISABLE_INITIALIZE_FORK_SAFETY') != 'YES':
-    os.environ['OBJC_DISABLE_INITIALIZE_FORK_SAFETY'] = 'YES'
-    os.execv(sys.executable, [sys.executable] + sys.argv)
-
-import subprocess
 import re
-import glob
-from datetime import datetime, timezone, timedelta
 import markdown
 
-# Ensure we can import from src
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-from src.fetchers.news_crawler import NewsCrawler
-from src.fetchers.finance_crawler import FinanceCrawler
-from src.agents.master_compiler import MasterCompiler
-
-def generate_audio_with_fallback(plain_text, audio_file_path):
-    print(f"Attempting Vertex AI TTS (Gemini Puck voice) for {audio_file_path}...")
-    
-    # Prepend Gemini TTS director's notes to steer the emotion and delivery
-    voice_prompt = "[professional, energetic news anchor. dynamic pacing.] "
-    steered_text = voice_prompt + plain_text
-    
-    try:
-        from google.cloud import texttospeech
-        
-        project_id = os.environ.get("VERTEX_PROJECT_ID") or os.environ.get("GOOGLE_CLOUD_PROJECT")
-        location = os.environ.get("VERTEX_LOCATION", "us-central1")
-        if not location:
-            location = "us-central1"
-            
-        endpoint = f"{location}-texttospeech.googleapis.com"
-        client = texttospeech.TextToSpeechClient(
-            client_options={"api_endpoint": endpoint}
-        )
-        
-        voice = texttospeech.VoiceSelectionParams(
-            language_code="en-US",
-            name="Puck",
-            model_name="gemini-2.5-flash-tts"
-        )
-        audio_config = texttospeech.AudioConfig(
-            audio_encoding=texttospeech.AudioEncoding.MP3
-        )
-        
-        # Google Cloud TTS has a 5000 byte limit per request. We must chunk the text.
-        import re
-        sentences = re.split(r'(?<=[.!?])\s+', steered_text)
-        chunks = []
-        current_chunk = ""
-        for s in sentences:
-            # Safe margin below 5000
-            if len(current_chunk) + len(s) < 4000:
-                current_chunk += s + " "
-            else:
-                if current_chunk:
-                    chunks.append(current_chunk.strip())
-                current_chunk = s + " "
-        if current_chunk:
-            chunks.append(current_chunk.strip())
-            
-        full_audio_content = b""
-        for idx, chunk in enumerate(chunks):
-            if not chunk: continue
-            print(f"  Synthesizing chunk {idx+1}/{len(chunks)}...")
-            synthesis_input = texttospeech.SynthesisInput(text=chunk)
-            response = client.synthesize_speech(
-                input=synthesis_input, voice=voice, audio_config=audio_config
-            )
-            full_audio_content += response.audio_content
-            
-        with open(audio_file_path, "wb") as out:
-            out.write(full_audio_content)
-        print("Vertex AI TTS successful.")
-        return
-    except Exception as e:
-        print(f"Vertex AI TTS failed: {e}. Falling back to edge-tts...")
-    
-    # Fallback to edge-tts
-    try:
-        subprocess.run([
-            "edge-tts",
-            "--text", plain_text,
-            "--write-media", audio_file_path,
-            "--voice", "en-US-ChristopherNeural"
-        ], check=True)
-        print("edge-tts fallback successful.")
-    except Exception as e:
-        print(f"Error generating audio via edge-tts: {e}")
-
-def generate_daily_briefing():
-    # Setup directories
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.dirname(script_dir)
-    
-    # Change working directory to .scripts so config.yaml is found by the crawlers
-    os.chdir(script_dir)
-
-    # Use Eastern Time for the briefing date
-    eastern = timezone(timedelta(hours=-4))
-    now = datetime.now(eastern)
-    date_str = now.strftime('%Y-%m-%d')
-    force_time = os.getenv("FORCE_TIME_LABEL")
-    if force_time == "AM":
-        is_evening = False
-    elif force_time == "PM":
-        is_evening = True
-    else:
-        is_evening = now.hour >= 14
-    time_label = "Evening" if is_evening else "Morning"
-    file_suffix = "PM" if is_evening else "AM"
-    base_name = f"{date_str}-{file_suffix}"
-    print(f"Generating {time_label.lower()} briefing for {date_str}...")
-
-    compiler = MasterCompiler()
-
-    # 1. Fetch & Compile AI News
-    print("Fetching AI News...")
-    ai_crawler = NewsCrawler()
-    ai_raw = ai_crawler.get_latest_news()
-    ai_md = compiler.synthesize_news(ai_raw, topic="ai", time_label=time_label)
-
-    # 2. Fetch & Compile Finance News
-    print("Fetching Finance News...")
-    fin_crawler = FinanceCrawler()
-    fin_raw = fin_crawler.get_latest_news()
-    fin_md = compiler.synthesize_news(fin_raw, topic="finance", time_label=time_label)
-
-    # Calculate reading time (rough estimate: 200 words per minute)
-    total_words = len(ai_md.split()) + len(fin_md.split())
-    reading_time = max(1, total_words // 200)
-
+def build_daily_html(date_str, time_label, reading_time, base_name, ai_md, fin_md, repo_root):
     # Convert to HTML
     ai_html = markdown.markdown(ai_md, extensions=['tables', 'fenced_code'])
     fin_html = markdown.markdown(fin_md, extensions=['tables', 'fenced_code'])
 
     # 2.5 Generate Recent Briefings HTML
-    import re
-    existing_files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f)]
+    existing_files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\\d{4}-\\d{2}-\\d{2}', f)]
     
     def recent_sort_key(filename):
         name = filename.replace('.html', '')
@@ -160,7 +26,6 @@ def generate_daily_briefing():
         recent_html += f'                <a href="{rf}"><span>{display_name}</span> <span class="date">Read →</span></a>\n'
     recent_html += '                <a href="index.html"><span>View All Briefings</span> <span class="date">Archive →</span></a>\n'
 
-    # 3. Create Daily HTML Page
     html_template = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -504,45 +369,13 @@ def generate_daily_briefing():
     </body>
 </html>
 """
-    
 
-    # --- AUDIO GENERATION ---
-    audio_dir = os.path.join(repo_root, "audio")
-    os.makedirs(audio_dir, exist_ok=True)
-    
-    # Extract plain text
-    plain_text = "Artificial Intelligence. " + re.sub(r'<[^>]+>', ' ', ai_html) + " Markets and Macro. " + re.sub(r'<[^>]+>', ' ', fin_html)
-    plain_text = re.sub(r'\s+', ' ', plain_text).strip()
-    
-    # Generate MP3 using Vertex AI with edge-tts fallback
-    audio_file_path = os.path.join(audio_dir, f"{base_name}.mp3")
-    generate_audio_with_fallback(plain_text, audio_file_path)
-
-    # Rolling window: Keep only the 10 most recent MP3s
-    mp3_files = glob.glob(os.path.join(audio_dir, "*.mp3"))
-    mp3_files.sort(key=os.path.getmtime, reverse=True)
-    if len(mp3_files) > 10:
-        for file_to_delete in mp3_files[10:]:
-            try:
-                os.remove(file_to_delete)
-                print(f"Deleted old audio file: {file_to_delete}")
-            except Exception as e:
-                pass
-    # ------------------------
-
-    # Save daily file in the root
-    daily_file = os.path.join(repo_root, f"{base_name}.html")
-    with open(daily_file, "w", encoding="utf-8") as f:
-        f.write(html_template)
-    print(f"Saved daily briefing to {daily_file}")
-
-    # 4. Update Index Page
-    update_index_page(repo_root, date_str)
+    return ai_html, fin_html, html_template
 
 def update_index_page(repo_root, new_date_str):
     import re
     # Find all html files in the directory that look like dates (e.g. YYYY-MM-DD)
-    files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f)]
+    files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\\d{4}-\\d{2}-\\d{2}', f)]
     
     def get_sort_key(filename):
         name = filename.replace('.html', '')
@@ -830,10 +663,8 @@ def update_index_page(repo_root, new_date_str):
 </body>
 </html>
 """
+    
     index_file = os.path.join(repo_root, "index.html")
     with open(index_file, "w", encoding="utf-8") as f:
         f.write(index_template)
     print("Updated index.html")
-
-if __name__ == "__main__":
-    generate_daily_briefing()
