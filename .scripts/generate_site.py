@@ -22,6 +22,11 @@ from src.agents.master_compiler import MasterCompiler
 
 def generate_audio_with_fallback(plain_text, audio_file_path):
     print(f"Attempting Vertex AI TTS (Gemini Puck voice) for {audio_file_path}...")
+    
+    # Prepend Gemini TTS director's notes to steer the emotion and delivery
+    voice_prompt = "[professional, energetic news anchor. dynamic pacing.] "
+    steered_text = voice_prompt + plain_text
+    
     try:
         from google.cloud import texttospeech
         
@@ -46,7 +51,7 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
         
         # Google Cloud TTS has a 5000 byte limit per request. We must chunk the text.
         import re
-        sentences = re.split(r'(?<=[.!?])\s+', plain_text)
+        sentences = re.split(r'(?<=[.!?])\s+', steered_text)
         chunks = []
         current_chunk = ""
         for s in sentences:
