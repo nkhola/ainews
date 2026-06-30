@@ -1,0 +1,3 @@
+Initializing TextToSpeechClient with endpoint: us-central1-texttospeech.googleapis.com
+Sending synthesis request...
+Success! Audio content written to test_journey.mp3
