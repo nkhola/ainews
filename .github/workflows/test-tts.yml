@@ -22,7 +22,6 @@ jobs:
       - run: pip install google-cloud-texttospeech
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
-        if: ${{ secrets.VERTEX_PROJECT_ID != '' }}
         with:
           workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
