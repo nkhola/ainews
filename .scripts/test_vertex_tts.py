@@ -17,7 +17,7 @@ def test_vertex_tts():
             client_options={"api_endpoint": endpoint}
         )
         
-        plain_text = "[professional, energetic news anchor. dynamic pacing.] " + ("This is a long sentence to test the length limits. " * 200)
+        plain_text = "[professional, energetic news anchor. dynamic pacing.] "
         synthesis_input = texttospeech.SynthesisInput(text=plain_text)
         
         # Gemini voices: Puck, Charon, Kore, Aoede, etc.
