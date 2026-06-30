@@ -84,9 +84,11 @@ jobs:
                echo "Canary run succeeded!"
                mkdir -p /tmp/canary_out/audio
                cp *.html /tmp/canary_out/ 2>/dev/null || true
+               rm -f /tmp/canary_out/index.html
                cp audio/*.mp3 /tmp/canary_out/audio/ 2>/dev/null || true
                git checkout --force main
                cp -r /tmp/canary_out/* ./
+               python3 -c "import sys, os, datetime; sys.path.insert(0, '.scripts'); import generate_site; generate_site.update_index_page(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d'))"
             else
                echo "Canary run failed!"
                CANARY_FAILED=true
