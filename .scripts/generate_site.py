@@ -23,7 +23,7 @@ from src.agents.master_compiler import MasterCompiler
 def generate_audio_with_fallback(plain_text, audio_file_path):
     print(f"Attempting Vertex AI TTS (Gemini Puck voice) for {audio_file_path}...")
     
-    voice_prompt = "[professional, energetic news anchor. dynamic pacing.] "
+    voice_prompt = "[professional energetic news anchor dynamic pacing] "
     
     try:
         from google.cloud import texttospeech
