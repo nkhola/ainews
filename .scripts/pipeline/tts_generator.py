@@ -39,7 +39,7 @@ def synthesize_with_google_tts(plain_text, audio_file_path, use_gemini=True):
     chunks = []
     current_chunk = ""
     for s in sentences:
-        if len(current_chunk) + len(s) < 4000:
+        if len(current_chunk) + len(s) < 3800:
             current_chunk += s + " "
         else:
             if current_chunk:
