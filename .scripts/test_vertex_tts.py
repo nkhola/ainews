@@ -17,7 +17,7 @@ def test_vertex_tts():
             client_options={"api_endpoint": endpoint}
         )
         
-        plain_text = "Hello! This is a test of the Google Cloud Text-to-Speech API using the Gemini Puck voice."
+        plain_text = "[professional energetic news anchor dynamic pacing] Hello! This is a test of the Google Cloud Text-to-Speech API using the Gemini Puck voice."
         synthesis_input = texttospeech.SynthesisInput(text=plain_text)
         
         # Gemini voices: Puck, Charon, Kore, Aoede, etc.
