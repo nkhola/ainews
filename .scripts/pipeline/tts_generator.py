@@ -16,7 +16,7 @@ def synthesize_with_google_tts(plain_text, audio_file_path, use_gemini=True):
     )
     
     if use_gemini:
-        voice_prompt = "[professional, energetic news anchor. dynamic pacing.] "
+        voice_prompt = "[professional energetic news anchor dynamic pacing] "
         steered_text = plain_text
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
