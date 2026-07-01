@@ -38,29 +38,36 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
             client_options={"api_endpoint": endpoint}
         )
         
-        voice = texttospeech.VoiceSelectionParams(
-            language_code="en-US",
-            name="Puck",
-            model_name="gemini-2.5-flash-tts"
-        )
+        use_gemini = True
+        if use_gemini:
+            voice_prompt = "[professional, energetic news anchor. dynamic pacing.] "
+            plain_text = voice_prompt + plain_text
+            voice = texttospeech.VoiceSelectionParams(
+                language_code="en-US",
+                name="Puck",
+                model_name="gemini-2.5-flash-tts"
+            )
+        else:
+            voice = texttospeech.VoiceSelectionParams(
+                language_code="en-US",
+                name="en-US-Journey-F"
+            )
+
         audio_config = texttospeech.AudioConfig(
             audio_encoding=texttospeech.AudioEncoding.MP3
         )
         
         # Google Cloud TTS has a 5000 byte limit per request. Gemini TTS has a 4000 byte limit. We must chunk the text.
         import textwrap
-        # Use textwrap to guarantee chunks are strictly under 3800 characters
-        chunks = textwrap.wrap(plain_text, width=3800, break_long_words=False, replace_whitespace=False)
+        # Use textwrap to guarantee chunks are strictly under 1800 characters to prevent 502 Bad Gateway timeouts on the Gemini model
+        chunks = textwrap.wrap(plain_text, width=1800, break_long_words=False, replace_whitespace=False)
             
         full_audio_content = b""
         for idx, chunk in enumerate(chunks):
             if not chunk: continue
             
-            # Prepend Gemini TTS director's notes to steer the emotion and delivery for EACH chunk
-            steered_chunk = voice_prompt + chunk
-            
             print(f"  Synthesizing chunk {idx+1}/{len(chunks)}...")
-            synthesis_input = texttospeech.SynthesisInput(text=steered_chunk)
+            synthesis_input = texttospeech.SynthesisInput(text=chunk)
             response = client.synthesize_speech(
                 input=synthesis_input, voice=voice, audio_config=audio_config
             )
