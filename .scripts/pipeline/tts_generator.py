@@ -35,18 +35,8 @@ def synthesize_with_google_tts(plain_text, audio_file_path, use_gemini=True):
         audio_encoding=texttospeech.AudioEncoding.MP3
     )
     
-    sentences = re.split(r'(?<=[.!?])\s+', steered_text)
-    chunks = []
-    current_chunk = ""
-    for s in sentences:
-        if len(current_chunk) + len(s) < 3800:
-            current_chunk += s + " "
-        else:
-            if current_chunk:
-                chunks.append(current_chunk.strip())
-            current_chunk = s + " "
-    if current_chunk:
-        chunks.append(current_chunk.strip())
+    import textwrap
+    chunks = textwrap.wrap(steered_text, width=3800, break_long_words=False, replace_whitespace=False)
         
     full_audio_content = b""
     for idx, chunk in enumerate(chunks):
