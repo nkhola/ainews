@@ -48,20 +48,9 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
         )
         
         # Google Cloud TTS has a 5000 byte limit per request. Gemini TTS has a 4000 byte limit. We must chunk the text.
-        import re
-        sentences = re.split(r'(?<=[.!?])\s+', plain_text)
-        chunks = []
-        current_chunk = ""
-        for s in sentences:
-            # Safe margin below 4000, leaving room for the steering tag
-            if len(current_chunk) + len(s) < 3800:
-                current_chunk += s + " "
-            else:
-                if current_chunk:
-                    chunks.append(current_chunk.strip())
-                current_chunk = s + " "
-        if current_chunk:
-            chunks.append(current_chunk.strip())
+        import textwrap
+        # Use textwrap to guarantee chunks are strictly under 3800 characters
+        chunks = textwrap.wrap(plain_text, width=3800, break_long_words=False, replace_whitespace=False)
             
         full_audio_content = b""
         for idx, chunk in enumerate(chunks):
