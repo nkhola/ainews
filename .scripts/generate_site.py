@@ -78,10 +78,7 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
         print("Vertex AI TTS successful.")
         return
     except Exception as e:
-        error_msg = f"Vertex AI TTS failed: {e}. Falling back to edge-tts..."
-        print(error_msg)
-        with open("tts_error.txt", "w") as f:
-            f.write(error_msg)
+        print(f"Vertex AI TTS failed: {e}. Falling back to edge-tts...")
     
     # Fallback to edge-tts
     try:
