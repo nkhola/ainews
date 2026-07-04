@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Post-Human Briefing - 2026-07-04</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/logo_favicon.png">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1a1b35 100%);
+            --surface-color: rgba(30, 32, 50, 0.6);
+            --surface-hover: rgba(45, 48, 75, 0.8);
+            --text-main: #f0f4f8;
+            --text-muted: #a0aec0;
+            --accent-glow: #3b82f6;
+            --accent-glow-secondary: #8b5cf6;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .ambient-glow::before, .ambient-glow::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            animation: float 20s infinite alternate;
+        }
+        .ambient-glow::before {
+            background: var(--accent-glow);
+            top: -100px; left: -100px;
+        }
+        .ambient-glow::after {
+            background: var(--accent-glow-secondary);
+            bottom: -100px; right: -100px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .briefing-container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px 20px 80px 20px;
+            position: relative;
+        }
+
+        /* Navbar */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Header Section */
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header-section .logo {
+            width: 48px;
+            height: auto;
+            border-radius: 6px;
+            margin: 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        .header-section h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .header-section .meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .header-section .date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: #f0f4f8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .header-section .reading-time {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+        }
+        
+        @media (max-width: 600px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-section .meta {
+                align-items: flex-start;
+                text-align: left;
+            }
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: var(--surface-color);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .section-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
+        }
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            color: #f0f4f8;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .section-card p {
+            font-size: 1.15rem;
+            margin-bottom: 24px;
+            color: #d1d5db;
+            line-height: 1.8;
+        }
+        .section-card ul {
+            padding-left: 24px;
+            color: #d1d5db;
+            margin-bottom: 24px;
+        }
+        .section-card li {
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: #60a5fa;
+        }
+        blockquote {
+            border-left: 4px solid #8b5cf6;
+            margin: 0;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.03);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+            color: #9ca3af;
+        }
+
+        /* Recent Briefings at bottom */
+        .recent-briefings {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border-color);
+        }
+        .recent-briefings h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .recent-list a {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+        .recent-list a:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(96, 165, 250, 0.3);
+            transform: translateY(-2px);
+        }
+        .recent-list .date {
+            color: #9ca3af;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+    </style>
+</head>
+<body>
+    <div class="ambient-glow"></div>
+    <div class="briefing-container">
+        <div class="nav-bar">
+            <a href="index.html" class="nav-link">← All Briefings</a>
+            <a href="https://www.khola.blog/" class="nav-link" target="_blank">Khola.Blog ↗</a>
+        </div>
+        
+        <div class="header-section">
+            <div class="header-title">
+                <img src="img/logo_256.png" alt="Logo" class="logo">
+                <h1>The Post-Human Briefing</h1>
+            </div>
+            <div class="meta">
+                <span class="date">2026-07-04 &bull; Morning</span>
+                <span class="reading-time">8 min read</span>
+            </div>
+        </div>
+        
+        <div style="background: rgba(30, 32, 50, 0.6); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
+            <div style="flex-shrink: 0; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+            </div>
+            <div style="flex-grow: 1;">
+                <h3 style="margin: 0 0 5px 0; font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: #f0f4f8;">Listen to the Briefing</h3>
+                <audio controls style="width: 100%; height: 36px; border-radius: 8px; outline: none;">
+                    <source src="audio/2026-07-04-AM.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
+
+        <div class="section-card" id="ai-news">
+            <div class="section-header">
+                <h2>Artificial Intelligence</h2>
+            </div>
+            <p><strong>EXECUTIVE SUMMARY</strong>
+Today's AI landscape reveals a rapidly maturing open-source ecosystem, simultaneously grappling with the economic fallout of AI's disruptive capabilities and the emergence of sophisticated agentic intelligence. Key developments highlight both the decentralization of model access and a strategic focus on inference cost optimization through advanced AI decision-making.</p>
+<h3>The Proliferation and Formalization of Open-Source AI</h3>
+<p>The open-source AI domain is rapidly expanding and becoming more structured. A significant effort, the <a href="https://simonwillison.net/2026/Jul/3/open-source-ai-gap-map/#atom-everything">Open Source AI Gap Map</a>, has launched, providing the first structured index of 421 open-source AI products from 228 organizations. This formalization is accompanied by a continuous stream of new open-weight models, including <a href="https://www.reddit.com/r/LocalLLaMA/comments/1umo8zu/longcat_2_model_weights_have_been_published/">Longcat 2</a>, <a href="https://www.reddit.com/r/LocalLLaMA/comments/1umk3ax/qwen_27b/">Qwen 27B</a>, and even <a href="https://www.reddit.com/r/LocalLLaMA/comments/1un5hyi/googletabfm100/">Google's TabFM-1.0.0</a>. Notably, nations are also entering this space, with <a href="https://www.reddit.com/r/LocalLLaMA/comments/1umhrn8/portugal_just_released_their_own_llm_amalia_9b/">Portugal releasing its own LLM, Amalia (9B)</a>. The community's focus is increasingly on efficient, local inference, exemplified by discussions around <a href="https://www.reddit.com/r/LocalLLaMA/comments/1umpxhg/gemma4_e2b_is_really_good_what_other_small_models/">Gemma4 e2b running on less powerful hardware</a> and <a href="https://www.reddit.com/r/LocalLLaMA/comments/1umsik8/deepseekv4flash_running_on_rtx5090moe/">Deepseek V4 Flash leveraging an RTX 5090 MoE setup</a>, alongside technical debates on <a href="https://www.reddit.com/r/LocalLLaMA/comments/1umka9t/any_idea_why_bartowski_claims_deepseekv4flash_is/">quantization formats like MXFP4</a>. These models are not just theoretical; <a href="https://www.reddit.com/r/LocalLLaMA/comments/1umvwb9/qwen3627bmtpq8_successfully_created_an_a/">Qwen3.6-27b-mtp-q8 successfully implemented A* pathfinding in Java from scratch</a>, showcasing practical coding capabilities.</p>
+<h4>Why it matters</h4>
+<p>This widespread release and cataloging of open models democratizes AI development, fostering innovation and reducing reliance on a few proprietary providers, while simultaneously driving demand for efficient inference hardware.</p>
+<h3>Agentic Intelligence and Economic Optimization</h3>
+<p>Anthropic's Claude Fable is demonstrating advanced agentic capabilities, using its internal "judgement" to <a href="https://simonwillison.net/2026/Jul/3/judgement/#atom-everything">delegate coding tasks to lower-power models</a> (e.g., Sonnet or Haiku) for cost efficiency. This represents a significant step in autonomous resource allocation and hierarchical control within AI systems, applying principles akin to control theory for optimal compute usage. This development aligns with the "great loops debate" at the <a href="https://www.latent.space/p/aiewf-daily-dispatch-locomotives">AI Engineer World's Fair</a>, which focused on the design and control flow of AI engineering systems. The shift from "tokenmaxxing" (hyper-optimizing prompts for token count) to agentic judgement suggests a more sophisticated approach to managing computational resources, as noted in a <a href="https://simonwillison.net/2026/Jul/3/june-newsletter/#atom-everything">recent newsletter</a>.</p>
+<h4>Why it matters</h4>
+<p>The evolution of AI agents to autonomously manage their own computational budget and delegate tasks based on complexity represents a fundamental shift in AI system design, moving towards more economically efficient and adaptive intelligence.</p>
+<h3>Trade-offs &amp; Evolution: Open vs. Closed Model Strategies</h3>
+<p>While the open-source ecosystem expands rapidly, proprietary models like Claude Fable are not being supplanted. Instead, they are evolving to strategically <em>integrate</em> and <em>orchestrate</em> across the model spectrum. Fable's ability to "judge" and offload simpler tasks to less powerful (and implicitly, cheaper, potentially open-source or smaller proprietary) models demonstrates a hybrid strategy. The core, high-value cognitive tasks (judgment, synthesis) remain with the powerful, expensive model, while execution is distributed. This is not a zero-sum game but a co-evolution where closed models become intelligent orchestrators of a diverse model landscape, including open-source components.</p>
+<h3>Economic Disruption and Value Chain Reconfiguration</h3>
+<p>The immediate economic impact of AI is becoming stark, with course creators like <a href="https://simonwillison.net/2026/Jul/3/josh-w-comeau/#atom-everything">Josh W. Comeau reporting over 50% revenue drops</a>. This is attributed to developer job uncertainty and LLMs providing personalized tutoring, directly displacing traditional education models. Concurrently, the underlying hardware infrastructure continues to command immense value, evidenced by <a href="https://www.reddit.com/r/LocalLLaMA/comments/1umgsu2/according_to_bernstein_sk_hynix_has_90_profit/">SK Hynix's reported 90% profit margin on DRAM</a>. This highlights the critical bottleneck and value capture in the semiconductor supply chain fueling AI, demonstrating how economic value is shifting to foundational compute resources.</p>
+<h4>Why it matters</h4>
+<p>AI is fundamentally restructuring economic value chains, creating new bottlenecks in hardware while simultaneously disrupting established knowledge-based industries, forcing a re-evaluation of human capital and skill development.</p>
+<h3>AI's Incursion into Creative and Subjective Domains</h3>
+<p>Google DeepMind's <a href="https://deepmind.google/blog/google-deepmind-and-a24-announce-first-of-its-kind-research-partnership/">first-of-its-kind research partnership with A24</a> signals a serious move to integrate advanced AI into the highly subjective and creative process of filmmaking. This partnership suggests a shift from AI as a tool for optimization or code generation to a collaborative entity in artistic endeavors, potentially influencing narrative, visual design, and production workflows. This pushes the boundaries of AI's application beyond purely analytical tasks into areas traditionally considered human-exclusive.</p>
+<h4>Why it matters</h4>
+<p>The expansion of AI into creative industries challenges conventional notions of human originality and artistry, opening new avenues for human-AI collaboration while raising questions about intellectual property and creative ownership.</p>
+<p><strong>The Bottom Line:</strong>
+The accelerating decentralization of AI capabilities, coupled with sophisticated agentic control and profound economic reordering, confirms that AI is not just a technological shift but a systemic transformation of industry and intellect.</p>
+        </div>
+
+        <div class="section-card" id="finance-news">
+            <div class="section-header">
+                <h2>Markets &amp; Macro</h2>
+            </div>
+            <p>The market narrative today centers on the enduring, yet increasingly concentrated, AI boom, with mega-cap tech stocks continuing their upward trajectory and driving significant infrastructure investments. This enthusiasm is juxtaposed against a reordering of global energy markets, as a reported US-Iran peace deal unleashes an oil supply glut, even as geopolitical friction persists. Meanwhile, central banks express confidence in their inflation fight, while consumer-facing sectors navigate a mix of price pressures and strategic repositioning.</p>
+<h3>AI's Unabated Ascent &amp; Market Concentration</h3>
+<p>The relentless march of artificial intelligence continues to fuel analyst bullishness and investment across the technology sector, particularly within mega-cap names. NVIDIA remains a conviction buy for many, with one investor <a href="https://247wallst.com/investing/2026/07/04/every-time-this-stock-dips-i-buy-more/">continuously adding to their position on dips</a>, citing the company's foundational role in AI and its <a href="https://www.marketwatch.com/story/nvidia-is-betting-on-a-trillion-dollar-robotics-boom-here-is-the-hidden-way-to-trade-it-c5b10c4e?mod=mw_rss_topstories">bet on a trillion-dollar robotics boom</a>. Similarly, Meta Platforms is seen by Jim Cramer as having <a href="https://finance.yahoo.com/markets/stocks/articles/jim-cramer-explains-why-thinks-141944498.html">“more room to run”</a>, with Piper Sandler reiterating an <a href="https://finance.yahoo.com/technology/ai/articles/piper-sandler-reiterates-overweight-rating-140904921.html">Overweight rating</a> on the back of AI-powered agents. Alphabet also received a <a href="https://finance.yahoo.com/markets/stocks/articles/argus-maintains-buy-rating-alphabet-140856000.html">Buy rating from Argus</a>, acknowledging the returns on its compute infrastructure and generative AI investments. Microsoft and Apple, too, are highlighted as <a href="https://finance.yahoo.com/technology/ai/articles/microsoft-msft-one-best-ai-140839126.html">top AI and technology stocks</a>, with both companies recently <a href="https://finance.yahoo.com/markets/stocks/articles/evercore-isi-maintains-outperform-rating-141046629.html">increasing prices</a> on hardware and services. This AI-driven demand is directly benefiting chip manufacturers, as evidenced by S&amp;P Global strengthening <a href="https://finance.yahoo.com/technology/ai/articles/tsmc-ai-chip-dominance-strengthens-141039181.html">TSMC’s credit outlook</a> due to its AI chip dominance, and Micron's <a href="https://seekingalpha.com/news/4611502-micron-launches-9b-plant-expansion-japan">groundbreaking for a $9 billion plant expansion in Japan</a>. However, the concentration of this rally is underscored by the ongoing debate between <a href="https://247wallst.com/investing/etf/2026/07/04/qqq-vs-voo-should-the-nasdaq-100-or-the-sp-500-be-your-core-holding/">QQQ and VOO</a>, highlighting the Nasdaq-100's concentrated exposure to software and semiconductors.</p>
+<h4>Why it matters</h4>
+<p>The sustained investment and valuation growth in AI-centric mega-caps signal a deep structural shift in the economy, but also raise questions about market breadth and the sustainability of such concentrated gains.</p>
+<h3>Geopolitical Shifts Reshaping Energy Markets</h3>
+<p>A reported peace deal between the US and Iran has fundamentally altered the global energy landscape, unleashing <a href="https://www.bloomberg.com/news/articles/2026-07-04/oil-s-stunning-reversal-rekindles-fears-of-a-global-glut">a wave of supply</a> and driving down oil prices, rekindling fears of a global glut. TotalEnergies SE's CEO notes that Middle East producers are now <a href="https://www.bloomberg.com/news/articles/2026-07-04/total-ceo-sees-mideast-producers-desperate-to-sell-oil-stocks">desperate to sell crude stockpiled</a> during the recent Persian Gulf conflict. This newfound abundance, however, is complicated by persistent regional tensions. Tankers are still observed <a href="https://www.bloomberg.com/news/articles/2026-07-04/tankers-u-turn-in-hormuz-with-some-taking-iran-route-instead">making U-turns in Hormuz</a>, with some opting for routes closer to Iran, indicating Tehran's continued efforts to assert control over the vital waterway. The week-long funeral for an ayatollah also saw <a href="https://www.ft.com/content/c40471ec-cac8-4ab0-8a77-34ae971a7ffc">mourners demanding revenge</a>, and two Romanians were <a href="https://www.ft.com/content/12d30929-9e32-4344-80fd-fc53fc43ff8d">sentenced in London for an Iran-directed attack</a> on a journalist, underscoring the ongoing geopolitical friction. In parallel, India's Prime Minister Modi announced the country will <a href="https://www.bloomberg.com/news/articles/2026-07-04/modi-says-india-will-continue-to-expand-oil-refining-capacity">continue expanding oil refining capacity</a>, prioritizing supply chain security even as Western nations reduce their refining footprint. Elsewhere, Ukraine continues to <a href="https://www.bloomberg.com/news/articles/2026-07-04/russia-said-it-captured-key-ukraine-stronghold-in-donetsk-region">deny Russian claims of securing a Donetsk stronghold</a>, indicating the grinding conflict persists.</p>
+<h4>Why it matters</h4>
+<p>The interplay of a sudden oil supply increase and persistent geopolitical instability creates a volatile environment for energy prices and global trade routes, impacting inflation and economic stability.</p>
+<h3>Monetary Policy &amp; Consumer Dynamics</h3>
+<p>The European Central Bank (ECB) feels it is in a <a href="https://www.bloomberg.com/news/articles/2026-07-04/ecb-is-in-good-position-given-inflation-data-molin-says">“good position”</a> following its recent interest-rate hike, with inflation data showing signs of easing alongside the slump in oil prices. This suggests a cautious optimism from policymakers regarding their ability to manage inflation. On the consumer front, while overall inflation may be moderating, specific sectors still face pressures, with <a href="https://www.marketwatch.com/story/your-fourth-of-july-hamburger-meat-was-likely-imported-and-youre-right-to-have-a-beef-with-that-c25d7c31?mod=mw_rss_topstories">record beef imports failing to curb high prices</a> for American consumers. Retail dynamics are also shifting, as Sprouts Farmers Market <a href="https://finance.yahoo.com/markets/stocks/articles/sprouts-farmers-market-sfm-takes-141028129.html">takes over a never-opened Amazon Fresh store</a>, marking Amazon's continued re-evaluation of its physical grocery footprint. In the speculative asset space, Bitcoin ETFs have seen <a href="https://www.fool.com/investing/2026/07/04/bitcoin-etfs-saw-outflows-of-2-billion-in-2-weeks/">outflows of $2 billion in two weeks</a>, indicating a potential cooling of retail investor enthusiasm or a broader risk-off sentiment in digital assets.</p>
+<h4>Why it matters</h4>
+<p>Central bank confidence in inflation control is a positive signal, but persistent consumer price pressures in key goods and shifts in retail strategy highlight underlying economic adjustments and evolving consumer behavior.</p>
+<h3>Trade-offs &amp; Evolution</h3>
+<p>The narrative of AI's market dominance is evolving from unbridled expansion to a more nuanced focus on efficiency. While analysts continue to champion mega-cap tech as "best AI stocks" and chipmakers like TSMC and Micron invest heavily in capacity, Tesla's new policy of <a href="https://seekingalpha.com/news/4611500-tesla-limits-employee-ai-spending">capping employee AI spending at $200 per week</a> signals a shift towards cost optimization within AI development, even for companies at the forefront of the technology. This suggests that the initial "spend at all costs" phase might be giving way to a more disciplined approach to AI resource allocation.</p>
+<p>Similarly, the energy market faces a contradiction between immediate supply abundance and underlying geopolitical fragility. The reported US-Iran peace deal has created an oil glut, driving down prices and contributing to the ECB's positive inflation outlook. However, Iran's continued assertiveness in the Strait of Hormuz and the calls for revenge at a recent funeral suggest that the fundamental geopolitical risks have not dissipated. This creates a scenario where short-term supply relief could be quickly undermined by renewed regional instability, leading to rapid price reversals.</p>
+<p>The Bottom Line: The market is navigating a complex interplay of concentrated technological growth, rebalancing energy markets, and evolving monetary policy, all against a backdrop of persistent geopolitical uncertainties.</p>
+        </div>
+
+        <div class="recent-briefings">
+            <h3>Recent Briefings</h3>
+            <div class="recent-list">
+                <a href="2026-06-28-PM.html"><span>2026-06-28 Evening Briefing</span> <span class="date">Read →</span></a>
+                <a href="2026-06-28-AM.html"><span>2026-06-28 Morning Briefing</span> <span class="date">Read →</span></a>
+                <a href="2026-06-27-PM.html"><span>2026-06-27 Evening Briefing</span> <span class="date">Read →</span></a>
+                <a href="index.html"><span>View All Briefings</span> <span class="date">Archive →</span></a>
+
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); color: #8a9bb3; font-size: 0.85rem; font-family: 'Inter', sans-serif;">
+        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
+        "The Post-Human Briefing&trade;" and "AI News" are proprietary trademarks.
+    </div>
+
+    </body>
+</html>
