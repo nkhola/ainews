@@ -1,0 +1,65 @@
+name: Weekly Podcast (The Post-Human Debrief)
+
+on:
+  schedule:
+    # Sunday at 23:00 UTC (7:00 PM Eastern) — after the Sunday PM briefing lands
+    - cron: '0 23 * * 0'
+  workflow_dispatch:
+
+jobs:
+  generate-podcast:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r .scripts/requirements.txt
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        if: ${{ env.HAS_GCP_PROJECT != '' }}
+        env:
+          HAS_GCP_PROJECT: ${{ secrets.VERTEX_PROJECT_ID }}
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+
+      - name: Generate Weekly Podcast
+        env:
+          VERTEX_PROJECT_ID: ${{ secrets.VERTEX_PROJECT_ID }}
+          VERTEX_LOCATION: ${{ secrets.VERTEX_LOCATION }}
+          GOOGLE_CLOUD_PROJECT: ${{ secrets.VERTEX_PROJECT_ID }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+          LLM_FALLBACK_API_KEY: ${{ secrets.LLM_FALLBACK_API_KEY }}
+          LLM_FALLBACK_BASE_URL: ${{ secrets.LLM_FALLBACK_BASE_URL }}
+          LLM_FALLBACK_MODEL: ${{ secrets.LLM_FALLBACK_MODEL }}
+        run: |
+          python3 .scripts/generate_weekly_podcast.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add podcast index.html
+          if ! git diff --staged --quiet; then
+            git commit -m "podcast: weekly Post-Human Debrief episode"
+            git pull --rebase --autostash origin main
+            git push
+          else
+            echo "No changes detected, skipping commit."
+          fi

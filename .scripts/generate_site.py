@@ -146,7 +146,7 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
         return
     except Exception as e:
         print(f"Vertex AI TTS failed: {e}. Falling back to edge-tts...")
-    
+
     # Fallback to edge-tts
     try:
         subprocess.run([
@@ -159,11 +159,549 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
     except Exception as e:
         print(f"Error generating audio via edge-tts: {e}")
 
+
+# ---------------------------------------------------------------------------
+# Design system — "editorial modernism" derived from the cubist logo.
+# Paper cream / ink navy surfaces, terracotta accent, ochre secondary.
+# Fraunces (serif display) + Inter (body) + JetBrains Mono (data).
+# Everything is static and self-contained: GitHub Pages friendly.
+# ---------------------------------------------------------------------------
+
+SITE_FONTS = (
+    '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+    '    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+    '    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">'
+)
+
+# Runs before first paint so there is no theme flash.
+THEME_BOOT = (
+    "<script>(function(){var t=null;try{t=localStorage.getItem('phb-theme')}catch(e){}"
+    "if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}"
+    "document.documentElement.setAttribute('data-theme',t);})();</script>"
+)
+
+THEME_TOGGLE_JS = (
+    "<script>function phbToggleTheme(){var r=document.documentElement;"
+    "var t=r.getAttribute('data-theme')==='dark'?'light':'dark';"
+    "r.setAttribute('data-theme',t);try{localStorage.setItem('phb-theme',t)}catch(e){}}</script>"
+)
+
+THEME_TOGGLE_BTN = (
+    '<button class="theme-toggle" onclick="phbToggleTheme()" aria-label="Toggle color theme" title="Toggle theme">'
+    '<svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>'
+    '<svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
+    '</button>'
+)
+
+# Plain string (not an f-string) so CSS braces stay literal.
+BASE_CSS = """
+        :root {
+            --bg: #f4eee1;
+            --surface: #faf6ea;
+            --surface-2: #ece4d1;
+            --ink: #20242e;
+            --ink-soft: #494e5c;
+            --muted: #78715f;
+            --accent: #b0512b;
+            --accent-hover: #8f3f1e;
+            --ochre: #a5762a;
+            --hairline: #ddd3bd;
+            --rule: #20242e;
+            --font-serif: 'Fraunces', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        [data-theme="dark"] {
+            --bg: #14161d;
+            --surface: #1a1d26;
+            --surface-2: #232733;
+            --ink: #eae5d6;
+            --ink-soft: #c2bcab;
+            --muted: #8f8a79;
+            --accent: #d97950;
+            --accent-hover: #e89570;
+            --ochre: #cf9c45;
+            --hairline: #2d3140;
+            --rule: #eae5d6;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font-sans);
+            line-height: 1.7;
+            min-height: 100vh;
+            transition: background 0.25s ease, color 0.25s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { color: var(--accent-hover); }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid var(--hairline);
+            border-radius: 50%;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        .theme-toggle:hover { color: var(--ink); border-color: var(--muted); }
+        [data-theme="dark"] .icon-moon { display: none; }
+        [data-theme="light"] .icon-sun { display: none; }
+
+        .kicker {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .double-rule {
+            border: 0;
+            border-top: 3px solid var(--rule);
+            border-bottom: 1px solid var(--rule);
+            height: 3px;
+            margin: 0;
+        }
+        .thin-rule {
+            border: 0;
+            border-top: 1px solid var(--hairline);
+            margin: 0;
+        }
+
+        /* Audio player */
+        .phb-player {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0 2px 0;
+        }
+        .phb-player button.pp-btn {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent);
+            color: var(--bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+            padding: 0;
+        }
+        .phb-player button.pp-btn:hover { background: var(--accent-hover); }
+        .phb-player .pp-track {
+            flex-grow: 1;
+            height: 3px;
+            background: var(--hairline);
+            cursor: pointer;
+            position: relative;
+        }
+        .phb-player .pp-fill {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 0%;
+            background: var(--accent);
+        }
+        .phb-player .pp-time {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--muted);
+            min-width: 88px;
+            text-align: right;
+        }
+        .phb-player.pp-error .pp-time { min-width: 0; }
+
+        footer.site-footer {
+            max-width: 720px;
+            margin: 72px auto 0 auto;
+            padding: 24px 24px 48px 24px;
+            border-top: 1px solid var(--hairline);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            text-align: center;
+            line-height: 2;
+        }
+"""
+
+AUDIO_PLAYER_JS = """
+    <script>
+    (function() {
+        var players = document.querySelectorAll('.phb-player');
+        var fmt = function(s) {
+            if (!isFinite(s)) return '--:--';
+            var m = Math.floor(s / 60), r = Math.floor(s % 60);
+            return m + ':' + (r < 10 ? '0' : '') + r;
+        };
+        players.forEach(function(p) {
+            var audio = p.querySelector('audio');
+            var btn = p.querySelector('.pp-btn');
+            var track = p.querySelector('.pp-track');
+            var fill = p.querySelector('.pp-fill');
+            var time = p.querySelector('.pp-time');
+            var iconPlay = btn.querySelector('.pp-play');
+            var iconPause = btn.querySelector('.pp-pause');
+            if (!audio) return;
+            var update = function() {
+                var d = audio.duration, c = audio.currentTime;
+                fill.style.width = (d ? (c / d * 100) : 0) + '%';
+                time.textContent = fmt(c) + ' / ' + fmt(d);
+            };
+            audio.addEventListener('loadedmetadata', update);
+            audio.addEventListener('timeupdate', update);
+            audio.addEventListener('ended', function() {
+                iconPlay.style.display = ''; iconPause.style.display = 'none';
+            });
+            audio.addEventListener('error', function() {
+                p.classList.add('pp-error');
+                btn.disabled = true;
+                btn.style.opacity = '0.4';
+                time.textContent = 'audio unavailable';
+            });
+            btn.addEventListener('click', function() {
+                if (audio.paused) {
+                    document.querySelectorAll('.phb-player audio').forEach(function(a) {
+                        if (a !== audio) a.pause();
+                    });
+                    document.querySelectorAll('.phb-player').forEach(function(q) {
+                        if (q !== p) {
+                            var pl = q.querySelector('.pp-play'), pa = q.querySelector('.pp-pause');
+                            if (pl && pa) { pl.style.display = ''; pa.style.display = 'none'; }
+                        }
+                    });
+                    audio.play();
+                    iconPlay.style.display = 'none'; iconPause.style.display = '';
+                } else {
+                    audio.pause();
+                    iconPlay.style.display = ''; iconPause.style.display = 'none';
+                }
+            });
+            track.addEventListener('click', function(e) {
+                if (!audio.duration) return;
+                var r = track.getBoundingClientRect();
+                audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+            });
+        });
+    })();
+    </script>
+"""
+
+FOOTER_HTML = """
+    <footer class="site-footer">
+        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
+        "The Post-Human Briefing&trade;" and "The Post-Human Debrief&trade;" are proprietary trademarks.
+    </footer>
+"""
+
+
+def render_player(src):
+    """Markup for the shared custom audio player."""
+    return f"""<div class="phb-player">
+                <audio preload="metadata" src="{src}"></audio>
+                <button class="pp-btn" aria-label="Play or pause">
+                    <svg class="pp-play" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                    <svg class="pp-pause" style="display:none" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+                </button>
+                <div class="pp-track"><div class="pp-fill"></div></div>
+                <span class="pp-time">0:00 / --:--</span>
+            </div>"""
+
+
+def pretty_date(date_str):
+    """'2026-06-30' -> 'Monday, June 30, 2026'."""
+    d = datetime.strptime(date_str, '%Y-%m-%d')
+    return d.strftime('%A, %B %-d, %Y')
+
+
+def render_briefing_page(base_name, date_str, time_label, reading_time,
+                         ai_html, fin_html, recent_html, has_audio):
+    """Render a full standalone daily-briefing page."""
+    audio_block = ""
+    if has_audio:
+        audio_block = f"""
+        <div class="listen-block">
+            <span class="kicker">Listen to this briefing</span>
+            {render_player(f"audio/{base_name}.mp3")}
+        </div>
+"""
+
+    briefing_css = """
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 2px;
+            width: 0%;
+            background: var(--accent);
+            z-index: 10;
+        }
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 28px 24px 40px 24px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--hairline);
+        }
+        .top-nav .nav-left, .top-nav .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .top-nav a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .top-nav a:hover { color: var(--ink); }
+
+        .briefing-head {
+            padding: 44px 0 28px 0;
+            text-align: left;
+        }
+        .briefing-head .kicker { color: var(--accent); }
+        .briefing-head h1 {
+            font-family: var(--font-serif);
+            font-size: 2.7rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.12;
+            margin: 10px 0 12px 0;
+        }
+        .briefing-head .dateline {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .listen-block {
+            border-top: 1px solid var(--hairline);
+            border-bottom: 1px solid var(--hairline);
+            padding: 16px 0;
+            margin-bottom: 8px;
+        }
+
+        section.brief-section { padding-top: 40px; }
+        .section-head { margin-bottom: 8px; }
+        .section-head h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 10px 0 0 0;
+        }
+        .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
+        .brief-body h3 {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin: 2.2em 0 0.5em 0;
+            letter-spacing: -0.01em;
+        }
+        .brief-body h4 {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ochre);
+            margin: 1.6em 0 0.4em 0;
+        }
+        .brief-body p { margin: 0 0 1.2em 0; }
+        .brief-body ul { padding-left: 1.3em; margin: 0 0 1.2em 0; }
+        .brief-body li { margin-bottom: 0.5em; }
+        .brief-body a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+            text-underline-offset: 3px;
+        }
+        .brief-body a:hover { color: var(--accent-hover); text-decoration-color: var(--accent-hover); }
+        .brief-body blockquote {
+            border-left: 2px solid var(--ochre);
+            margin: 1.4em 0;
+            padding: 2px 0 2px 18px;
+            font-family: var(--font-serif);
+            font-style: italic;
+            color: var(--ink-soft);
+        }
+        .brief-body strong { color: var(--ink); }
+
+        .recent {
+            margin-top: 64px;
+            padding-top: 8px;
+        }
+        .recent .kicker { display: block; margin: 14px 0 10px 0; }
+        .recent-list { display: flex; flex-direction: column; }
+        .recent-list a {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+            padding: 11px 2px;
+            border-bottom: 1px solid var(--hairline);
+            color: var(--ink);
+            font-size: 0.95rem;
+        }
+        .recent-list a:hover { color: var(--accent); }
+        .recent-list a .go {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .recent-list a:hover .go { color: var(--accent); }
+
+        @media (max-width: 600px) {
+            .briefing-head h1 { font-size: 2.1rem; }
+        }
+"""
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Post-Human Briefing — {date_str} {time_label}</title>
+    {THEME_BOOT}
+    {SITE_FONTS}
+    <link rel="icon" type="image/png" href="img/logo_favicon.png">
+    <style>{BASE_CSS}{briefing_css}</style>
+</head>
+<body>
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="page">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html">&larr; The Post-Human Briefing</a>
+            </div>
+            <div class="nav-right">
+                <a href="https://www.khola.blog/" target="_blank" rel="noopener">Khola.Blog</a>
+                {THEME_TOGGLE_BTN}
+            </div>
+        </nav>
+
+        <header class="briefing-head">
+            <span class="kicker">The Post-Human Briefing</span>
+            <h1>{time_label} Briefing</h1>
+            <div class="dateline">{pretty_date(date_str)} &nbsp;&middot;&nbsp; {reading_time} min read</div>
+        </header>
+{audio_block}
+        <section class="brief-section" id="ai-news">
+            <div class="section-head">
+                <hr class="double-rule">
+                <h2>Artificial Intelligence</h2>
+            </div>
+            <div class="brief-body">
+{ai_html}
+            </div>
+        </section>
+
+        <section class="brief-section" id="finance-news">
+            <div class="section-head">
+                <hr class="double-rule">
+                <h2>Markets &amp; Macro</h2>
+            </div>
+            <div class="brief-body">
+{fin_html}
+            </div>
+        </section>
+
+        <div class="recent">
+            <hr class="double-rule">
+            <span class="kicker">Recent briefings</span>
+            <div class="recent-list">
+{recent_html}
+            </div>
+        </div>
+    </div>
+{FOOTER_HTML}
+    {THEME_TOGGLE_JS}
+{AUDIO_PLAYER_JS}
+    <script>
+    (function() {{
+        var bar = document.getElementById('progress-bar');
+        var onScroll = function() {{
+            var h = document.documentElement;
+            var max = h.scrollHeight - h.clientHeight;
+            bar.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%';
+        }};
+        window.addEventListener('scroll', onScroll, {{ passive: true }});
+        onScroll();
+    }})();
+    </script>
+</body>
+</html>
+"""
+
+
+def build_recent_html(repo_root, exclude=None, count=3):
+    """Rows linking to the newest briefings, for a briefing page footer."""
+    files = [f for f in os.listdir(repo_root)
+             if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f)]
+
+    def sort_key(filename):
+        name = filename.replace('.html', '')
+        parts = name.split('-')
+        weight = 1 if len(parts) == 4 and parts[3] == "PM" else 0
+        return ("-".join(parts[:3]), weight)
+
+    files.sort(key=sort_key, reverse=True)
+    rows = ""
+    shown = 0
+    for rf in files:
+        if exclude and rf == exclude:
+            continue
+        if shown >= count:
+            break
+        name = rf.replace('.html', '')
+        parts = name.split('-')
+        date_part = "-".join(parts[:3])
+        label = ("Evening" if parts[3] == "PM" else "Morning") if len(parts) == 4 else "Daily"
+        rows += (f'                <a href="{rf}"><span>{label} Briefing '
+                 f'&middot; {pretty_date(date_part)}</span> <span class="go">Read</span></a>\n')
+        shown += 1
+    rows += '                <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>\n'
+    return rows
+
+
 def generate_daily_briefing():
     # Setup directories
     script_dir = os.path.dirname(os.path.abspath(__file__))
     repo_root = os.path.dirname(script_dir)
-    
+
     # Change working directory to .scripts so config.yaml is found by the crawlers
     os.chdir(script_dir)
 
@@ -205,376 +743,12 @@ def generate_daily_briefing():
     ai_html = markdown.markdown(ai_md, extensions=['tables', 'fenced_code'])
     fin_html = markdown.markdown(fin_md, extensions=['tables', 'fenced_code'])
 
-    # 2.5 Generate Recent Briefings HTML
-    import re
-    existing_files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f)]
-    
-    def recent_sort_key(filename):
-        name = filename.replace('.html', '')
-        parts = name.split('-')
-        weight = 1 if len(parts) == 4 and parts[3] == "PM" else 0
-        return ("-".join(parts[:3]) if len(parts) == 4 else name, weight)
-        
-    existing_files.sort(key=recent_sort_key, reverse=True)
-    
-    recent_html = ""
-    for rf in existing_files[:3]:
-        rf_name = rf.replace('.html', '')
-        rf_parts = rf_name.split('-')
-        display_name = f"{rf_parts[0]}-{rf_parts[1]}-{rf_parts[2]} {'Evening' if len(rf_parts) == 4 and rf_parts[3] == 'PM' else 'Morning'} Briefing" if len(rf_parts) == 4 else f"{rf_name} Briefing"
-        recent_html += f'                <a href="{rf}"><span>{display_name}</span> <span class="date">Read →</span></a>\n'
-    recent_html += '                <a href="index.html"><span>View All Briefings</span> <span class="date">Archive →</span></a>\n'
-
-    # 3. Create Daily HTML Page
-    html_template = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Post-Human Briefing - {date_str}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="img/logo_favicon.png">
-    <style>
-        :root {{
-            --bg-color: #0b0f19;
-            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1a1b35 100%);
-            --surface-color: rgba(30, 32, 50, 0.6);
-            --surface-hover: rgba(45, 48, 75, 0.8);
-            --text-main: #f0f4f8;
-            --text-muted: #a0aec0;
-            --accent-glow: #3b82f6;
-            --accent-glow-secondary: #8b5cf6;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
-        }}
-        
-        body {{
-            margin: 0;
-            padding: 0;
-            background: var(--bg-gradient);
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, sans-serif;
-            line-height: 1.7;
-            min-height: 100vh;
-        }}
-
-        .ambient-glow {{
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            overflow: hidden;
-            z-index: -1;
-            pointer-events: none;
-        }}
-        .ambient-glow::before, .ambient-glow::after {{
-            content: '';
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.15;
-            animation: float 20s infinite alternate;
-        }}
-        .ambient-glow::before {{
-            background: var(--accent-glow);
-            top: -100px; left: -100px;
-        }}
-        .ambient-glow::after {{
-            background: var(--accent-glow-secondary);
-            bottom: -100px; right: -100px;
-            animation-delay: -10s;
-        }}
-
-        @keyframes float {{
-            0% {{ transform: translate(0, 0); }}
-            100% {{ transform: translate(50px, 50px); }}
-        }}
-
-        .briefing-container {{
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 40px 20px 80px 20px;
-            position: relative;
-        }}
-
-        /* Navbar */
-        .nav-bar {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }}
-
-        .nav-link {{
-            display: inline-block;
-            color: var(--text-main);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-        }}
-
-        .nav-link:hover {{
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }}
-
-        /* Header Section */
-        .header-section {{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--border-color);
-            flex-wrap: wrap;
-            gap: 16px;
-        }}
-        .header-title {{
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }}
-        .header-section .logo {{
-            width: 48px;
-            height: auto;
-            border-radius: 6px;
-            margin: 0;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-        }}
-        .header-section h1 {{
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin: 0;
-            background: linear-gradient(to right, #60a5fa, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }}
-        .header-section .meta {{
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
-        }}
-        .header-section .date {{
-            font-family: 'Space Mono', monospace;
-            font-size: 1.3rem;
-            color: #f0f4f8;
-            font-weight: 700;
-            text-transform: uppercase;
-        }}
-        .header-section .reading-time {{
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            font-family: 'Outfit', sans-serif;
-        }}
-        
-        @media (max-width: 600px) {{
-            .header-section {{
-                flex-direction: column;
-                align-items: flex-start;
-            }}
-            .header-section .meta {{
-                align-items: flex-start;
-                text-align: left;
-            }}
-        }}
-
-        /* Section Cards */
-        .section-card {{
-            background: var(--surface-color);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            margin-bottom: 40px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }}
-        .section-header {{
-            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
-            padding-bottom: 12px;
-            margin-bottom: 28px;
-        }}
-        .section-header h2 {{
-            font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--text-main);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }}
-        .section-card h3 {{
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.4rem;
-            color: #f0f4f8;
-            margin-top: 48px;
-            margin-bottom: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }}
-        .section-card p {{
-            font-size: 1.15rem;
-            margin-bottom: 24px;
-            color: #d1d5db;
-            line-height: 1.8;
-        }}
-        .section-card ul {{
-            padding-left: 24px;
-            color: #d1d5db;
-            margin-bottom: 24px;
-        }}
-        .section-card li {{
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-            line-height: 1.7;
-        }}
-        a {{
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }}
-        a:hover {{
-            text-decoration: underline;
-            color: #60a5fa;
-        }}
-        blockquote {{
-            border-left: 4px solid #8b5cf6;
-            margin: 0;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.03);
-            font-style: italic;
-            border-radius: 0 8px 8px 0;
-            color: #9ca3af;
-        }}
-
-        /* Recent Briefings at bottom */
-        .recent-briefings {{
-            margin-top: 60px;
-            padding-top: 40px;
-            border-top: 2px solid var(--border-color);
-        }}
-        .recent-briefings h3 {{
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            text-align: center;
-        }}
-        .recent-list {{
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }}
-        .recent-list a {{
-            display: flex;
-            justify-content: space-between;
-            padding: 16px 20px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            color: var(--text-main);
-            transition: all 0.2s ease;
-        }}
-        .recent-list a:hover {{
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(96, 165, 250, 0.3);
-            transform: translateY(-2px);
-        }}
-        .recent-list .date {{
-            color: #9ca3af;
-            font-family: 'Outfit', sans-serif;
-        }}
-
-        ::-webkit-scrollbar {{ width: 8px; }}
-        ::-webkit-scrollbar-track {{ background: var(--bg-color); }}
-        ::-webkit-scrollbar-thumb {{ background: rgba(255,255,255,0.2); border-radius: 4px; }}
-        ::-webkit-scrollbar-thumb:hover {{ background: rgba(255,255,255,0.3); }}
-
-    </style>
-</head>
-<body>
-    <div class="ambient-glow"></div>
-    <div class="briefing-container">
-        <div class="nav-bar">
-            <a href="index.html" class="nav-link">← All Briefings</a>
-            <a href="https://www.khola.blog/" class="nav-link" target="_blank">Khola.Blog ↗</a>
-        </div>
-        
-        <div class="header-section">
-            <div class="header-title">
-                <img src="img/logo_256.png" alt="Logo" class="logo">
-                <h1>The Post-Human Briefing</h1>
-            </div>
-            <div class="meta">
-                <span class="date">{date_str} &bull; {time_label}</span>
-                <span class="reading-time">{reading_time} min read</span>
-            </div>
-        </div>
-        
-        <div style="background: rgba(30, 32, 50, 0.6); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
-            <div style="flex-shrink: 0; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
-            </div>
-            <div style="flex-grow: 1;">
-                <h3 style="margin: 0 0 5px 0; font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: #f0f4f8;">Listen to the Briefing</h3>
-                <audio controls style="width: 100%; height: 36px; border-radius: 8px; outline: none;">
-                    <source src="audio/{base_name}.mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
-            </div>
-        </div>
-
-        <div class="section-card" id="ai-news">
-            <div class="section-header">
-                <h2>Artificial Intelligence</h2>
-            </div>
-            {ai_html}
-        </div>
-
-        <div class="section-card" id="finance-news">
-            <div class="section-header">
-                <h2>Markets &amp; Macro</h2>
-            </div>
-            {fin_html}
-        </div>
-
-        <div class="recent-briefings">
-            <h3>Recent Briefings</h3>
-            <div class="recent-list">
-{recent_html}
-            </div>
-        </div>
-    </div>
-    
-    <div style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); color: #8a9bb3; font-size: 0.85rem; font-family: 'Inter', sans-serif;">
-        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
-        "The Post-Human Briefing&trade;" and "AI News" are proprietary trademarks.
-    </div>
-
-    </body>
-</html>
-"""
-    
+    recent_html = build_recent_html(repo_root, exclude=f"{base_name}.html")
 
     # --- AUDIO GENERATION ---
     audio_dir = os.path.join(repo_root, "audio")
     os.makedirs(audio_dir, exist_ok=True)
-    
+
     # Extract narration-friendly plain text. Skip the hardcoded section intro
     # when the content already opens with its own matching heading.
     def with_intro(intro, text):
@@ -585,7 +759,7 @@ def generate_daily_briefing():
         + " " + with_intro("Markets and Macro. ", html_to_speech_text(fin_html))
     )
     plain_text = re.sub(r'\s+', ' ', plain_text).strip()
-    
+
     # Generate MP3 using Vertex AI with edge-tts fallback
     audio_file_path = os.path.join(audio_dir, f"{base_name}.mp3")
     generate_audio_with_fallback(plain_text, audio_file_path)
@@ -602,20 +776,152 @@ def generate_daily_briefing():
                 pass
     # ------------------------
 
+    html_page = render_briefing_page(
+        base_name=base_name,
+        date_str=date_str,
+        time_label=time_label,
+        reading_time=reading_time,
+        ai_html=ai_html,
+        fin_html=fin_html,
+        recent_html=recent_html,
+        has_audio=os.path.exists(audio_file_path),
+    )
+
     # Save daily file in the root
     daily_file = os.path.join(repo_root, f"{base_name}.html")
     with open(daily_file, "w", encoding="utf-8") as f:
-        f.write(html_template)
+        f.write(html_page)
     print(f"Saved daily briefing to {daily_file}")
 
     # 4. Update Index Page
     update_index_page(repo_root, date_str)
 
+
+def build_podcast_section(repo_root):
+    """Render the Weekly Debrief section for the index page.
+
+    Reads podcast/episodes.json (written by generate_weekly_podcast.py).
+    Falls back to a slim teaser row until the first episode exists.
+    """
+    import json
+    manifest_path = os.path.join(repo_root, "podcast", "episodes.json")
+    episodes = []
+    if os.path.exists(manifest_path):
+        try:
+            with open(manifest_path, "r", encoding="utf-8") as f:
+                episodes = json.load(f)
+        except Exception:
+            episodes = []
+
+    if not episodes:
+        return """
+        <section class="podcast-section">
+            <div class="podcast-label">
+                <span class="kicker accent">The Post-Human Debrief</span>
+                <span class="kicker">Weekly Podcast</span>
+            </div>
+            <hr class="thin-rule">
+            <p class="podcast-teaser">Two voices. One conversation. The entire week of AI and markets, debriefed every Sunday. <em>First episode coming soon.</em></p>
+        </section>"""
+
+    latest = episodes[0]
+    prev_html = ""
+    for ep in episodes[1:]:
+        prev_html += f"""
+                <details class="podcast-prev-item">
+                    <summary><span class="prev-title">{ep['title']}</span><span class="prev-meta">{ep['week_range']} &middot; {ep['duration_min']} min</span></summary>
+                    {render_player(f"podcast/{ep['file']}")}
+                </details>"""
+    prev_block = f'\n            <div class="podcast-previous">{prev_html}\n            </div>' if prev_html else ''
+
+    return f"""
+        <section class="podcast-section">
+            <div class="podcast-label">
+                <span class="kicker accent">The Post-Human Debrief</span>
+                <span class="kicker">Weekly Podcast</span>
+            </div>
+            <hr class="thin-rule">
+            <div class="podcast-feature">
+                <div class="podcast-meta kicker">Week of {latest['week_range']} &middot; {latest['duration_min']} min listen</div>
+                <h2 class="podcast-title">{latest['title']}</h2>
+                <p class="podcast-desc">{latest['description']}</p>
+                {render_player(f"podcast/{latest['file']}")}
+            </div>{prev_block}
+        </section>"""
+
+
+def build_lead_story(repo_root, latest_file):
+    """Pull the executive summary and Bottom Line out of the newest briefing
+    so the front page shows the synthesis, not just a link."""
+    try:
+        from bs4 import BeautifulSoup
+        with open(os.path.join(repo_root, latest_file), "r", encoding="utf-8") as f:
+            soup = BeautifulSoup(f.read(), "html.parser")
+
+        excerpt, bottom_line = "", ""
+        ai_div = soup.find(id="ai-news")
+        if ai_div:
+            first_p = ai_div.find("p")
+            if first_p:
+                excerpt = first_p.get_text(" ", strip=True)
+
+        for p in soup.find_all("p"):
+            text = p.get_text(" ", strip=True)
+            if re.match(r'^\W*THE BOTTOM LINE', text, re.I):
+                bottom_line = re.sub(r'^\W*THE BOTTOM LINE\W*:?\s*', '', text, flags=re.I)
+
+        if len(excerpt) > 340:
+            cut = excerpt[:340].rsplit(' ', 1)[0].rstrip('.,;:')
+            excerpt = cut + '&hellip;'
+        return excerpt, bottom_line
+    except Exception as e:
+        print(f"Lead story extraction failed ({e}); front page falls back to links only.")
+        return "", ""
+
+
+def build_archive_html(files):
+    """Group briefing files by week: date rows with edition links."""
+    from collections import OrderedDict
+
+    by_date = OrderedDict()
+    for f in files:  # files arrive newest-first
+        name = f.replace('.html', '')
+        parts = name.split('-')
+        date_part = "-".join(parts[:3])
+        suffix = parts[3] if len(parts) == 4 else None
+        by_date.setdefault(date_part, {})[suffix] = f
+
+    weeks = OrderedDict()
+    for date_part, editions in by_date.items():
+        d = datetime.strptime(date_part, '%Y-%m-%d')
+        monday = d - timedelta(days=d.weekday())
+        weeks.setdefault(monday.strftime('%Y-%m-%d'), []).append((date_part, editions))
+
+    html = ""
+    for monday_str, days in weeks.items():
+        monday = datetime.strptime(monday_str, '%Y-%m-%d')
+        html += f'            <div class="week-group">\n'
+        html += f'                <span class="kicker week-label">Week of {monday.strftime("%B %-d, %Y")}</span>\n'
+        for date_part, editions in days:
+            d = datetime.strptime(date_part, '%Y-%m-%d')
+            chips = ""
+            if "AM" in editions:
+                chips += f'<a class="edition-chip" href="{editions["AM"]}">Morning</a>'
+            if "PM" in editions:
+                chips += f'<a class="edition-chip" href="{editions["PM"]}">Evening</a>'
+            if None in editions:
+                chips += f'<a class="edition-chip" href="{editions[None]}">Briefing</a>'
+            html += (f'                <div class="archive-row">'
+                     f'<span class="archive-date">{d.strftime("%A, %B %-d")}</span>'
+                     f'<span class="edition-chips">{chips}</span></div>\n')
+        html += '            </div>\n'
+    return html
+
+
 def update_index_page(repo_root, new_date_str):
-    import re
     # Find all html files in the directory that look like dates (e.g. YYYY-MM-DD)
     files = [f for f in os.listdir(repo_root) if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f)]
-    
+
     def get_sort_key(filename):
         name = filename.replace('.html', '')
         parts = name.split('-')
@@ -631,18 +937,226 @@ def update_index_page(repo_root, new_date_str):
     # Sort files descending (newest first)
     files.sort(key=get_sort_key, reverse=True)
 
-    links_html = ""
-    for f in files:
-        name_parts = f.replace('.html', '').split('-')
-        if len(name_parts) == 4:
-            year, month, day, am_pm = name_parts
-            label = "Evening" if am_pm == "PM" else "Morning"
-            display_name = f'<span class="date">{year}-{month}-{day}</span> {label} Briefing'
-        else:
-            date_name = f.replace('.html', '')
-            display_name = f'<span class="date">{date_name}</span> Briefing'
-            
-        links_html += f'            <li><a href="{f}">{display_name} <span class="read-more">Read →</span></a></li>\n'
+    # --- Lead story (latest briefing, pulled onto the front page) ---
+    lead_html = ""
+    if files:
+        latest = files[0]
+        name_parts = latest.replace('.html', '').split('-')
+        lead_date = "-".join(name_parts[:3])
+        lead_label = ("Evening" if name_parts[3] == "PM" else "Morning") if len(name_parts) == 4 else "Daily"
+        excerpt, bottom_line = build_lead_story(repo_root, latest)
+
+        reading_time = ""
+        try:
+            with open(os.path.join(repo_root, latest), "r", encoding="utf-8") as f:
+                m = re.search(r'(\d+)\s*min read', f.read())
+                if m:
+                    reading_time = f' &middot; {m.group(1)} min read'
+        except Exception:
+            pass
+
+        base = latest.replace('.html', '')
+        has_audio = os.path.exists(os.path.join(repo_root, "audio", f"{base}.mp3"))
+        listen_html = render_player(f"audio/{base}.mp3") if has_audio else ""
+
+        excerpt_html = f'\n                <p class="lead-excerpt"><a href="{latest}">{excerpt}</a></p>' if excerpt else ""
+        bottom_html = f'\n                <p class="lead-bottom"><span class="kicker accent">The Bottom Line</span>{bottom_line}</p>' if bottom_line else ""
+
+        lead_html = f"""
+        <section class="lead-story">
+            <div class="lead-meta kicker accent">Latest edition &middot; {lead_label} &middot; {pretty_date(lead_date)}{reading_time}</div>{excerpt_html}{bottom_html}
+            <div class="lead-actions">
+                <a class="read-link" href="{latest}">Read the full briefing &rarr;</a>
+            </div>
+            {listen_html}
+        </section>"""
+
+    archive_html = build_archive_html(files)
+    podcast_section_html = build_podcast_section(repo_root)
+
+    eastern = timezone(timedelta(hours=-4))
+    today_line = datetime.now(eastern).strftime('%A, %B %-d, %Y')
+
+    index_css = """
+        .front-page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 28px 24px 40px 24px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 14px;
+        }
+        .top-bar .kicker a { color: var(--muted); }
+        .top-bar .kicker a:hover { color: var(--ink); }
+        .top-bar .bar-right { display: flex; align-items: center; gap: 18px; }
+
+        .masthead {
+            text-align: center;
+            padding: 40px 0 28px 0;
+        }
+        .masthead img {
+            width: 76px;
+            height: auto;
+            border-radius: 10px;
+        }
+        .masthead h1 {
+            font-family: var(--font-serif);
+            font-size: 3.1rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            margin: 18px 0 12px 0;
+            color: var(--ink);
+        }
+        .masthead .tagline {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .lead-story { padding: 30px 0 8px 0; }
+        .lead-excerpt {
+            font-family: var(--font-serif);
+            font-size: 1.45rem;
+            font-weight: 400;
+            line-height: 1.45;
+            letter-spacing: -0.01em;
+            margin: 14px 0 18px 0;
+        }
+        .lead-excerpt a { color: var(--ink); }
+        .lead-excerpt a:hover { color: var(--accent); }
+        .kicker.accent { color: var(--accent); }
+        .lead-bottom {
+            border-left: 2px solid var(--ochre);
+            padding: 4px 0 4px 18px;
+            margin: 0 0 18px 0;
+            color: var(--ink-soft);
+            font-size: 0.98rem;
+        }
+        .lead-bottom .kicker { display: block; margin-bottom: 4px; color: var(--ochre); }
+        .lead-actions { margin-bottom: 6px; }
+        .read-link {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .read-link:hover { color: var(--accent-hover); }
+
+        .podcast-section { padding: 44px 0 10px 0; }
+        .podcast-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .podcast-teaser {
+            color: var(--ink-soft);
+            font-size: 0.98rem;
+            margin: 16px 0 0 0;
+        }
+        .podcast-teaser em { color: var(--ochre); font-style: normal; font-weight: 500; }
+        .podcast-feature { padding-top: 18px; }
+        .podcast-title {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 8px 0 8px 0;
+        }
+        .podcast-desc {
+            color: var(--ink-soft);
+            font-size: 0.98rem;
+            margin: 0 0 6px 0;
+        }
+        .podcast-previous { margin-top: 18px; display: flex; flex-direction: column; }
+        .podcast-prev-item {
+            border-top: 1px solid var(--hairline);
+            padding: 12px 0;
+        }
+        .podcast-prev-item summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 6px 12px;
+            flex-wrap: wrap;
+            cursor: pointer;
+            list-style: none;
+        }
+        .podcast-prev-item summary::-webkit-details-marker { display: none; }
+        .podcast-prev-item .prev-title {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--ink);
+            flex: 1 1 auto;
+            min-width: 55%;
+        }
+        .podcast-prev-item summary:hover .prev-title { color: var(--accent); }
+        .podcast-prev-item .prev-meta {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .archive { padding: 44px 0 0 0; }
+        .archive-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+        .week-group { padding: 18px 0 6px 0; }
+        .week-label { display: block; margin-bottom: 6px; color: var(--ochre); }
+        .archive-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--hairline);
+        }
+        .archive-date {
+            font-size: 0.98rem;
+            color: var(--ink);
+        }
+        .edition-chips { display: flex; gap: 8px; flex-shrink: 0; }
+        .edition-chip {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            border: 1px solid var(--hairline);
+            padding: 3px 10px;
+            border-radius: 2px;
+            transition: all 0.15s ease;
+        }
+        .edition-chip:hover {
+            color: var(--bg);
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        @media (max-width: 600px) {
+            .masthead h1 { font-size: 2.3rem; }
+            .lead-excerpt { font-size: 1.25rem; }
+            .archive-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+        }
+"""
 
     index_template = f"""<!DOCTYPE html>
 <html lang="en">
@@ -650,255 +1164,45 @@ def update_index_page(repo_root, new_date_str):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Post-Human Briefing</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <meta name="description" content="A twice-daily synthesis of frontier AI and global markets, written and narrated end-to-end by autonomous agents.">
+    {THEME_BOOT}
+    {SITE_FONTS}
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
-    <style>
-        :root {{
-            --bg-color: #0b0f19;
-            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1a1b35 100%);
-            --surface-color: rgba(30, 32, 50, 0.6);
-            --surface-hover: rgba(45, 48, 75, 0.8);
-            --text-main: #f0f4f8;
-            --text-muted: #a0aec0;
-            --accent-glow: #3b82f6;
-            --accent-glow-secondary: #8b5cf6;
-            --border-color: rgba(255, 255, 255, 0.1);
-        }}
-        
-        body {{
-            margin: 0;
-            padding: 0;
-            background: var(--bg-gradient);
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-        }}
-
-        .ambient-glow {{
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            overflow: hidden;
-            z-index: -1;
-            pointer-events: none;
-        }}
-        .ambient-glow::before, .ambient-glow::after {{
-            content: '';
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.15;
-            animation: float 20s infinite alternate;
-        }}
-        .ambient-glow::before {{
-            background: var(--accent-glow);
-            top: -100px; left: -100px;
-        }}
-        .ambient-glow::after {{
-            background: var(--accent-glow-secondary);
-            bottom: -100px; right: -100px;
-            animation-delay: -10s;
-        }}
-
-        @keyframes float {{
-            0% {{ transform: translate(0, 0); }}
-            100% {{ transform: translate(50px, 50px); }}
-        }}
-
-        .archive-container {{
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 40px 20px 80px 20px;
-            position: relative;
-        }}
-
-        header {{
-            text-align: center;
-            margin-bottom: 60px;
-            animation: fade-in-down 0.8s ease-out;
-        }}
-        
-        @keyframes fade-in-down {{
-            from {{ opacity: 0; transform: translateY(-20px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
-        }}
-
-        .logo-container {{
-            position: relative;
-            display: inline-block;
-            margin-bottom: 24px;
-        }}
-        
-        .logo-container img {{
-            width: 120px;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
-            border: 2px solid rgba(255,255,255,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }}
-
-        .logo-container img:hover {{
-            transform: scale(1.05);
-            box-shadow: 0 0 45px rgba(139, 92, 246, 0.6);
-        }}
-
-        h1 {{
-            font-family: 'Outfit', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin: 0 0 10px 0;
-            background: linear-gradient(to right, #60a5fa, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-        }}
-
-        p.subtitle {{
-            color: var(--text-muted);
-            font-size: 1.25rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }}
-
-        .nav-links {{
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }}
-        
-        .nav-link {{
-            display: inline-block;
-            color: var(--text-main);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-        }}
-
-        .nav-link:hover {{
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }}
-
-        .archive-list {{
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }}
-
-        .archive-list li {{
-            animation: fade-in-up 0.6s ease-out both;
-        }}
-        
-        .archive-list li:nth-child(1) {{ animation-delay: 0.1s; }}
-        .archive-list li:nth-child(2) {{ animation-delay: 0.15s; }}
-        .archive-list li:nth-child(3) {{ animation-delay: 0.2s; }}
-        .archive-list li:nth-child(4) {{ animation-delay: 0.25s; }}
-        .archive-list li:nth-child(5) {{ animation-delay: 0.3s; }}
-        .archive-list li:nth-child(6) {{ animation-delay: 0.35s; }}
-
-        @keyframes fade-in-up {{
-            from {{ opacity: 0; transform: translateY(20px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
-        }}
-
-        .archive-list a {{
-            display: flex;
-            align-items: center;
-            padding: 20px 24px;
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 1.15rem;
-            font-weight: 500;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }}
-
-        .archive-list a:hover {{
-            background: var(--surface-hover);
-            border-color: rgba(96, 165, 250, 0.5);
-            transform: translateY(-3px) scale(1.01);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
-        }}
-
-        .archive-list a span.date {{
-            color: #94a3b8;
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.05rem;
-            margin-right: 16px;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 10px;
-            border-radius: 8px;
-        }}
-
-        .archive-list a span.read-more {{
-            margin-left: auto;
-            color: #60a5fa;
-            font-size: 0.95rem;
-            font-weight: 600;
-            opacity: 0.8;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }}
-
-        .archive-list a:hover span.read-more {{
-            opacity: 1;
-            transform: translateX(4px);
-        }}
-
-        ::-webkit-scrollbar {{ width: 8px; }}
-        ::-webkit-scrollbar-track {{ background: var(--bg-color); }}
-        ::-webkit-scrollbar-thumb {{ background: rgba(255,255,255,0.2); border-radius: 4px; }}
-        ::-webkit-scrollbar-thumb:hover {{ background: rgba(255,255,255,0.3); }}
-
-    </style>
+    <style>{BASE_CSS}{index_css}</style>
 </head>
 <body>
-    <div class="ambient-glow"></div>
-    
-    <div class="archive-container">
-        <header>
-            <div class="logo-container">
-                <img src="img/logo_256.png" alt="The Post-Human Briefing Logo">
+    <div class="front-page">
+        <div class="top-bar">
+            <span class="kicker">{today_line}</span>
+            <div class="bar-right">
+                <span class="kicker"><a href="https://nkhola.github.io/">Post-Human Engineering</a></span>
+                <span class="kicker"><a href="https://www.khola.blog/" target="_blank" rel="noopener">Khola.Blog</a></span>
+                {THEME_TOGGLE_BTN}
             </div>
+        </div>
+        <hr class="thin-rule">
+
+        <header class="masthead">
+            <a href="index.html"><img src="img/logo_256.png" alt="The Post-Human Briefing logo"></a>
             <h1>The Post-Human Briefing</h1>
-            <p class="subtitle">A daily automated synthesis of top-tier AI and Finance intelligence, generated entirely by autonomous agents.</p>
-            
-            <div class="nav-links">
-                <a href="https://nkhola.github.io/" class="nav-link">← Main Site</a>
-                <a href="https://www.khola.blog/" class="nav-link" target="_blank" rel="noopener">Read Khola.Blog ↗</a>
-            </div>
+            <p class="tagline">Frontier AI &middot; Global Markets &middot; Zero Human Editors</p>
         </header>
+        <hr class="double-rule">
+{lead_html}
+{podcast_section_html}
 
-        <ul class="archive-list">
-{links_html}
-        </ul>
+        <section class="archive">
+            <div class="archive-head">
+                <span class="kicker accent">All briefings</span>
+                <span class="kicker">Morning &amp; Evening, ET</span>
+            </div>
+            <hr class="thin-rule">
+{archive_html}
+        </section>
     </div>
-    
-    <div style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); color: #8a9bb3; font-size: 0.85rem; font-family: 'Inter', sans-serif;">
-        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
-        "The Post-Human Briefing&trade;" and "AI News" are proprietary trademarks.
-    </div>
-
+{FOOTER_HTML}
+    {THEME_TOGGLE_JS}
+{AUDIO_PLAYER_JS}
 </body>
 </html>
 """

@@ -236,6 +236,56 @@ class MasterCompiler:
             
         return full_result
 
+    def synthesize_podcast_script(self, briefings_text, week_range):
+        """Turn a week of briefings into a two-host conversational podcast script.
+
+        Returns the raw script text. The first two lines are `TITLE:` and
+        `DESCRIPTION:` metadata; every line after that is a dialogue turn
+        prefixed with `HOST:` or `ANALYST:`.
+        """
+        system_prompt = f"""You are the head writer for "The Post-Human Debrief", the weekly podcast edition of The Post-Human Briefing. You write natural, intelligent two-voice conversations in the style of a great public-radio show: warm, sharp, zero filler.
+
+THE TWO VOICES:
+- HOST: the anchor. Male voice. Frames the week, asks the incisive questions, keeps momentum, occasionally dry humor.
+- ANALYST: the expert. Female voice. Explains mechanisms, challenges lazy narratives, connects AI developments to market structure. Has skin in the game.
+
+INPUT: the full text of every daily briefing published during the week of {week_range}.
+
+YOUR JOB: distill the week into a single 25-35 minute conversation (roughly 4,500-6,000 words of dialogue) that a busy professional could listen to instead of reading all fourteen briefings.
+
+STRUCTURE:
+1. Cold open: HOST states the single most consequential thread of the week in two sentences, then welcomes the listener to The Post-Human Debrief for the week of {week_range}.
+2. Four to six segments, each built around one dominant narrative of the week. Weave AI and markets together where they genuinely connect; do not alternate mechanically.
+3. For each segment: HOST frames it, ANALYST unpacks the mechanism, they push on the "so what" together. Real disagreement is welcome when the evidence is genuinely mixed.
+4. Closing: each voice gives one forward-looking sentence (what they are watching next week), then HOST signs off.
+
+CONVERSATION RULES:
+- Sound like two humans who respect each other, not a script. Short turns mixed with long ones. Occasional reactions ("Right.", "Which is wild, because...") are good; constant interruptions are not.
+- Specific numbers, names, and dates from the briefings. No vague summarizing.
+- ANTI-AI GUARDS, STRICTLY PROHIBITED: "delve", "tapestry", "landscape", "crucial", "robust", "seamless", "leverage", "utilize", "testament", "game-changer", "at the end of the day", "In the ever-evolving...", "It's important to note...". No em dashes.
+- This is audio: no markdown, no links, no bullet lists, no headers inside the dialogue. Spell out numbers and tickers the way a person would say them.
+- Do NOT include stage directions, sound effects, music cues, or bracketed notes of any kind. Words only.
+
+OUTPUT FORMAT (STRICT):
+Line 1: TITLE: <a sharp episode title, max 60 characters, no quotes>
+Line 2: DESCRIPTION: <one 25-40 word sentence describing the episode>
+Then the dialogue. Every turn on its own line, prefixed with exactly `HOST: ` or `ANALYST: `. No other prefixes, no blank commentary, nothing outside this format."""
+
+        print(f"[MasterCompiler] Writing podcast script for week of {week_range} with {self._get_active_model()}...")
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {
+                "role": "user",
+                "content": (
+                    f"Here are all the daily briefings for the week of {week_range}. "
+                    f"Write the episode.\n\n{briefings_text}"
+                ),
+            },
+        ]
+        result = self._generate_with_continuation(messages, temperature=0.6)
+        print(f"[MasterCompiler] Podcast script done. ({len(result)} chars)")
+        return result
+
     def synthesize_news(self, raw_data, topic="ai", time_label="Morning"):
         guidance = AI_GUIDANCE if topic == "ai" else FINANCE_GUIDANCE
         
