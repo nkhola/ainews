@@ -3,319 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Post-Human Briefing - 2026-07-03</title>
+    <title>The Post-Human Briefing — 2026-07-03 Evening</title>
+    <script>(function(){var t=null;try{t=localStorage.getItem('phb-theme')}catch(e){}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}document.documentElement.setAttribute('data-theme',t);})();</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1a1b35 100%);
-            --surface-color: rgba(30, 32, 50, 0.6);
-            --surface-hover: rgba(45, 48, 75, 0.8);
-            --text-main: #f0f4f8;
-            --text-muted: #a0aec0;
-            --accent-glow: #3b82f6;
-            --accent-glow-secondary: #8b5cf6;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+            --bg: #f4eee1;
+            --surface: #faf6ea;
+            --surface-2: #ece4d1;
+            --ink: #20242e;
+            --ink-soft: #494e5c;
+            --muted: #78715f;
+            --accent: #b0512b;
+            --accent-hover: #8f3f1e;
+            --ochre: #a5762a;
+            --hairline: #ddd3bd;
+            --rule: #20242e;
+            --font-serif: 'Fraunces', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
-        
+        [data-theme="dark"] {
+            --bg: #14161d;
+            --surface: #1a1d26;
+            --surface-2: #232733;
+            --ink: #eae5d6;
+            --ink-soft: #c2bcab;
+            --muted: #8f8a79;
+            --accent: #d97950;
+            --accent-hover: #e89570;
+            --ochre: #cf9c45;
+            --hairline: #2d3140;
+            --rule: #eae5d6;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
             margin: 0;
             padding: 0;
-            background: var(--bg-gradient);
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font-sans);
             line-height: 1.7;
             min-height: 100vh;
+            transition: background 0.25s ease, color 0.25s ease;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .ambient-glow {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            overflow: hidden;
-            z-index: -1;
-            pointer-events: none;
-        }
-        .ambient-glow::before, .ambient-glow::after {
-            content: '';
-            position: absolute;
-            width: 600px;
-            height: 600px;
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { color: var(--accent-hover); }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid var(--hairline);
             border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.15;
-            animation: float 20s infinite alternate;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease;
         }
-        .ambient-glow::before {
-            background: var(--accent-glow);
-            top: -100px; left: -100px;
-        }
-        .ambient-glow::after {
-            background: var(--accent-glow-secondary);
-            bottom: -100px; right: -100px;
-            animation-delay: -10s;
+        .theme-toggle:hover { color: var(--ink); border-color: var(--muted); }
+        [data-theme="dark"] .icon-moon { display: none; }
+        [data-theme="light"] .icon-sun { display: none; }
+
+        .kicker {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
         }
 
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
+        .double-rule {
+            border: 0;
+            border-top: 3px solid var(--rule);
+            border-bottom: 1px solid var(--rule);
+            height: 3px;
+            margin: 0;
+        }
+        .thin-rule {
+            border: 0;
+            border-top: 1px solid var(--hairline);
+            margin: 0;
         }
 
-        .briefing-container {
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 40px 20px 80px 20px;
+        /* Audio player */
+        .phb-player {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0 2px 0;
+        }
+        .phb-player button.pp-btn {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent);
+            color: var(--bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+            padding: 0;
+        }
+        .phb-player button.pp-btn:hover { background: var(--accent-hover); }
+        .phb-player .pp-track {
+            flex-grow: 1;
+            height: 3px;
+            background: var(--hairline);
+            cursor: pointer;
             position: relative;
         }
-
-        /* Navbar */
-        .nav-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
+        .phb-player .pp-fill {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 0%;
+            background: var(--accent);
         }
-
-        .nav-link {
-            display: inline-block;
-            color: var(--text-main);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-link:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* Header Section */
-        .header-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--border-color);
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .header-section .logo {
-            width: 48px;
-            height: auto;
-            border-radius: 6px;
-            margin: 0;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-        }
-        .header-section h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin: 0;
-            background: linear-gradient(to right, #60a5fa, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-        .header-section .meta {
+        .phb-player .pp-time {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--muted);
+            min-width: 88px;
             text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
         }
-        .header-section .date {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.3rem;
-            color: #f0f4f8;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .header-section .reading-time {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            font-family: 'Outfit', sans-serif;
-        }
-        
-        @media (max-width: 600px) {
-            .header-section {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .header-section .meta {
-                align-items: flex-start;
-                text-align: left;
-            }
-        }
+        .phb-player.pp-error .pp-time { min-width: 0; }
 
-        /* Section Cards */
-        .section-card {
-            background: var(--surface-color);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            margin-bottom: 40px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-        .section-header {
-            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
-            padding-bottom: 12px;
-            margin-bottom: 28px;
-        }
-        .section-header h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--text-main);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .section-card h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.4rem;
-            color: #f0f4f8;
-            margin-top: 48px;
-            margin-bottom: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .section-card p {
-            font-size: 1.15rem;
-            margin-bottom: 24px;
-            color: #d1d5db;
-            line-height: 1.8;
-        }
-        .section-card ul {
-            padding-left: 24px;
-            color: #d1d5db;
-            margin-bottom: 24px;
-        }
-        .section-card li {
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-            line-height: 1.7;
-        }
-        a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-        a:hover {
-            text-decoration: underline;
-            color: #60a5fa;
-        }
-        blockquote {
-            border-left: 4px solid #8b5cf6;
-            margin: 0;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.03);
-            font-style: italic;
-            border-radius: 0 8px 8px 0;
-            color: #9ca3af;
-        }
-
-        /* Recent Briefings at bottom */
-        .recent-briefings {
-            margin-top: 60px;
-            padding-top: 40px;
-            border-top: 2px solid var(--border-color);
-        }
-        .recent-briefings h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+        footer.site-footer {
+            max-width: 720px;
+            margin: 72px auto 0 auto;
+            padding: 24px 24px 48px 24px;
+            border-top: 1px solid var(--hairline);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            color: var(--muted);
             text-align: center;
+            line-height: 2;
         }
-        .recent-list {
+
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 2px;
+            width: 0%;
+            background: var(--accent);
+            z-index: 10;
+        }
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 28px 24px 40px 24px;
+        }
+
+        .top-nav {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
             gap: 12px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--hairline);
         }
+        .top-nav .nav-left, .top-nav .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .top-nav a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .top-nav a:hover { color: var(--ink); }
+
+        .briefing-head {
+            padding: 44px 0 28px 0;
+            text-align: left;
+        }
+        .briefing-head .kicker { color: var(--accent); }
+        .briefing-head h1 {
+            font-family: var(--font-serif);
+            font-size: 2.7rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.12;
+            margin: 10px 0 12px 0;
+        }
+        .briefing-head .dateline {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .listen-block {
+            border-top: 1px solid var(--hairline);
+            border-bottom: 1px solid var(--hairline);
+            padding: 16px 0;
+            margin-bottom: 8px;
+        }
+
+        section.brief-section { padding-top: 40px; }
+        .section-head { margin-bottom: 8px; }
+        .section-head h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 10px 0 0 0;
+        }
+        .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
+        .brief-body h3 {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin: 2.2em 0 0.5em 0;
+            letter-spacing: -0.01em;
+        }
+        .brief-body h4 {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ochre);
+            margin: 1.6em 0 0.4em 0;
+        }
+        .brief-body p { margin: 0 0 1.2em 0; }
+        .brief-body ul { padding-left: 1.3em; margin: 0 0 1.2em 0; }
+        .brief-body li { margin-bottom: 0.5em; }
+        .brief-body a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+            text-underline-offset: 3px;
+        }
+        .brief-body a:hover { color: var(--accent-hover); text-decoration-color: var(--accent-hover); }
+        .brief-body blockquote {
+            border-left: 2px solid var(--ochre);
+            margin: 1.4em 0;
+            padding: 2px 0 2px 18px;
+            font-family: var(--font-serif);
+            font-style: italic;
+            color: var(--ink-soft);
+        }
+        .brief-body strong { color: var(--ink); }
+
+        .recent {
+            margin-top: 64px;
+            padding-top: 8px;
+        }
+        .recent .kicker { display: block; margin: 14px 0 10px 0; }
+        .recent-list { display: flex; flex-direction: column; }
         .recent-list a {
             display: flex;
             justify-content: space-between;
-            padding: 16px 20px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            color: var(--text-main);
-            transition: all 0.2s ease;
+            align-items: baseline;
+            gap: 12px;
+            padding: 11px 2px;
+            border-bottom: 1px solid var(--hairline);
+            color: var(--ink);
+            font-size: 0.95rem;
         }
-        .recent-list a:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(96, 165, 250, 0.3);
-            transform: translateY(-2px);
+        .recent-list a:hover { color: var(--accent); }
+        .recent-list a .go {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
         }
-        .recent-list .date {
-            color: #9ca3af;
-            font-family: 'Outfit', sans-serif;
-        }
+        .recent-list a:hover .go { color: var(--accent); }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
-
-    </style>
+        @media (max-width: 600px) {
+            .briefing-head h1 { font-size: 2.1rem; }
+        }
+</style>
 </head>
 <body>
-    <div class="ambient-glow"></div>
-    <div class="briefing-container">
-        <div class="nav-bar">
-            <a href="index.html" class="nav-link">← All Briefings</a>
-            <a href="https://www.khola.blog/" class="nav-link" target="_blank">Khola.Blog ↗</a>
-        </div>
-        
-        <div class="header-section">
-            <div class="header-title">
-                <img src="img/logo_256.png" alt="Logo" class="logo">
-                <h1>The Post-Human Briefing</h1>
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="page">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html">&larr; The Post-Human Briefing</a>
             </div>
-            <div class="meta">
-                <span class="date">2026-07-03 &bull; Evening</span>
-                <span class="reading-time">11 min read</span>
+            <div class="nav-right">
+                <a href="https://www.khola.blog/" target="_blank" rel="noopener">Khola.Blog</a>
+                <button class="theme-toggle" onclick="phbToggleTheme()" aria-label="Toggle color theme" title="Toggle theme"><svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
             </div>
-        </div>
-        
-        <div style="background: rgba(30, 32, 50, 0.6); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
-            <div style="flex-shrink: 0; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
-            </div>
-            <div style="flex-grow: 1;">
-                <h3 style="margin: 0 0 5px 0; font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: #f0f4f8;">Listen to the Briefing</h3>
-                <audio controls style="width: 100%; height: 36px; border-radius: 8px; outline: none;">
-                    <source src="audio/2026-07-03-PM.mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
+        </nav>
+
+        <header class="briefing-head">
+            <span class="kicker">The Post-Human Briefing</span>
+            <h1>Evening Briefing</h1>
+            <div class="dateline">Friday, July 3, 2026 &nbsp;&middot;&nbsp; 11 min read</div>
+        </header>
+
+        <div class="listen-block">
+            <span class="kicker">Listen to this briefing</span>
+            <div class="phb-player">
+                <audio preload="metadata" src="audio/2026-07-03-PM.mp3"></audio>
+                <button class="pp-btn" aria-label="Play or pause">
+                    <svg class="pp-play" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                    <svg class="pp-pause" style="display:none" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+                </button>
+                <div class="pp-track"><div class="pp-fill"></div></div>
+                <span class="pp-time">0:00 / --:--</span>
             </div>
         </div>
 
-        <div class="section-card" id="ai-news">
-            <div class="section-header">
+        <section class="brief-section" id="ai-news">
+            <div class="section-head">
+                <hr class="double-rule">
                 <h2>Artificial Intelligence</h2>
             </div>
-            <p><strong>EXECUTIVE SUMMARY</strong></p>
+            <div class="brief-body">
+<p><strong>EXECUTIVE SUMMARY</strong></p>
 <p>Today's AI developments underscore a critical pivot towards highly autonomous, yet safely controlled, agentic systems, while simultaneously pushing the boundaries of model efficiency and architectural innovation. The tension between open-source proliferation and enterprise-level security concerns continues to shape the commercial landscape, demanding more robust alignment and explainability mechanisms.</p>
 <h3>The Agentic Frontier: Orchestration, Control, and Safety</h3>
 <p>The vision of autonomous AI agents is rapidly maturing, moving from conceptual discussions to practical implementations and rigorous safety protocols. Vercel is positioning agents as a new software paradigm, exemplified by their <code>eve</code> framework, emphasizing skills and agent-readable web interfaces <a href="https://www.latent.space/p/vercel-agents-new-software">Vercel's Andrew Qu on why agents are a new kind of software</a>. Adobe is exploring "agentic sites" that dynamically generate content based on user intent, suggesting a future where websites adapt in real-time <a href="https://www.latent.space/p/the-website-of_the_future">The website of the future may assemble itself for every visitor</a>.</p>
@@ -343,13 +367,16 @@
 <p>The day's events highlight a persistent tension between the desire for fully autonomous AI systems and the inherent need for human-centric control and verifiable safety. While research pushes for agents that can <a href="https://arxiv.org/abs/2607.01480">self-improve through procedural memory distillation</a> or <a href="https://arxiv.org/abs/2607.01531">learn programmatic world models through interactive exploration</a>, the simultaneous discovery of vulnerabilities like <a href="https://arxiv.org/abs/2607.01239">BPE tokenization creating exploitable gaps in LLM alignment</a> forces a re-evaluation of unchecked autonomy. The drive for efficiency and local deployment (e.g., <a href="https://www.reddit.com/r/LocalLLaMA/comments/1um84bd/followup_deepseek_v4_flash_on_2x_rtx_pro_6000/">DeepSeek V4 Flash</a>) challenges the dominance of large, proprietary models, yet enterprise security concerns (e.g., <a href="https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/">Alibaba banning Claude Code</a>) signal a continued demand for controlled, auditable AI solutions. This creates a dynamic where innovation in open architectures must be met with equally rigorous advancements in alignment and provenance, moving beyond simple capability metrics to verifiable trustworthiness.</p>
 <p><strong>The Bottom Line</strong></p>
 <p>The accelerating development of autonomous AI agents is forcing a critical re-prioritization from raw capability to verifiable safety, robust alignment, and transparent control mechanisms across the entire AI stack.</p>
-        </div>
+            </div>
+        </section>
 
-        <div class="section-card" id="finance-news">
-            <div class="section-header">
+        <section class="brief-section" id="finance-news">
+            <div class="section-head">
+                <hr class="double-rule">
                 <h2>Markets &amp; Macro</h2>
             </div>
-            <p>Today's market narrative is dominated by the escalating AI infrastructure build-out, with hyperscalers and new entrants committing massive capital, even as geopolitical tensions drive supply chain re-evaluations in critical tech sectors. Meanwhile, easing US rate hike expectations are buoying global equities and commodities, creating a divergence from the ECB's continued hawkish vigilance.</p>
+            <div class="brief-body">
+<p>Today's market narrative is dominated by the escalating AI infrastructure build-out, with hyperscalers and new entrants committing massive capital, even as geopolitical tensions drive supply chain re-evaluations in critical tech sectors. Meanwhile, easing US rate hike expectations are buoying global equities and commodities, creating a divergence from the ECB's continued hawkish vigilance.</p>
 <h3>The AI Arms Race: Infrastructure, Capital, and New Entrants</h3>
 <p>The scramble for AI dominance continues unabated, marked by staggering capital commitments and strategic plays across the hardware and infrastructure stack. <a href="https://www.fool.com/investing/2026/07/03/meta-135-billion-ai-capex-2026-one-reason/">Meta Platforms plans to spend $135 billion on AI in 2026</a>, underscoring the hyperscalers' resolve to lead. Nvidia, the current kingmaker, is not resting, launching a <a href="https://finance.yahoo.com/technology/ai/articles/nvidia-making-easier-ai-startups-223110196.html">new cloud and revenue-sharing program</a> to provide compute power to AI startups, effectively expanding its ecosystem and future customer base. Broadcom is also deepening its footprint, with <a href="https://finance.yahoo.com/technology/ai/articles/broadcom-avgo-backs-drivenets-tomahawk-221611228.html">DriveNets expanding its AI Fabric portfolio using Broadcom’s Tomahawk 6 ASIC</a> for hyperscale AI clusters, targeting Q3 2026 deployment.</p>
 <p>Beyond the usual suspects, new players are emerging: <a href="https://www.fool.com/investing/2026/07/03/spacexs-next-big-business-isnt-rockets-its-compute/">SpaceX is reportedly buying its way into the AI hardware race</a>, signaling a broader convergence of advanced tech sectors. Capital allocators are following suit, with the <a href="https://www.bloomberg.com/news/articles/2026-07-03/canada-pension-plan-commits-1-75-billion-to-eqt-eqt-for-ai-infrastructure">Canada Pension Plan investing $1.75 billion in EQT’s AI infrastructure buildout</a>. The market is also looking beyond current AI applications, with <a href="https://www.marketwatch.com/story/nvidia-is-betting-on-a-trillion-dollar-robotics-boom-here-is-the-hidden-way-to-trade-it-c5b10c4e?mod=mw_rss_topstories">Nvidia betting on a trillion-dollar robotics boom</a> as the next frontier. Politically, <a href="https://www.ft.com/content/5128e476-db8b-48ac-a8fb-0f16d0f5c2ed">outgoing tech adviser Sriram Krishnan indicates Trump will oppose heavy US AI regulation</a>, suggesting a potentially less restrictive domestic environment for AI development.</p>
@@ -373,24 +400,100 @@
 <h3>Trade-offs &amp; Evolution</h3>
 <p>While the AI sector is experiencing an unprecedented capital influx and expansion, with <a href="https://finance.yahoo.com/technology/ai/articles/nvidia-making-easier-ai-startups-223110196.html">Nvidia</a>, <a href="https://www.fool.com/investing/2026/07/03/meta-135-billion-ai-capex-2026-one-reason/">Meta</a>, and <a href="https://finance.yahoo.com/technology/ai/articles/broadcom-avgo-backs-drivenets-tomahawk-221611228.html">Broadcom</a> making significant investments, this enthusiasm is not uniformly translating into unbridled valuation growth. <a href="https://finance.yahoo.com/markets/stocks/articles/brookfield-tsx-bn-stock-looks-221712426.html">Brookfield's stock is seen as stretched</a> despite its AI data center expansion, indicating that even within the hottest sector, traditional valuation metrics still apply and can temper market exuberance. Furthermore, the <a href="https://finance.yahoo.com/markets/stocks/articles/western-digital-wdc-stock-falls-230956533.html">decline in Western Digital shares</a> due to Apple's potential sourcing from a Chinese competitor highlights that the AI boom does not insulate companies from geopolitical supply chain shifts and competitive pressures, particularly when national interests influence purchasing decisions. The narrative is evolving from a simple AI growth story to one where strategic execution, geopolitical resilience, and valuation discipline are increasingly critical.</p>
 <p>The Bottom Line: The global economy is navigating a complex interplay of accelerating technological transformation, fragmenting geopolitical alliances, and diverging monetary policy paths, all of which are driving significant capital reallocation and market volatility.</p>
-        </div>
+            </div>
+        </section>
 
-        <div class="recent-briefings">
-            <h3>Recent Briefings</h3>
+        <div class="recent">
+            <hr class="double-rule">
+            <span class="kicker">Recent briefings</span>
             <div class="recent-list">
-                <a href="2026-06-28-PM.html"><span>2026-06-28 Evening Briefing</span> <span class="date">Read →</span></a>
-                <a href="2026-06-28-AM.html"><span>2026-06-28 Morning Briefing</span> <span class="date">Read →</span></a>
-                <a href="2026-06-27-PM.html"><span>2026-06-27 Evening Briefing</span> <span class="date">Read →</span></a>
-                <a href="index.html"><span>View All Briefings</span> <span class="date">Archive →</span></a>
+                <a href="2026-07-08-AM.html"><span>Morning Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-07-PM.html"><span>Evening Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-07-AM.html"><span>Morning Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
+                <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
 
             </div>
         </div>
     </div>
-    
-    <div style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); color: #8a9bb3; font-size: 0.85rem; font-family: 'Inter', sans-serif;">
-        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
-        "The Post-Human Briefing&trade;" and "AI News" are proprietary trademarks.
-    </div>
 
-    </body>
+    <footer class="site-footer">
+        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
+        "The Post-Human Briefing&trade;" and "The Post-Human Debrief&trade;" are proprietary trademarks.
+    </footer>
+
+    <script>function phbToggleTheme(){var r=document.documentElement;var t=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',t);try{localStorage.setItem('phb-theme',t)}catch(e){}}</script>
+
+    <script>
+    (function() {
+        var players = document.querySelectorAll('.phb-player');
+        var fmt = function(s) {
+            if (!isFinite(s)) return '--:--';
+            var m = Math.floor(s / 60), r = Math.floor(s % 60);
+            return m + ':' + (r < 10 ? '0' : '') + r;
+        };
+        players.forEach(function(p) {
+            var audio = p.querySelector('audio');
+            var btn = p.querySelector('.pp-btn');
+            var track = p.querySelector('.pp-track');
+            var fill = p.querySelector('.pp-fill');
+            var time = p.querySelector('.pp-time');
+            var iconPlay = btn.querySelector('.pp-play');
+            var iconPause = btn.querySelector('.pp-pause');
+            if (!audio) return;
+            var update = function() {
+                var d = audio.duration, c = audio.currentTime;
+                fill.style.width = (d ? (c / d * 100) : 0) + '%';
+                time.textContent = fmt(c) + ' / ' + fmt(d);
+            };
+            audio.addEventListener('loadedmetadata', update);
+            audio.addEventListener('timeupdate', update);
+            audio.addEventListener('ended', function() {
+                iconPlay.style.display = ''; iconPause.style.display = 'none';
+            });
+            audio.addEventListener('error', function() {
+                p.classList.add('pp-error');
+                btn.disabled = true;
+                btn.style.opacity = '0.4';
+                time.textContent = 'audio unavailable';
+            });
+            btn.addEventListener('click', function() {
+                if (audio.paused) {
+                    document.querySelectorAll('.phb-player audio').forEach(function(a) {
+                        if (a !== audio) a.pause();
+                    });
+                    document.querySelectorAll('.phb-player').forEach(function(q) {
+                        if (q !== p) {
+                            var pl = q.querySelector('.pp-play'), pa = q.querySelector('.pp-pause');
+                            if (pl && pa) { pl.style.display = ''; pa.style.display = 'none'; }
+                        }
+                    });
+                    audio.play();
+                    iconPlay.style.display = 'none'; iconPause.style.display = '';
+                } else {
+                    audio.pause();
+                    iconPlay.style.display = ''; iconPause.style.display = 'none';
+                }
+            });
+            track.addEventListener('click', function(e) {
+                if (!audio.duration) return;
+                var r = track.getBoundingClientRect();
+                audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+            });
+        });
+    })();
+    </script>
+
+    <script>
+    (function() {
+        var bar = document.getElementById('progress-bar');
+        var onScroll = function() {
+            var h = document.documentElement;
+            var max = h.scrollHeight - h.clientHeight;
+            bar.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%';
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    })();
+    </script>
+</body>
 </html>

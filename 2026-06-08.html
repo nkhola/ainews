@@ -326,6 +326,7 @@
                 <h2>Artificial Intelligence</h2>
             </div>
             <div class="brief-body">
+<div class="brief-body">
 <p>Apple announced third-generation Foundation Models built on Google Gemini. The comfortable abstraction is "custom-built in collaboration." The physical constraint is that Apple does not own the training infrastructure for frontier models. They own the device fleet and the privacy fabric (Private Cloud Compute). This is a hardware dependency masquerading as a partnership. Apple is renting inference from Google's datacenters while wrapping it in their own attestation layer.</p>
 <p><strong>Engineering rule:</strong> When your model provider and your hardware competitor are the same entity, your latency SLA is a negotiation, not a design parameter. Apple's on-device models (AFM-on-device) are the only ones they fully control. Everything server-side is a leased abstraction.</p>
 <h2>2. KV Cache Management Is Now the Dominant Memory Constraint</h2>
@@ -337,6 +338,7 @@
 <h2>4. Open-Weight Models Are Winning on Precision, Losing on Reliability</h2>
 <p>DeepSeek V4 Pro beats GPT-5.5 Pro on precision benchmarks. Xiaomi claims 1000+ tps on a 1T model with 8 GPUs. The comfortable story is "open models are catching up." The hidden constraint is that precision benchmarks measure single-shot accuracy on curated datasets. They do not measure distributional robustness, adversarial prompt stability, or long-tail failure modes. The UnpredictaBench paper (arXiv:2606.06622) explicitly shows that models collapse toward single plausible answers, failing to capture true underlying distributions.</p>
 <p><strong>Engineering rule:</strong> Benchmark precision is a necessary but insufficient signal for production deployment. Run your own distributional stress test: sample 10,000 inputs from your actual traffic, measure output variance, and reject any model with entropy below 0.8 bits per token. Open-weight models win on cost per token. They lose on cost per incident.</p>
+</div>
             </div>
         </section>
 
@@ -346,6 +348,7 @@
                 <h2>Markets &amp; Macro</h2>
             </div>
             <div class="brief-body">
+<div class="brief-body">
 <p><strong>Date:</strong> June 9, 2026</p>
 <h2>1. The Great AI Financing Pivot: From Debt to Equity (and IPO)</h2>
 <p>The capital structure of the AI ecosystem is undergoing a structural shift. <strong>OpenAI filed confidentially for an IPO</strong> that could value the company north of $1 trillion. The catch? The company itself says it may remain private for a while because "there are things we want to do that are likely easier as a private company." This is classic signaling: they want the valuation anchor of an IPO filing without the quarterly earnings scrutiny that would constrain their spending.</p>
@@ -376,6 +379,7 @@
 <li><a href="https://seekingalpha.com/news/4601614-supertanker-orders-top-record-set-in-2008-in-boom-driven-by-middle-east-war">Supertanker orders record</a></li>
 <li><a href="https://finance.yahoo.com/markets/stocks/articles/skyworks-solutions-onsemi-amkor-shares-025350040.html">Semiconductor recovery</a></li>
 </ul>
+</div>
             </div>
         </section>
 
@@ -383,9 +387,9 @@
             <hr class="double-rule">
             <span class="kicker">Recent briefings</span>
             <div class="recent-list">
-                <a href="2026-06-30-PM.html"><span>Evening Briefing &middot; Tuesday, June 30, 2026</span> <span class="go">Read</span></a>
-                <a href="2026-06-30-AM.html"><span>Morning Briefing &middot; Tuesday, June 30, 2026</span> <span class="go">Read</span></a>
-                <a href="2026-06-29-PM.html"><span>Evening Briefing &middot; Monday, June 29, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-08-AM.html"><span>Morning Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-07-PM.html"><span>Evening Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-07-AM.html"><span>Morning Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
                 <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
 
             </div>
