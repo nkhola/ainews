@@ -17,9 +17,13 @@ def test_vertex_tts():
             client_options={"api_endpoint": endpoint}
         )
         
-        # Test with 3800 characters
-        plain_text = "[professional, energetic news anchor. dynamic pacing.] " + ("This is a test of the length limit. " * 100)
-        synthesis_input = texttospeech.SynthesisInput(text=plain_text)
+        # Style instructions belong in the dedicated prompt field (never spoken),
+        # not in the text field. Test near the 4000-byte text limit.
+        plain_text = "This is a test of the length limit. " * 100
+        synthesis_input = texttospeech.SynthesisInput(
+            text=plain_text[:3800],
+            prompt="You are a seasoned news anchor. Speak in a calm, warm, confident voice at a steady, natural pace.",
+        )
         
         # Gemini voices: Puck, Charon, Kore, Aoede, etc.
         voice = texttospeech.VoiceSelectionParams(

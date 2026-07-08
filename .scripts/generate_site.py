@@ -20,59 +20,126 @@ from src.fetchers.news_crawler import NewsCrawler
 from src.fetchers.finance_crawler import FinanceCrawler
 from src.agents.master_compiler import MasterCompiler
 
+# Style instructions for Gemini-TTS. These go in SynthesisInput.prompt (a
+# dedicated field that is never spoken), NOT prepended to the text — inline
+# instructions get read aloud by the model.
+TTS_STYLE_PROMPT = (
+    "You are a seasoned news anchor reading one continuous daily briefing. "
+    "Speak in a calm, warm, confident voice at a steady, natural conversational "
+    "pace, with the same tone and energy from start to finish. Read the text "
+    "exactly as written: no greetings, no introductions, no commentary, no "
+    "sign-offs, and never speak these instructions."
+)
+
+# Gemini-TTS accepts up to 4,000 bytes in the text field. Larger chunks mean
+# fewer synthesis seams (each seam risks a tone shift), so pack close to the
+# limit while leaving headroom for multi-byte characters.
+TTS_MAX_CHUNK_BYTES = 3200
+
+
+def html_to_speech_text(html_content):
+    """Flatten briefing HTML into narration-friendly plain text.
+
+    Block elements (headings, paragraphs, list items) become sentences —
+    otherwise a heading runs straight into the following paragraph with no
+    pause, which sounds robotic. HTML entities are decoded so the voice
+    doesn't read '&amp;' style artifacts.
+    """
+    import html as html_lib
+    blocks = re.sub(r'</(h[1-6]|p|li|blockquote|td|th|tr)>', '\n', html_content, flags=re.I)
+    text = re.sub(r'<[^>]+>', ' ', blocks)
+    text = html_lib.unescape(text)
+    lines = []
+    for line in text.split('\n'):
+        line = re.sub(r'\s+', ' ', line).strip()
+        if not line:
+            continue
+        if line[-1] not in '.!?:;':
+            line += '.'
+        lines.append(line)
+    return ' '.join(lines)
+
+
+def split_text_for_tts(plain_text, max_bytes=TTS_MAX_CHUNK_BYTES):
+    """Split text into chunks on sentence boundaries, each under max_bytes.
+
+    Splitting mid-sentence forces the model to invent intonation for a
+    fragment, which is the main cause of rhythm shifts between chunks.
+    """
+    sentences = re.split(r'(?<=[.!?])\s+', plain_text)
+    chunks = []
+    current = ""
+    for sentence in sentences:
+        candidate = f"{current} {sentence}".strip()
+        if current and len(candidate.encode("utf-8")) > max_bytes:
+            chunks.append(current)
+            current = sentence
+        else:
+            current = candidate
+        # A single sentence longer than max_bytes (rare) still has to be cut.
+        while len(current.encode("utf-8")) > max_bytes:
+            cut = current[:max_bytes]
+            space = cut.rfind(" ")
+            if space <= 0:
+                space = max_bytes
+            chunks.append(current[:space])
+            current = current[space:].strip()
+    if current:
+        chunks.append(current)
+    return chunks
+
+
 def generate_audio_with_fallback(plain_text, audio_file_path):
     print(f"Attempting Vertex AI TTS (Gemini Puck voice) for {audio_file_path}...")
-    
-    voice_prompt = "[professional energetic news anchor dynamic pacing] "
-    
+
     try:
+        import time
         from google.cloud import texttospeech
-        
-        project_id = os.environ.get("VERTEX_PROJECT_ID") or os.environ.get("GOOGLE_CLOUD_PROJECT")
-        location = os.environ.get("VERTEX_LOCATION", "us-central1")
-        if not location:
-            location = "us-central1"
-            
+
+        location = os.environ.get("VERTEX_LOCATION", "us-central1") or "us-central1"
+
         endpoint = f"{location}-texttospeech.googleapis.com"
         client = texttospeech.TextToSpeechClient(
             client_options={"api_endpoint": endpoint}
         )
-        
-        use_gemini = True
-        if use_gemini:
-            voice_prompt = "[professional, energetic news anchor. dynamic pacing.] "
-            plain_text = voice_prompt + plain_text
-            voice = texttospeech.VoiceSelectionParams(
-                language_code="en-US",
-                name="Puck",
-                model_name="gemini-2.5-flash-tts"
-            )
-        else:
-            voice = texttospeech.VoiceSelectionParams(
-                language_code="en-US",
-                name="en-US-Journey-F"
-            )
+
+        voice = texttospeech.VoiceSelectionParams(
+            language_code="en-US",
+            name="Puck",
+            model_name="gemini-2.5-flash-tts"
+        )
 
         audio_config = texttospeech.AudioConfig(
             audio_encoding=texttospeech.AudioEncoding.MP3
         )
-        
-        # Google Cloud TTS has a 5000 byte limit per request. Gemini TTS has a 4000 byte limit. We must chunk the text.
-        import textwrap
-        # Use textwrap to guarantee chunks are strictly under 1800 characters to prevent 502 Bad Gateway timeouts on the Gemini model
-        chunks = textwrap.wrap(plain_text, width=1800, break_long_words=False, replace_whitespace=False)
-            
+
+        chunks = split_text_for_tts(plain_text)
+
         full_audio_content = b""
         for idx, chunk in enumerate(chunks):
-            if not chunk: continue
-            
             print(f"  Synthesizing chunk {idx+1}/{len(chunks)}...")
-            synthesis_input = texttospeech.SynthesisInput(text=chunk)
-            response = client.synthesize_speech(
-                input=synthesis_input, voice=voice, audio_config=audio_config
+            synthesis_input = texttospeech.SynthesisInput(
+                text=chunk,
+                prompt=TTS_STYLE_PROMPT,
             )
-            full_audio_content += response.audio_content
-            
+            # Retry transient failures (502s) instead of shrinking chunks —
+            # small chunks are what caused the uneven pacing.
+            last_error = None
+            for attempt in range(3):
+                try:
+                    response = client.synthesize_speech(
+                        input=synthesis_input, voice=voice, audio_config=audio_config
+                    )
+                    full_audio_content += response.audio_content
+                    last_error = None
+                    break
+                except Exception as e:
+                    last_error = e
+                    print(f"    Chunk {idx+1} attempt {attempt+1} failed: {e}")
+                    time.sleep(2 * (attempt + 1))
+            if last_error is not None:
+                raise last_error
+
         with open(audio_file_path, "wb") as out:
             out.write(full_audio_content)
         print("Vertex AI TTS successful.")
@@ -508,8 +575,15 @@ def generate_daily_briefing():
     audio_dir = os.path.join(repo_root, "audio")
     os.makedirs(audio_dir, exist_ok=True)
     
-    # Extract plain text
-    plain_text = "Artificial Intelligence. " + re.sub(r'<[^>]+>', ' ', ai_html) + " Markets and Macro. " + re.sub(r'<[^>]+>', ' ', fin_html)
+    # Extract narration-friendly plain text. Skip the hardcoded section intro
+    # when the content already opens with its own matching heading.
+    def with_intro(intro, text):
+        return text if text.lower().startswith(intro.split('.')[0].lower()) else intro + text
+
+    plain_text = (
+        with_intro("Artificial Intelligence. ", html_to_speech_text(ai_html))
+        + " " + with_intro("Markets and Macro. ", html_to_speech_text(fin_html))
+    )
     plain_text = re.sub(r'\s+', ' ', plain_text).strip()
     
     # Generate MP3 using Vertex AI with edge-tts fallback
