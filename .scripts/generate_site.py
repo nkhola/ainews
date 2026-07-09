@@ -178,8 +178,21 @@ def _synthesize_with_voice(client, texttospeech, chunks, voice_name):
     return full_audio_content
 
 
+def tts_endpoint_candidates():
+    """Cloud TTS endpoints to try, most specific first.
+
+    A regional Gemini-TTS backend can 502 for an extended stretch (observed
+    on us-central1) while the global endpoint stays healthy, so the global
+    endpoint is always the second candidate.
+    """
+    location = os.environ.get("VERTEX_LOCATION", "us-central1") or "us-central1"
+    if location == "global":
+        return ["texttospeech.googleapis.com"]
+    return [f"{location}-texttospeech.googleapis.com", "texttospeech.googleapis.com"]
+
+
 def generate_audio_with_fallback(plain_text, audio_file_path):
-    """Synthesize narration with Gemini-TTS, trying each preferred voice.
+    """Synthesize narration with Gemini-TTS, trying each endpoint x voice.
 
     Deliberately does NOT fall back to a non-Gemini engine by default: a
     silently-published robotic voice is worse for the product than a loud
@@ -189,25 +202,24 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
     """
     from google.cloud import texttospeech
 
-    location = os.environ.get("VERTEX_LOCATION", "us-central1") or "us-central1"
-    endpoint = f"{location}-texttospeech.googleapis.com"
-    client = texttospeech.TextToSpeechClient(
-        client_options={"api_endpoint": endpoint}
-    )
-
     chunks = split_text_for_tts(plain_text)
     last_error = None
-    for voice_name in TTS_VOICE_PREFERENCES:
-        print(f"Attempting Vertex AI TTS (Gemini {voice_name} voice) for {audio_file_path}...")
-        try:
-            audio = _synthesize_with_voice(client, texttospeech, chunks, voice_name)
-            with open(audio_file_path, "wb") as out:
-                out.write(audio)
-            print(f"Vertex AI TTS successful ({voice_name}).")
-            return
-        except Exception as e:
-            last_error = e
-            print(f"Vertex AI TTS with {voice_name} failed: {e}")
+    for endpoint in tts_endpoint_candidates():
+        client = texttospeech.TextToSpeechClient(
+            client_options={"api_endpoint": endpoint}
+        )
+        for voice_name in TTS_VOICE_PREFERENCES:
+            print(f"Attempting Vertex AI TTS ({voice_name} via {endpoint}) "
+                  f"for {audio_file_path}...")
+            try:
+                audio = _synthesize_with_voice(client, texttospeech, chunks, voice_name)
+                with open(audio_file_path, "wb") as out:
+                    out.write(audio)
+                print(f"Vertex AI TTS successful ({voice_name} via {endpoint}).")
+                return
+            except Exception as e:
+                last_error = e
+                print(f"Vertex AI TTS with {voice_name} via {endpoint} failed: {e}")
 
     if os.environ.get("EDGE_TTS_FALLBACK") == "1":
         print("All Gemini voices failed. EDGE_TTS_FALLBACK=1, using edge-tts...")
@@ -975,42 +987,41 @@ def narrate_stage(repo_root, base_name=None, force=False):
     date_str = "-".join(parts[:3])
     time_label = ("Evening" if parts[3] == "PM" else "Morning") if len(parts) == 4 else "Morning"
 
+    # The audio script is persisted for every edition (the content dir is
+    # created for script storage even on pre-content-store archive pages),
+    # so a TTS failure re-run never pays for the script rewrite.
+    script_path = os.path.join(content_dir_for(repo_root, base_name), "audio_script.txt")
     content = load_content(repo_root, base_name)
-    if content:
-        script_path = os.path.join(content_dir_for(repo_root, base_name), "audio_script.txt")
-        if os.path.exists(script_path):
-            print(f"[narrate] Reusing persisted audio script for {base_name}.")
-            with open(script_path, encoding="utf-8") as f:
-                plain_text = f.read().strip()
-        else:
-            ai_html = markdown.markdown(content["ai_md"], extensions=['tables', 'fenced_code'])
-            fin_html = markdown.markdown(content["fin_md"], extensions=['tables', 'fenced_code'])
-            flattened = (
-                "Artificial Intelligence. " + html_to_speech_text(ai_html)
-                + " Markets and Macro. " + html_to_speech_text(fin_html)
-            )
-            source = (f"## Artificial Intelligence\n\n{content['ai_md']}\n\n"
-                      f"## Markets and Macro\n\n{content['fin_md']}")
-            plain_text = build_audio_script(
-                source, date_str, time_label, fallback_text=flattened)
-            with open(script_path, "w", encoding="utf-8") as f:
-                f.write(plain_text)
-            print(f"[narrate] Persisted audio script to content/{base_name}/audio_script.txt")
+    if os.path.exists(script_path) and not (force and os.getenv("FORCE_SCRIPT") == "1"):
+        print(f"[narrate] Reusing persisted audio script for {base_name}.")
+        with open(script_path, encoding="utf-8") as f:
+            plain_text = f.read().strip()
     else:
-        # Archive edition: no content store, extract from the page itself.
-        from bs4 import BeautifulSoup
-        page_path = os.path.join(repo_root, f"{base_name}.html")
-        with open(page_path, encoding="utf-8") as f:
-            soup = BeautifulSoup(f.read(), "html.parser")
-        ai_div = soup.find(id='ai-news')
-        fin_div = soup.find(id='finance-news')
-        ai_text = html_to_speech_text(ai_div.decode_contents()) if ai_div else ""
-        fin_text = html_to_speech_text(fin_div.decode_contents()) if fin_div else ""
+        if content:
+            ai_md, fin_md = content["ai_md"], content["fin_md"]
+            ai_html = markdown.markdown(ai_md, extensions=['tables', 'fenced_code'])
+            fin_html = markdown.markdown(fin_md, extensions=['tables', 'fenced_code'])
+            ai_text = html_to_speech_text(ai_html)
+            fin_text = html_to_speech_text(fin_html)
+        else:
+            # Archive edition: no content store, extract from the page itself.
+            from bs4 import BeautifulSoup
+            page_path = os.path.join(repo_root, f"{base_name}.html")
+            with open(page_path, encoding="utf-8") as f:
+                soup = BeautifulSoup(f.read(), "html.parser")
+            ai_div = soup.find(id='ai-news')
+            fin_div = soup.find(id='finance-news')
+            ai_text = html_to_speech_text(ai_div.decode_contents()) if ai_div else ""
+            fin_text = html_to_speech_text(fin_div.decode_contents()) if fin_div else ""
         flattened = f"Artificial Intelligence. {ai_text} Markets and Macro. {fin_text}"
         source = (f"## Artificial Intelligence\n\n{ai_text}\n\n"
                   f"## Markets and Macro\n\n{fin_text}")
         plain_text = build_audio_script(
             source, date_str, time_label, fallback_text=flattened)
+        os.makedirs(os.path.dirname(script_path), exist_ok=True)
+        with open(script_path, "w", encoding="utf-8") as f:
+            f.write(plain_text)
+        print(f"[narrate] Persisted audio script to content/{base_name}/audio_script.txt")
 
     plain_text = re.sub(r'\s+', ' ', plain_text).strip()
     generate_audio_with_fallback(plain_text, audio_file_path)

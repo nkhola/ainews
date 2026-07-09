@@ -174,11 +174,32 @@ def split_turns_into_segments(turns, max_bytes=SEGMENT_MAX_BYTES):
 
 
 def synthesize_podcast_audio(segments, audio_file_path):
-    """Synthesize dialogue segments with Gemini-TTS multi-speaker."""
+    """Synthesize dialogue segments with Gemini-TTS multi-speaker.
+
+    Tries each Cloud TTS endpoint (regional, then global) because a
+    regional Gemini-TTS backend can 502 for hours while global is healthy.
+    """
+    from generate_site import tts_endpoint_candidates
     from google.cloud import texttospeech
 
-    location = os.environ.get("VERTEX_LOCATION", "us-central1") or "us-central1"
-    endpoint = f"{location}-texttospeech.googleapis.com"
+    last_error = None
+    for endpoint in tts_endpoint_candidates():
+        try:
+            _synthesize_podcast_on_endpoint(segments, audio_file_path, endpoint)
+            return
+        except Exception as e:
+            last_error = e
+            print(f"Multi-speaker synthesis via {endpoint} failed: {e}")
+    raise RuntimeError(
+        f"Gemini-TTS multi-speaker failed on all endpoints: {last_error}. "
+        f"Re-run this workflow; the episode script is persisted, so the "
+        f"retry costs no LLM tokens.")
+
+
+def _synthesize_podcast_on_endpoint(segments, audio_file_path, endpoint):
+    from google.cloud import texttospeech
+
+    print(f"Synthesizing podcast via {endpoint}...")
     client = texttospeech.TextToSpeechClient(client_options={"api_endpoint": endpoint})
 
     voice = texttospeech.VoiceSelectionParams(
