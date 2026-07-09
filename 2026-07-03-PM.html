@@ -20,6 +20,7 @@
             --accent: #b0512b;
             --accent-hover: #8f3f1e;
             --ochre: #a5762a;
+            --teal: #3d6a78;
             --hairline: #ddd3bd;
             --rule: #20242e;
             --font-serif: 'Fraunces', Georgia, serif;
@@ -36,6 +37,7 @@
             --accent: #d97950;
             --accent-hover: #e89570;
             --ochre: #cf9c45;
+            --teal: #7aa7b5;
             --hairline: #2d3140;
             --rule: #eae5d6;
         }
@@ -233,6 +235,15 @@
             margin: 10px 0 0 0;
         }
         .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
+        .brief-body > p:first-of-type::first-letter {
+            font-family: var(--font-serif);
+            font-size: 3.4em;
+            font-weight: 600;
+            float: left;
+            line-height: 0.82;
+            padding: 4px 10px 0 0;
+            color: var(--accent);
+        }
         .brief-body h3 {
             font-family: var(--font-serif);
             font-size: 1.3rem;
@@ -339,6 +350,8 @@
                 <h2>Artificial Intelligence</h2>
             </div>
             <div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
 <p><strong>EXECUTIVE SUMMARY</strong></p>
 <p>Today's AI developments underscore a critical pivot towards highly autonomous, yet safely controlled, agentic systems, while simultaneously pushing the boundaries of model efficiency and architectural innovation. The tension between open-source proliferation and enterprise-level security concerns continues to shape the commercial landscape, demanding more robust alignment and explainability mechanisms.</p>
 <h3>The Agentic Frontier: Orchestration, Control, and Safety</h3>
@@ -367,6 +380,8 @@
 <p>The day's events highlight a persistent tension between the desire for fully autonomous AI systems and the inherent need for human-centric control and verifiable safety. While research pushes for agents that can <a href="https://arxiv.org/abs/2607.01480">self-improve through procedural memory distillation</a> or <a href="https://arxiv.org/abs/2607.01531">learn programmatic world models through interactive exploration</a>, the simultaneous discovery of vulnerabilities like <a href="https://arxiv.org/abs/2607.01239">BPE tokenization creating exploitable gaps in LLM alignment</a> forces a re-evaluation of unchecked autonomy. The drive for efficiency and local deployment (e.g., <a href="https://www.reddit.com/r/LocalLLaMA/comments/1um84bd/followup_deepseek_v4_flash_on_2x_rtx_pro_6000/">DeepSeek V4 Flash</a>) challenges the dominance of large, proprietary models, yet enterprise security concerns (e.g., <a href="https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/">Alibaba banning Claude Code</a>) signal a continued demand for controlled, auditable AI solutions. This creates a dynamic where innovation in open architectures must be met with equally rigorous advancements in alignment and provenance, moving beyond simple capability metrics to verifiable trustworthiness.</p>
 <p><strong>The Bottom Line</strong></p>
 <p>The accelerating development of autonomous AI agents is forcing a critical re-prioritization from raw capability to verifiable safety, robust alignment, and transparent control mechanisms across the entire AI stack.</p>
+</div>
+</div>
             </div>
         </section>
 
@@ -376,6 +391,8 @@
                 <h2>Markets &amp; Macro</h2>
             </div>
             <div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
 <p>Today's market narrative is dominated by the escalating AI infrastructure build-out, with hyperscalers and new entrants committing massive capital, even as geopolitical tensions drive supply chain re-evaluations in critical tech sectors. Meanwhile, easing US rate hike expectations are buoying global equities and commodities, creating a divergence from the ECB's continued hawkish vigilance.</p>
 <h3>The AI Arms Race: Infrastructure, Capital, and New Entrants</h3>
 <p>The scramble for AI dominance continues unabated, marked by staggering capital commitments and strategic plays across the hardware and infrastructure stack. <a href="https://www.fool.com/investing/2026/07/03/meta-135-billion-ai-capex-2026-one-reason/">Meta Platforms plans to spend $135 billion on AI in 2026</a>, underscoring the hyperscalers' resolve to lead. Nvidia, the current kingmaker, is not resting, launching a <a href="https://finance.yahoo.com/technology/ai/articles/nvidia-making-easier-ai-startups-223110196.html">new cloud and revenue-sharing program</a> to provide compute power to AI startups, effectively expanding its ecosystem and future customer base. Broadcom is also deepening its footprint, with <a href="https://finance.yahoo.com/technology/ai/articles/broadcom-avgo-backs-drivenets-tomahawk-221611228.html">DriveNets expanding its AI Fabric portfolio using Broadcom’s Tomahawk 6 ASIC</a> for hyperscale AI clusters, targeting Q3 2026 deployment.</p>
@@ -400,6 +417,8 @@
 <h3>Trade-offs &amp; Evolution</h3>
 <p>While the AI sector is experiencing an unprecedented capital influx and expansion, with <a href="https://finance.yahoo.com/technology/ai/articles/nvidia-making-easier-ai-startups-223110196.html">Nvidia</a>, <a href="https://www.fool.com/investing/2026/07/03/meta-135-billion-ai-capex-2026-one-reason/">Meta</a>, and <a href="https://finance.yahoo.com/technology/ai/articles/broadcom-avgo-backs-drivenets-tomahawk-221611228.html">Broadcom</a> making significant investments, this enthusiasm is not uniformly translating into unbridled valuation growth. <a href="https://finance.yahoo.com/markets/stocks/articles/brookfield-tsx-bn-stock-looks-221712426.html">Brookfield's stock is seen as stretched</a> despite its AI data center expansion, indicating that even within the hottest sector, traditional valuation metrics still apply and can temper market exuberance. Furthermore, the <a href="https://finance.yahoo.com/markets/stocks/articles/western-digital-wdc-stock-falls-230956533.html">decline in Western Digital shares</a> due to Apple's potential sourcing from a Chinese competitor highlights that the AI boom does not insulate companies from geopolitical supply chain shifts and competitive pressures, particularly when national interests influence purchasing decisions. The narrative is evolving from a simple AI growth story to one where strategic execution, geopolitical resilience, and valuation discipline are increasingly critical.</p>
 <p>The Bottom Line: The global economy is navigating a complex interplay of accelerating technological transformation, fragmenting geopolitical alliances, and diverging monetary policy paths, all of which are driving significant capital reallocation and market volatility.</p>
+</div>
+</div>
             </div>
         </section>
 
@@ -407,9 +426,9 @@
             <hr class="double-rule">
             <span class="kicker">Recent briefings</span>
             <div class="recent-list">
+                <a href="2026-07-08-PM.html"><span>Evening Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
                 <a href="2026-07-08-AM.html"><span>Morning Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
                 <a href="2026-07-07-PM.html"><span>Evening Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
-                <a href="2026-07-07-AM.html"><span>Morning Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
                 <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
 
             </div>

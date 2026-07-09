@@ -21,6 +21,7 @@
             --accent: #b0512b;
             --accent-hover: #8f3f1e;
             --ochre: #a5762a;
+            --teal: #3d6a78;
             --hairline: #ddd3bd;
             --rule: #20242e;
             --font-serif: 'Fraunces', Georgia, serif;
@@ -37,6 +38,7 @@
             --accent: #d97950;
             --accent-hover: #e89570;
             --ochre: #cf9c45;
+            --teal: #7aa7b5;
             --hairline: #2d3140;
             --rule: #eae5d6;
         }
@@ -233,7 +235,11 @@
         }
         .read-link:hover { color: var(--accent-hover); }
 
+        .kicker.teal { color: var(--teal); }
         .podcast-section { padding: 44px 0 10px 0; }
+        .podcast-section .pp-btn { background: var(--teal); }
+        .podcast-section .pp-btn:hover { background: var(--ink); }
+        .podcast-section .pp-fill { background: var(--teal); }
         .podcast-label {
             display: flex;
             justify-content: space-between;
@@ -246,7 +252,7 @@
             font-size: 0.98rem;
             margin: 16px 0 0 0;
         }
-        .podcast-teaser em { color: var(--ochre); font-style: normal; font-weight: 500; }
+        .podcast-teaser em { color: var(--teal); font-style: normal; font-weight: 500; }
         .podcast-feature { padding-top: 18px; }
         .podcast-title {
             font-family: var(--font-serif);
@@ -323,7 +329,8 @@
             color: var(--ink-soft);
             border: 1px solid var(--hairline);
             padding: 3px 10px;
-            border-radius: 2px;
+            /* cubist snip: one clipped corner, echoing the logo's shards */
+            clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
             transition: all 0.15s ease;
         }
         .edition-chip:hover {
@@ -378,7 +385,7 @@
 
         <section class="podcast-section">
             <div class="podcast-label">
-                <span class="kicker accent">The Post-Human Debrief</span>
+                <span class="kicker teal">The Post-Human Debrief</span>
                 <span class="kicker">Weekly Podcast</span>
             </div>
             <hr class="thin-rule">

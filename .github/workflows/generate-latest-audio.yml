@@ -48,6 +48,12 @@ jobs:
           VERTEX_PROJECT_ID: ${{ secrets.VERTEX_PROJECT_ID }}
           VERTEX_LOCATION: ${{ secrets.VERTEX_LOCATION }}
           GOOGLE_CLOUD_PROJECT: ${{ secrets.VERTEX_PROJECT_ID }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+          LLM_FALLBACK_API_KEY: ${{ secrets.LLM_FALLBACK_API_KEY }}
+          LLM_FALLBACK_BASE_URL: ${{ secrets.LLM_FALLBACK_BASE_URL }}
+          LLM_FALLBACK_MODEL: ${{ secrets.LLM_FALLBACK_MODEL }}
         run: |
           python3 .scripts/generate_latest_audio.py
 

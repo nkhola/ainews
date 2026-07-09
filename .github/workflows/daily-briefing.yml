@@ -70,44 +70,10 @@ jobs:
           LLM_FALLBACK_MODEL: ${{ secrets.LLM_FALLBACK_MODEL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          CANARY_TRIED=false
-          CANARY_FAILED=false
-          
-          if git ls-remote --exit-code --heads origin refactor-modularization >/dev/null 2>&1; then
-            echo "Refactor branch found! Attempting canary run..."
-            git fetch origin refactor-modularization
-            git checkout origin/refactor-modularization
-            CANARY_TRIED=true
-            
-            echo "Running modular pipeline..."
-            if python3 .scripts/pipeline.py; then
-               echo "Canary run succeeded!"
-               mkdir -p /tmp/canary_out/audio
-               cp *.html /tmp/canary_out/ 2>/dev/null || true
-               rm -f /tmp/canary_out/index.html
-               cp audio/*.mp3 /tmp/canary_out/audio/ 2>/dev/null || true
-               git checkout --force main
-               cp -r /tmp/canary_out/* ./
-               python3 -c "import sys, os, datetime; sys.path.insert(0, '.scripts'); import generate_site; generate_site.update_index_page(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d'))"
-            else
-               echo "Canary run failed!"
-               CANARY_FAILED=true
-               git checkout --force main
-               # Reset any uncommitted garbage from the failed canary
-               git clean -fd
-               git checkout -- .
-            fi
-          fi
-          
-          if [ "$CANARY_TRIED" = false ] || [ "$CANARY_FAILED" = true ]; then
-             echo "Running standard monolith pipeline on main branch..."
-             python3 .scripts/generate_site.py
-          fi
-          
-          if [ "$CANARY_FAILED" = true ]; then
-             echo "Reporting canary failure via GitHub Issues..."
-             gh issue create --title "🚨 Canary Run Failed: refactor-modularization" --body "The automated daily run attempted to use the \`refactor-modularization\` branch, but the pipeline script failed. It successfully fell back to the \`main\` branch monolith. Please check the Action logs for details." || echo "Could not create issue."
-          fi
+          # The refactor-modularization canary was removed 2026-07-08: its
+          # pipeline.py rewrote historical pages with a stale template on
+          # every run, reverting the site redesign. main is the pipeline.
+          python3 .scripts/generate_site.py
 
       - name: Verify Generated Files
         run: |

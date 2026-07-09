@@ -2,7 +2,11 @@ import os
 import re
 import glob
 from bs4 import BeautifulSoup
-from generate_site import generate_audio_with_fallback
+from generate_site import (
+    build_audio_script,
+    generate_audio_with_fallback,
+    html_to_speech_text,
+)
 
 def backfill_latest_audio():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -24,28 +28,39 @@ def backfill_latest_audio():
     html_file = html_files[0]
     base_name = os.path.splitext(os.path.basename(html_file))[0]
     audio_file_path = os.path.join(audio_dir, f"{base_name}.mp3")
-    
+
     print(f"Processing ONLY the latest briefing: {base_name}...")
-    
+
     with open(html_file, "r", encoding="utf-8") as f:
         content = f.read()
-        
+
     soup = BeautifulSoup(content, 'html.parser')
-    
+
     # Extract AI and Finance news
-    ai_div = soup.find('div', id='ai-news')
-    fin_div = soup.find('div', id='finance-news')
-    
+    ai_div = soup.find(id='ai-news')
+    fin_div = soup.find(id='finance-news')
+
     if not ai_div and not fin_div:
         print(f"  Skipping {base_name}, no relevant content found.")
         return
-        
-    ai_text = ai_div.get_text(separator=' ') if ai_div else ""
-    fin_text = fin_div.get_text(separator=' ') if fin_div else ""
-    
-    plain_text = "Artificial Intelligence. " + re.sub(r'<[^>]+>', ' ', ai_text) + " Markets and Macro. " + re.sub(r'<[^>]+>', ' ', fin_text)
-    plain_text = re.sub(r'\s+', ' ', plain_text).strip()
-    
+
+    ai_text = html_to_speech_text(ai_div.decode_contents()) if ai_div else ""
+    fin_text = html_to_speech_text(fin_div.decode_contents()) if fin_div else ""
+
+    flattened = f"Artificial Intelligence. {ai_text} Markets and Macro. {fin_text}"
+    flattened = re.sub(r'\s+', ' ', flattened).strip()
+
+    parts = base_name.split('-')
+    date_str = "-".join(parts[:3])
+    time_label = ("Evening" if parts[3] == "PM" else "Morning") if len(parts) == 4 else "Morning"
+
+    briefing_source = (
+        f"## Artificial Intelligence\n\n{ai_text}\n\n## Markets and Macro\n\n{fin_text}"
+    )
+    plain_text = build_audio_script(
+        briefing_source, date_str, time_label, fallback_text=flattened,
+    )
+
     # Generate the audio
     generate_audio_with_fallback(plain_text, audio_file_path)
     print(f"Finished generating {audio_file_path}!")

@@ -20,6 +20,7 @@
             --accent: #b0512b;
             --accent-hover: #8f3f1e;
             --ochre: #a5762a;
+            --teal: #3d6a78;
             --hairline: #ddd3bd;
             --rule: #20242e;
             --font-serif: 'Fraunces', Georgia, serif;
@@ -36,6 +37,7 @@
             --accent: #d97950;
             --accent-hover: #e89570;
             --ochre: #cf9c45;
+            --teal: #7aa7b5;
             --hairline: #2d3140;
             --rule: #eae5d6;
         }
@@ -233,6 +235,15 @@
             margin: 10px 0 0 0;
         }
         .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
+        .brief-body > p:first-of-type::first-letter {
+            font-family: var(--font-serif);
+            font-size: 3.4em;
+            font-weight: 600;
+            float: left;
+            line-height: 0.82;
+            padding: 4px 10px 0 0;
+            color: var(--accent);
+        }
         .brief-body h3 {
             font-family: var(--font-serif);
             font-size: 1.3rem;
@@ -339,6 +350,8 @@
                 <h2>Artificial Intelligence</h2>
             </div>
             <div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
 <p>Today's developments underscore a dual push: the proliferation of increasingly sophisticated multimodal foundation models and agentic systems capable of complex, iterative interaction, alongside a critical focus on their alignment, safety, and operational efficiency in real-world, often resource-constrained, environments.</p>
 <h3>Multimodal Foundation Models &amp; Unified Architectures</h3>
 <p>The architectural landscape for foundation models is shifting towards deeper multimodal integration. <strong>Gemma 4</strong> introduces natively multimodal models, with its 12B variant featuring a unified, encoder-free architecture that directly ingests raw audio and image patches, alongside improved vision and audio encoders for other sizes, and a novel "thinking mode" for explicit reasoning traces <a href="https://arxiv.org/abs/2607.02770">Gemma 4 Technical Report</a>. This move towards raw signal processing within a single model represents a significant departure from cascaded systems. Similarly, <strong>iFLYTEK-Embodied-Omni</strong> proposes a unified multimodal foundation model for embodied agents, jointly modeling vision, language, and action via shared multimodal self-attention, enabling a "brain-cerebellum collaboration" between high-level understanding and low-level action generation <a href="https://arxiv.org/abs/2607.02542">iFLYTEK-Embodied-Omni Technical Report</a>. This suggests a more coherent internal representation of the environment. Apple's research on <strong>Taming Text-to-Sounding Video Generation</strong> highlights the persistent challenges in aligning modalities, particularly with text conditioning and cross-modal fusion, even as joint audio-video training advances <a href="https://machinelearning.apple.com/research/sounding-video-generation">Taming Text-to-Sounding Video Generation</a>. Meanwhile, NVIDIA continues to push large, specialized multimodal models with <strong>Nemotron-Labs-Audex-30B-A3B</strong> and <strong>Nemotron-Labs-3-Puzzle-75B-A9B</strong> <a href="https://huggingface.co/nvidia/Nemotron-Labs-Audex-30B-A3B">Nemotron-Labs-Audex-30B-A3B</a>, <a href="https://huggingface.co/nvidia/NVIDIA-Nemotron-Labs-3-Puzzle-75B-A9B-BF16">Nemotron-Labs-3-Puzzle-75B-A9B</a>, and <strong>LingBot-Vision</strong> explores masked boundary modeling for self-supervised pretraining to enhance visual representation learning <a href="https://www.reddit.com/r/MachineLearning/comments/1up4cjh/lingbotvision_masked_boundary_modeling_for/">LingBot-Vision</a>.</p>
@@ -367,6 +380,8 @@
 <p>The rapid pace of development and the often-conflicting reports on model capabilities and geopolitical implications underscore the need for continuous, critical evaluation and a nuanced understanding of AI's evolving landscape, moving beyond hype to empirical validation.</p>
 <h3>The Bottom Line</h3>
 <p>The accelerating convergence of multimodal capabilities, agentic autonomy, and the critical need for robust alignment and efficiency defines the current frontier of AI development.</p>
+</div>
+</div>
             </div>
         </section>
 
@@ -376,6 +391,8 @@
                 <h2>Markets &amp; Macro</h2>
             </div>
             <div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
 <p>The market is grappling with the dual realities of massive AI infrastructure investment and growing skepticism about its valuation, leading to a tech-led market downturn despite strong underlying growth in key AI enablers. Geopolitical tensions are escalating, driving defense spending while simultaneously prompting a re-evaluation of European security independence amid shifting US foreign policy signals.</p>
 <h3>AI's Costly Ascent &amp; Market Disconnect</h3>
 <p>Big tech continues to funnel immense capital into artificial intelligence infrastructure, even as market sentiment wavers on the sector's lofty valuations. <a href="https://finance.yahoo.com/markets/stocks/articles/top-midday-stories-amazon-seeking-154352429.html">Amazon is seeking at least $25 billion from a US bond sale</a> to fund its AI build-out, a move that BlackRock's Jean Boivin identifies as part of <a href="https://www.bloomberg.com/news/videos/2026-07-07/blackrock-s-bold-ai-credit-call-video">AI fueling the biggest investment transformation</a> in history, with private credit as a major beneficiary. AMD's Q1 2026 results underscore this trend, with <a href="https://247wallst.com/investing/2026/07/07/1-prediction-for-amd-stock-over-the-next-5-years/">Data Center revenue surging 57%</a> and becoming its primary driver. Snowflake also reported strong results, with its <a href="https://247wallst.com/investing/2026/07/07/snowflakes-80-billion-data-bet-is-starting-to-show-results/">$9.21billion in remaining performance obligations up 38%</a> validating its data bet. The market, however, is showing signs of fatigue. <a href="https://app.moby.co/home/news/news-samsungs-blowout-quarter-still-spooks-the-chip-trade?utm_source=yahoo_finance&amp;utm_medium=rss&amp;.tsrc=rss">Samsung's record earnings failed to quell a global semiconductor selloff</a>, leading to a <a href="https://www.bloomberg.com/news/articles/2026-07-06/stock-market-today-dow-s-p-live-updates">2% drop in the Nasdaq 100</a> as investors question if AI demand is already priced in. <a href="https://www.marketwatch.com/story/microns-stock-falls-as-investors-wonder-if-the-memory-market-is-near-the-top-ab2d2feb?mod=mw_rss_topstories">Micron's stock also fell</a> on similar concerns about the memory market. This skepticism is a direct challenge to the bullish calls on AI plays, with some analysts still advocating to <a href="https://247wallst.com/investing/2026/07/07/nvidia-bears-are-blind-3-reasons-to-ignore-them-and-buy-now/">buy Nvidia despite the pullback</a>. Even as major players like <a href="https://www.powermag.com/google-invests-in-468-million-funding-round-for-german-fusion-group/">Google invest in fusion energy</a> (a long-term energy solution for computing), the immediate market reaction reflects a re-evaluation of current AI valuations.</p>
@@ -395,6 +412,8 @@
 <h4>Why it matters</h4>
 <p>The wide disparity in SpaceX valuations reflects the speculative nature of high-growth, privately-held tech, while the IP theft allegations highlight the escalating tech cold war and its implications for national security and economic competitiveness.</p>
 <p>THE BOTTOM LINE: The market is navigating a complex environment where AI's transformative potential is battling valuation skepticism, geopolitical fragmentation is driving defense spending, and persistent inflation is reshaping consumer behavior, all against a backdrop of escalating tech competition.</p>
+</div>
+</div>
             </div>
         </section>
 
@@ -402,9 +421,9 @@
             <hr class="double-rule">
             <span class="kicker">Recent briefings</span>
             <div class="recent-list">
+                <a href="2026-07-08-PM.html"><span>Evening Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
                 <a href="2026-07-08-AM.html"><span>Morning Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
                 <a href="2026-07-07-PM.html"><span>Evening Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
-                <a href="2026-07-06-PM.html"><span>Evening Briefing &middot; Monday, July 6, 2026</span> <span class="go">Read</span></a>
                 <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
 
             </div>

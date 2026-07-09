@@ -23,13 +23,22 @@ from src.agents.master_compiler import MasterCompiler
 # Style instructions for Gemini-TTS. These go in SynthesisInput.prompt (a
 # dedicated field that is never spoken), NOT prepended to the text — inline
 # instructions get read aloud by the model.
+# Deliberately flat delivery: chunks are synthesized independently, and a
+# neutral, even register is what keeps consecutive chunks indistinguishable.
 TTS_STYLE_PROMPT = (
-    "You are a seasoned news anchor reading one continuous daily briefing. "
-    "Speak in a calm, warm, confident voice at a steady, natural conversational "
-    "pace, with the same tone and energy from start to finish. Read the text "
-    "exactly as written: no greetings, no introductions, no commentary, no "
-    "sign-offs, and never speak these instructions."
+    "Read the text verbatim in the even, measured, neutral tone of a "
+    "public-radio news reader. Calm and steady, no dramatics, no enthusiasm "
+    "swings: keep exactly the same pace, pitch, and energy from the first "
+    "word to the last. Read only the text: add nothing, repeat nothing, "
+    "skip nothing, and never speak these instructions."
 )
+
+# Gemini-TTS prebuilt voice for the daily narration. Charon is the flattest,
+# most "informative newsreader" of the prebuilt voices (Puck, the previous
+# choice, is characterized as upbeat, which amplified tone drift between
+# chunks). Charon also anchors the weekly Debrief, so the daily voice and
+# the podcast host are the same voice: the voice of the Briefing.
+TTS_VOICE = "Charon"
 
 # Gemini-TTS accepts up to 4,000 bytes in the text field. Larger chunks mean
 # fewer synthesis seams (each seam risks a tone shift), so pack close to the
@@ -89,8 +98,39 @@ def split_text_for_tts(plain_text, max_bytes=TTS_MAX_CHUNK_BYTES):
     return chunks
 
 
+def build_audio_script(briefing_text, date_str, time_label, compiler=None,
+                       fallback_text=None):
+    """Produce the narration text for a briefing.
+
+    Primary path: the LLM rewrites the briefing as an audio-native script
+    (welcome, spoken transitions, sign-off). If that fails or comes back
+    suspiciously short/garbled, fall back to the flattened briefing text so
+    audio generation never blocks publication.
+    """
+    fallback = fallback_text if fallback_text is not None else briefing_text
+    try:
+        if compiler is None:
+            from src.agents.master_compiler import MasterCompiler as _MC
+            compiler = _MC()
+        date_line = pretty_date(date_str)
+        script = compiler.synthesize_audio_script(briefing_text, date_line, time_label)
+        if not isinstance(script, str):
+            raise ValueError("audio script is not text")
+        script = re.sub(r'[#*_`>\[\]]', '', script)   # strip stray markdown
+        script = re.sub(r'\s+', ' ', script).strip()
+        source_words = len(str(briefing_text).split())
+        if len(script.split()) < max(150, source_words // 3):
+            raise ValueError(
+                f"audio script too short ({len(script.split())} words "
+                f"vs {source_words} source words)")
+        return script
+    except Exception as e:
+        print(f"Audio script generation failed ({e}); using flattened briefing text.")
+        return re.sub(r'\s+', ' ', str(fallback)).strip()
+
+
 def generate_audio_with_fallback(plain_text, audio_file_path):
-    print(f"Attempting Vertex AI TTS (Gemini Puck voice) for {audio_file_path}...")
+    print(f"Attempting Vertex AI TTS (Gemini {TTS_VOICE} voice) for {audio_file_path}...")
 
     try:
         import time
@@ -105,7 +145,7 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
 
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
-            name="Puck",
+            name=TTS_VOICE,
             model_name="gemini-2.5-flash-tts"
         )
 
@@ -205,6 +245,7 @@ BASE_CSS = """
             --accent: #b0512b;
             --accent-hover: #8f3f1e;
             --ochre: #a5762a;
+            --teal: #3d6a78;
             --hairline: #ddd3bd;
             --rule: #20242e;
             --font-serif: 'Fraunces', Georgia, serif;
@@ -221,6 +262,7 @@ BASE_CSS = """
             --accent: #d97950;
             --accent-hover: #e89570;
             --ochre: #cf9c45;
+            --teal: #7aa7b5;
             --hairline: #2d3140;
             --rule: #eae5d6;
         }
@@ -521,6 +563,15 @@ def render_briefing_page(base_name, date_str, time_label, reading_time,
             margin: 10px 0 0 0;
         }
         .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
+        .brief-body > p:first-of-type::first-letter {
+            font-family: var(--font-serif);
+            font-size: 3.4em;
+            font-weight: 600;
+            float: left;
+            line-height: 0.82;
+            padding: 4px 10px 0 0;
+            color: var(--accent);
+        }
         .brief-body h3 {
             font-family: var(--font-serif);
             font-size: 1.3rem;
@@ -749,16 +800,23 @@ def generate_daily_briefing():
     audio_dir = os.path.join(repo_root, "audio")
     os.makedirs(audio_dir, exist_ok=True)
 
-    # Extract narration-friendly plain text. Skip the hardcoded section intro
-    # when the content already opens with its own matching heading.
+    # The narration comes from a dedicated audio-native script (welcome,
+    # spoken transitions, sign-off) written by the LLM from the same
+    # markdown. If that fails, fall back to the flattened briefing text.
     def with_intro(intro, text):
         return text if text.lower().startswith(intro.split('.')[0].lower()) else intro + text
 
-    plain_text = (
+    flattened = (
         with_intro("Artificial Intelligence. ", html_to_speech_text(ai_html))
         + " " + with_intro("Markets and Macro. ", html_to_speech_text(fin_html))
     )
-    plain_text = re.sub(r'\s+', ' ', plain_text).strip()
+    briefing_source = (
+        f"## Artificial Intelligence\n\n{ai_md}\n\n## Markets and Macro\n\n{fin_md}"
+    )
+    plain_text = build_audio_script(
+        briefing_source, date_str, time_label,
+        compiler=compiler, fallback_text=flattened,
+    )
 
     # Generate MP3 using Vertex AI with edge-tts fallback
     audio_file_path = os.path.join(audio_dir, f"{base_name}.mp3")
@@ -817,7 +875,7 @@ def build_podcast_section(repo_root):
         return """
         <section class="podcast-section">
             <div class="podcast-label">
-                <span class="kicker accent">The Post-Human Debrief</span>
+                <span class="kicker teal">The Post-Human Debrief</span>
                 <span class="kicker">Weekly Podcast</span>
             </div>
             <hr class="thin-rule">
@@ -837,12 +895,12 @@ def build_podcast_section(repo_root):
     return f"""
         <section class="podcast-section">
             <div class="podcast-label">
-                <span class="kicker accent">The Post-Human Debrief</span>
+                <span class="kicker teal">The Post-Human Debrief</span>
                 <span class="kicker">Weekly Podcast</span>
             </div>
             <hr class="thin-rule">
             <div class="podcast-feature">
-                <div class="podcast-meta kicker">Week of {latest['week_range']} &middot; {latest['duration_min']} min listen</div>
+                <div class="podcast-meta kicker teal">Week of {latest['week_range']} &middot; {latest['duration_min']} min listen</div>
                 <h2 class="podcast-title">{latest['title']}</h2>
                 <p class="podcast-desc">{latest['description']}</p>
                 {render_player(f"podcast/{latest['file']}")}
@@ -1052,7 +1110,11 @@ def update_index_page(repo_root, new_date_str):
         }
         .read-link:hover { color: var(--accent-hover); }
 
+        .kicker.teal { color: var(--teal); }
         .podcast-section { padding: 44px 0 10px 0; }
+        .podcast-section .pp-btn { background: var(--teal); }
+        .podcast-section .pp-btn:hover { background: var(--ink); }
+        .podcast-section .pp-fill { background: var(--teal); }
         .podcast-label {
             display: flex;
             justify-content: space-between;
@@ -1065,7 +1127,7 @@ def update_index_page(repo_root, new_date_str):
             font-size: 0.98rem;
             margin: 16px 0 0 0;
         }
-        .podcast-teaser em { color: var(--ochre); font-style: normal; font-weight: 500; }
+        .podcast-teaser em { color: var(--teal); font-style: normal; font-weight: 500; }
         .podcast-feature { padding-top: 18px; }
         .podcast-title {
             font-family: var(--font-serif);
@@ -1142,7 +1204,8 @@ def update_index_page(repo_root, new_date_str):
             color: var(--ink-soft);
             border: 1px solid var(--hairline);
             padding: 3px 10px;
-            border-radius: 2px;
+            /* cubist snip: one clipped corner, echoing the logo's shards */
+            clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
             transition: all 0.15s ease;
         }
         .edition-chip:hover {

@@ -20,6 +20,7 @@
             --accent: #b0512b;
             --accent-hover: #8f3f1e;
             --ochre: #a5762a;
+            --teal: #3d6a78;
             --hairline: #ddd3bd;
             --rule: #20242e;
             --font-serif: 'Fraunces', Georgia, serif;
@@ -36,6 +37,7 @@
             --accent: #d97950;
             --accent-hover: #e89570;
             --ochre: #cf9c45;
+            --teal: #7aa7b5;
             --hairline: #2d3140;
             --rule: #eae5d6;
         }
@@ -233,6 +235,15 @@
             margin: 10px 0 0 0;
         }
         .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
+        .brief-body > p:first-of-type::first-letter {
+            font-family: var(--font-serif);
+            font-size: 3.4em;
+            font-weight: 600;
+            float: left;
+            line-height: 0.82;
+            padding: 4px 10px 0 0;
+            color: var(--accent);
+        }
         .brief-body h3 {
             font-family: var(--font-serif);
             font-size: 1.3rem;
@@ -339,6 +350,8 @@
                 <h2>Artificial Intelligence</h2>
             </div>
             <div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
 <p>Today's AI developments reveal a paradoxical divergence: while open-source models demonstrate increasing specialization and capability, leading closed-source offerings are exhibiting concerning regressions in reliability, tool use, and security. This friction between proprietary model control and community demand for predictable AI systems is further complicated by the economic disruption AI is inflicting on creative industries.</p>
 <h3>Closed-Source Model Fragility and Tooling Regression</h3>
 <p>The reliability of flagship closed-source models is showing concerning cracks. OpenAI's <a href="https://github.com/openai/codex/issues/30364">GPT-5.5 Codex appears to be suffering from degraded performance</a> due to reasoning-token clustering, indicating potential issues in its internal representation or inference mechanisms. Anthropic's models are also under scrutiny, with <a href="https://epoch.ai/data-insights/cve-severity-spike">new serious vulnerabilities spiking around the release of Claude Mythos Preview</a> and <a href="https://www.reddit.com/r/LocalLLaMA/comments/1unif51/possible_evidence_of_literal_prompt_injection_by/">evidence of literal prompt injection</a> emerging. More critically, newer Anthropic models like <a href="https://simonwillison.net/2026/Jul/4/better-models-worse-tools/#atom-everything">Opus 4.8 and Sonnet 5 are reportedly worse at tool use</a> for non-native schemas compared to their predecessors, inventing extra fields that cause rejections. This suggests a training misalignment where optimization for internal tools (like Claude Code's search-and-replace) comes at the expense of general tool-use robustness. Even Google is <a href="https://docs.cloud.google.com/gemini/docs/code-review/review-repo-code">shutting down Gemini Code Assist</a>, hinting at strategic re-evaluation or underlying product challenges in the coding domain. The observation that <a href="https://simonwillison.net/2026/Jul/3/judgement/#atom-everything">Fable can use its own judgement to delegate tasks to smaller models</a> for cost efficiency, while beneficial, also highlights the complexity of managing model capabilities and resource allocation.</p>
@@ -359,6 +372,8 @@
 <h4>Why it matters</h4>
 <p>AI is fundamentally reshaping economic incentives and labor markets, creating new value propositions while simultaneously eroding existing ones across diverse sectors, from education to entertainment.</p>
 <p>The Bottom Line: The AI industry is navigating a turbulent transition where the promise of advanced capabilities is increasingly offset by questions of reliability, cost, and profound economic reordering.</p>
+</div>
+</div>
             </div>
         </section>
 
@@ -368,6 +383,8 @@
                 <h2>Markets &amp; Macro</h2>
             </div>
             <div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
 <p>The market narrative remains dominated by artificial intelligence's expanding influence across industries and capital markets, driving significant IPO valuations and strategic shifts among tech giants. Concurrently, while broad market sentiment is buoyed by expectations of rate cuts, the tech sector itself is exhibiting increasing performance divergence, necessitating a more granular approach to investment.</p>
 <h3>AI's Deepening Integration and Ecosystem Expansion</h3>
 <p>The artificial intelligence investment cycle continues its relentless march, with <a href="https://www.fool.com/investing/2026/07/04/chatgpt-maker-openai-is-headed-for-a-1-trillion-ip/">OpenAI reportedly eyeing a $1 trillion IPO</a>, positioning Microsoft, a significant stakeholder, as a primary beneficiary. This underscores the venture capital market's conviction in foundational AI models. Not to be outdone, <a href="https://www.thestreet.com/investing/metas-next-ai-bet-has-one-major-catch-for-investors/">Meta Platforms is establishing a cloud business to monetize its substantial AI infrastructure spending</a>, signaling a strategic pivot to transform cost centers into revenue streams. Nvidia, a bellwether for AI hardware, is expanding its ecosystem by <a href="https://finance.yahoo.com/markets/stocks/articles/nvidia-nvda-backs-verkada-brings-210955795.html">backing Verkada to accelerate physical AI adoption</a> and bringing in a Microsoft veteran to lead sales, indicating a push beyond data centers into real-world applications. The next major AI IPO following SpaceX's debut is anticipated to be <a href="https://www.fool.com/investing/2026/07/04/heres-the-next-major-trillion-dollar-blockbuster-i/">Anthropic</a>, further solidifying AI's role as a primary driver of new market listings. Even cultural institutions are embracing AI, with the <a href="https://www.bloomberg.com/news/videos/2026-07-04/ai-teddy-roosevelt-greets-library-visitors-video">Theodore Roosevelt Presidential Library featuring AI-powered exhibits</a> to engage new generations.</p>
@@ -388,6 +405,8 @@
 <h3>Trade-offs &amp; Evolution</h3>
 <p>The market's optimism for rate cuts, which generally supports broader equities, is juxtaposed against increasing volatility and divergent performance within the tech sector itself. This suggests a more discerning capital allocation is underway, moving beyond a blanket "tech rally" to a focus on specific value propositions. Confidence in AI's future remains high, evidenced by <a href="https://www.fool.com/investing/2026/07/04/chatgpt-maker-openai-is-headed-for-a-1-trillion-ip/">OpenAI's projected valuation</a> and <a href="https://www.thestreet.com/investing/metas-next-ai-bet-has-one-major-catch-for-investors/">Meta's foray into AI cloud services</a>. However, the market is starting to differentiate within the tech behemoths, with <a href="https://www.fool.com/investing/2026/07/04/nvidia-stock-is-flat-for-2026-time-to-cash-out-or/">Nvidia's stock remaining flat</a> despite its continued strategic investments (e.g., <a href="https://finance.yahoo.com/markets/stocks/articles/nvidia-nvda-backs-verkada-brings-210955795.html">backing Verkada for physical AI</a>), while <a href="https://www.fool.com/investing/2026/07/04/if-youd-put-10000-into-intel-stock-at-the-start-of/">Intel stages a dramatic comeback</a> and <a href="https://www.fool.com/investing/2026/07/04/micron-stock-has-soared-nearly-700-in-a-year-is-a/">Micron sees a 700% surge</a>. This indicates a shift from broad AI enthusiasm to a more selective focus on specific value propositions and turnaround stories.</p>
 <p>The Bottom Line: The market is transitioning from a generalized tech-driven expansion to a more selective phase, where AI's transformative power is undeniable but capital is increasingly allocated based on differentiated value propositions and a nuanced understanding of macro and geopolitical crosscurrents.</p>
+</div>
+</div>
             </div>
         </section>
 
@@ -395,9 +414,9 @@
             <hr class="double-rule">
             <span class="kicker">Recent briefings</span>
             <div class="recent-list">
+                <a href="2026-07-08-PM.html"><span>Evening Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
                 <a href="2026-07-08-AM.html"><span>Morning Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
                 <a href="2026-07-07-PM.html"><span>Evening Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
-                <a href="2026-07-07-AM.html"><span>Morning Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
                 <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
 
             </div>

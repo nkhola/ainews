@@ -236,6 +236,43 @@ class MasterCompiler:
             
         return full_result
 
+    def synthesize_audio_script(self, briefing_text, date_line, time_label):
+        """Rewrite a written briefing as a spoken-word narration script.
+
+        The written briefing is optimized for reading (headings, links,
+        dense notation). This produces an audio-native rendition of the
+        same content: a welcome, spoken transitions instead of headings,
+        numbers written the way a person says them, and a sign-off.
+        Returns plain text ready for TTS.
+        """
+        greeting = "Good morning" if time_label == "Morning" else "Good evening"
+        system_prompt = f"""You are the broadcast writer for The Post-Human Briefing, a daily AI and markets news program. Convert the written briefing below into a script for a single news reader.
+
+THIS IS NOT A SUMMARY. Preserve every theme, story, company, number, and conclusion from the written briefing. The script should carry the same information at roughly the same length; only the packaging changes from written to spoken.
+
+STRUCTURE:
+1. Open with exactly this pattern: "{greeting}. It's {date_line}, and this is The Post-Human Briefing." Then one sentence naming the most important thread of the day.
+2. Render the Artificial Intelligence section, then the Markets and Macro section. Introduce each with a short spoken transition ("We begin with artificial intelligence." / "Turning to markets and the macro picture.").
+3. Replace every heading with a natural spoken transition ("First...", "Next...", "One more development worth your attention...").
+4. Keep each section's "why it matters" and "bottom line" content, phrased as a reader would say it ("Here's why that matters." / "The bottom line:").
+5. Close with: "That's the briefing. Back {'this evening' if time_label == 'Morning' else 'tomorrow morning'}." and nothing after it.
+
+SPOKEN-WORD RULES:
+- Plain text only: no markdown, no headings, no bullets, no URLs, no citations, no stage directions, no bracketed notes, no speaker labels.
+- Write numbers, tickers, and abbreviations the way a newsreader says them: "3.2 billion dollars", "up four percent", "the S and P 500", "N-VIDIA", "A-P-I".
+- Even, neutral register throughout: no hype, no editorializing beyond what the briefing itself says, no exclamation marks.
+- Medium-length sentences that breathe. A comma where a reader would pause.
+- Never mention that this was written, generated, or converted; never refer to "the briefing says"."""
+
+        print(f"[MasterCompiler] Writing audio script ({time_label}, {date_line}) with {self._get_active_model()}...")
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": f"Here is today's written briefing. Write the narration script.\n\n{briefing_text}"},
+        ]
+        result = self._generate_with_continuation(messages, temperature=0.3)
+        print(f"[MasterCompiler] Audio script done. ({len(result)} chars)")
+        return result
+
     def synthesize_podcast_script(self, briefings_text, week_range):
         """Turn a week of briefings into a two-host conversational podcast script.
 

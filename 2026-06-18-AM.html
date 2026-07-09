@@ -3,309 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Post-Human Briefing - 2026-06-18</title>
+    <title>The Post-Human Briefing — 2026-06-18 Morning</title>
+    <script>(function(){var t=null;try{t=localStorage.getItem('phb-theme')}catch(e){}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}document.documentElement.setAttribute('data-theme',t);})();</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1a1b35 100%);
-            --surface-color: rgba(30, 32, 50, 0.6);
-            --surface-hover: rgba(45, 48, 75, 0.8);
-            --text-main: #f0f4f8;
-            --text-muted: #a0aec0;
-            --accent-glow: #3b82f6;
-            --accent-glow-secondary: #8b5cf6;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+            --bg: #f4eee1;
+            --surface: #faf6ea;
+            --surface-2: #ece4d1;
+            --ink: #20242e;
+            --ink-soft: #494e5c;
+            --muted: #78715f;
+            --accent: #b0512b;
+            --accent-hover: #8f3f1e;
+            --ochre: #a5762a;
+            --teal: #3d6a78;
+            --hairline: #ddd3bd;
+            --rule: #20242e;
+            --font-serif: 'Fraunces', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
-        
+        [data-theme="dark"] {
+            --bg: #14161d;
+            --surface: #1a1d26;
+            --surface-2: #232733;
+            --ink: #eae5d6;
+            --ink-soft: #c2bcab;
+            --muted: #8f8a79;
+            --accent: #d97950;
+            --accent-hover: #e89570;
+            --ochre: #cf9c45;
+            --teal: #7aa7b5;
+            --hairline: #2d3140;
+            --rule: #eae5d6;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
             margin: 0;
             padding: 0;
-            background: var(--bg-gradient);
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font-sans);
             line-height: 1.7;
             min-height: 100vh;
+            transition: background 0.25s ease, color 0.25s ease;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .ambient-glow {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            overflow: hidden;
-            z-index: -1;
-            pointer-events: none;
-        }
-        .ambient-glow::before, .ambient-glow::after {
-            content: '';
-            position: absolute;
-            width: 600px;
-            height: 600px;
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { color: var(--accent-hover); }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid var(--hairline);
             border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.15;
-            animation: float 20s infinite alternate;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease;
         }
-        .ambient-glow::before {
-            background: var(--accent-glow);
-            top: -100px; left: -100px;
-        }
-        .ambient-glow::after {
-            background: var(--accent-glow-secondary);
-            bottom: -100px; right: -100px;
-            animation-delay: -10s;
+        .theme-toggle:hover { color: var(--ink); border-color: var(--muted); }
+        [data-theme="dark"] .icon-moon { display: none; }
+        [data-theme="light"] .icon-sun { display: none; }
+
+        .kicker {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
         }
 
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
+        .double-rule {
+            border: 0;
+            border-top: 3px solid var(--rule);
+            border-bottom: 1px solid var(--rule);
+            height: 3px;
+            margin: 0;
+        }
+        .thin-rule {
+            border: 0;
+            border-top: 1px solid var(--hairline);
+            margin: 0;
         }
 
-        .briefing-container {
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 40px 20px 80px 20px;
+        /* Audio player */
+        .phb-player {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0 2px 0;
+        }
+        .phb-player button.pp-btn {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent);
+            color: var(--bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+            padding: 0;
+        }
+        .phb-player button.pp-btn:hover { background: var(--accent-hover); }
+        .phb-player .pp-track {
+            flex-grow: 1;
+            height: 3px;
+            background: var(--hairline);
+            cursor: pointer;
             position: relative;
         }
-
-        /* Navbar */
-        .nav-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
+        .phb-player .pp-fill {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 0%;
+            background: var(--accent);
         }
-
-        .nav-link {
-            display: inline-block;
-            color: var(--text-main);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-link:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* Header Section */
-        .header-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--border-color);
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .header-section .logo {
-            width: 48px;
-            height: auto;
-            border-radius: 6px;
-            margin: 0;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-        }
-        .header-section h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin: 0;
-            background: linear-gradient(to right, #60a5fa, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-        .header-section .meta {
+        .phb-player .pp-time {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--muted);
+            min-width: 88px;
             text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
         }
-        .header-section .date {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.3rem;
-            color: #f0f4f8;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .header-section .reading-time {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            font-family: 'Outfit', sans-serif;
-        }
-        
-        @media (max-width: 600px) {
-            .header-section {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .header-section .meta {
-                align-items: flex-start;
-                text-align: left;
-            }
-        }
+        .phb-player.pp-error .pp-time { min-width: 0; }
 
-        /* Section Cards */
-        .section-card {
-            background: var(--surface-color);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            margin-bottom: 40px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-        .section-header {
-            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
-            padding-bottom: 12px;
-            margin-bottom: 28px;
-        }
-        .section-header h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--text-main);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .section-card h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.4rem;
-            color: #f0f4f8;
-            margin-top: 48px;
-            margin-bottom: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .section-card p {
-            font-size: 1.15rem;
-            margin-bottom: 24px;
-            color: #d1d5db;
-            line-height: 1.8;
-        }
-        .section-card ul {
-            padding-left: 24px;
-            color: #d1d5db;
-            margin-bottom: 24px;
-        }
-        .section-card li {
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-            line-height: 1.7;
-        }
-        a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-        a:hover {
-            text-decoration: underline;
-            color: #60a5fa;
-        }
-        blockquote {
-            border-left: 4px solid #8b5cf6;
-            margin: 0;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.03);
-            font-style: italic;
-            border-radius: 0 8px 8px 0;
-            color: #9ca3af;
-        }
-
-        /* Recent Briefings at bottom */
-        .recent-briefings {
-            margin-top: 60px;
-            padding-top: 40px;
-            border-top: 2px solid var(--border-color);
-        }
-        .recent-briefings h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+        footer.site-footer {
+            max-width: 720px;
+            margin: 72px auto 0 auto;
+            padding: 24px 24px 48px 24px;
+            border-top: 1px solid var(--hairline);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            color: var(--muted);
             text-align: center;
+            line-height: 2;
         }
-        .recent-list {
+
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 2px;
+            width: 0%;
+            background: var(--accent);
+            z-index: 10;
+        }
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 28px 24px 40px 24px;
+        }
+
+        .top-nav {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
             gap: 12px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--hairline);
         }
+        .top-nav .nav-left, .top-nav .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .top-nav a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .top-nav a:hover { color: var(--ink); }
+
+        .briefing-head {
+            padding: 44px 0 28px 0;
+            text-align: left;
+        }
+        .briefing-head .kicker { color: var(--accent); }
+        .briefing-head h1 {
+            font-family: var(--font-serif);
+            font-size: 2.7rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.12;
+            margin: 10px 0 12px 0;
+        }
+        .briefing-head .dateline {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .listen-block {
+            border-top: 1px solid var(--hairline);
+            border-bottom: 1px solid var(--hairline);
+            padding: 16px 0;
+            margin-bottom: 8px;
+        }
+
+        section.brief-section { padding-top: 40px; }
+        .section-head { margin-bottom: 8px; }
+        .section-head h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 10px 0 0 0;
+        }
+        .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
+        .brief-body > p:first-of-type::first-letter {
+            font-family: var(--font-serif);
+            font-size: 3.4em;
+            font-weight: 600;
+            float: left;
+            line-height: 0.82;
+            padding: 4px 10px 0 0;
+            color: var(--accent);
+        }
+        .brief-body h3 {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin: 2.2em 0 0.5em 0;
+            letter-spacing: -0.01em;
+        }
+        .brief-body h4 {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ochre);
+            margin: 1.6em 0 0.4em 0;
+        }
+        .brief-body p { margin: 0 0 1.2em 0; }
+        .brief-body ul { padding-left: 1.3em; margin: 0 0 1.2em 0; }
+        .brief-body li { margin-bottom: 0.5em; }
+        .brief-body a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+            text-underline-offset: 3px;
+        }
+        .brief-body a:hover { color: var(--accent-hover); text-decoration-color: var(--accent-hover); }
+        .brief-body blockquote {
+            border-left: 2px solid var(--ochre);
+            margin: 1.4em 0;
+            padding: 2px 0 2px 18px;
+            font-family: var(--font-serif);
+            font-style: italic;
+            color: var(--ink-soft);
+        }
+        .brief-body strong { color: var(--ink); }
+
+        .recent {
+            margin-top: 64px;
+            padding-top: 8px;
+        }
+        .recent .kicker { display: block; margin: 14px 0 10px 0; }
+        .recent-list { display: flex; flex-direction: column; }
         .recent-list a {
             display: flex;
             justify-content: space-between;
-            padding: 16px 20px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            color: var(--text-main);
-            transition: all 0.2s ease;
+            align-items: baseline;
+            gap: 12px;
+            padding: 11px 2px;
+            border-bottom: 1px solid var(--hairline);
+            color: var(--ink);
+            font-size: 0.95rem;
         }
-        .recent-list a:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(96, 165, 250, 0.3);
-            transform: translateY(-2px);
+        .recent-list a:hover { color: var(--accent); }
+        .recent-list a .go {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
         }
-        .recent-list .date {
-            color: #9ca3af;
-            font-family: 'Outfit', sans-serif;
-        }
+        .recent-list a:hover .go { color: var(--accent); }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
-
-    </style>
+        @media (max-width: 600px) {
+            .briefing-head h1 { font-size: 2.1rem; }
+        }
+</style>
 </head>
 <body>
-    <div class="ambient-glow"></div>
-    <div class="briefing-container">
-        <div class="nav-bar">
-            <a href="index.html" class="nav-link">← All Briefings</a>
-            <a href="https://www.khola.blog/" class="nav-link" target="_blank">Khola.Blog ↗</a>
-        </div>
-        
-        <div class="header-section">
-            <div class="header-title">
-                <img src="img/logo_256.png" alt="Logo" class="logo">
-                <h1>The Post-Human Briefing</h1>
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="page">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html">&larr; The Post-Human Briefing</a>
             </div>
-            <div class="meta">
-                <span class="date">2026-06-18 &bull; Morning</span>
-                <span class="reading-time">5 min read</span>
+            <div class="nav-right">
+                <a href="https://www.khola.blog/" target="_blank" rel="noopener">Khola.Blog</a>
+                <button class="theme-toggle" onclick="phbToggleTheme()" aria-label="Toggle color theme" title="Toggle theme"><svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
             </div>
-        </div>
-        
-        
-        
+        </nav>
 
-        <div class="section-card" id="ai-news">
-            <div class="section-header">
+        <header class="briefing-head">
+            <span class="kicker">The Post-Human Briefing</span>
+            <h1>Morning Briefing</h1>
+            <div class="dateline">Thursday, June 18, 2026 &nbsp;&middot;&nbsp; 5 min read</div>
+        </header>
+
+        <section class="brief-section" id="ai-news">
+            <div class="section-head">
+                <hr class="double-rule">
                 <h2>Artificial Intelligence</h2>
             </div>
-            <p>Here is your daily briefing for a small group of sophisticated peers.</p>
+            <div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
+<p>Here is your daily briefing for a small group of sophisticated peers.</p>
 <p><strong>EXECUTIVE SUMMARY</strong>
 Today's AI landscape is marked by significant advancements in <strong>inference efficiency and agentic capabilities</strong>, pushing models towards more complex, long-horizon tasks. Concurrently, the <strong>open model ecosystem continues its rapid ascent</strong>, challenging closed-source dominance, even as regulatory bodies grapple with the implications of powerful AI systems.</p>
 <h3>Scaling Inference and Reasoning Architectures</h3>
@@ -324,28 +359,121 @@ Today's AI landscape is marked by significant advancements in <strong>inference 
 <p>However, the increased autonomy of agents brings heightened security concerns. OpenAI's acquisition of <a href="https://openai.com/index/openai-to-acquire-ona">Ona</a> aims to expand <code>Codex</code> with secure, persistent cloud environments for long-running AI agents. DeepMind is also <a href="https://deepmind.google/blog/securing-the-future-of-ai-agents/">securing the future of AI agents</a> with an AI Control Roadmap. The pervasive threat of prompt injection, identified as the <a href="http://bair.berkeley.edu/blog/2025/04/11/prompt-injection-defense/">#1 threat by OWASP</a>, is being addressed by Berkeley's <code>StruQ</code> and <code>SecAlign</code> defenses. These fine-tuning methods, combined with a secure front-end, train LLMs to ignore injected instructions, with <code>SecAlign</code> (using preference optimization) proving particularly robust against sophisticated attacks. The <code>TWIML AI Podcast</code> also discussed <a href="https://twimlai.com/podcast/twimlai/why-ai-agents-break-genAI-security-model">why AI agents break the GenAI security model</a>, emphasizing the need for runtime enforcement and policy-aware governance.</p>
 <h4>Why it matters</h4>
 <p>The development of more capable, robust, and ethical AI systems remains a paramount focus for researchers and developers worldwide.</p><p><strong>The Bottom Line:</strong> The ongoing pursuit of advanced, resilient, and ethically sound AI is a central objective for the global research and development community.</p>
-        </div>
+</div>
+</div>
+</div>
+            </div>
+        </section>
 
-        <div class="section-card" id="finance-news">
-            <div class="section-header">
+        <section class="brief-section" id="finance-news">
+            <div class="section-head">
+                <hr class="double-rule">
                 <h2>Markets &amp; Macro</h2>
             </div>
-            <p>Today's market narrative is a tug-of-war between geopolitical de-escalation, which is easing oil prices and inflation concerns, and a newly hawkish Federal Reserve signaling a firm stance against persistent price pressures. Meanwhile, the AI spending spree continues to reshape tech sector capital allocation, diverting funds from traditional buybacks while simultaneously creating new winners and disrupting established business models.</p>
+            <div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
+<div class="brief-body">
+<p>Today's market narrative is a tug-of-war between geopolitical de-escalation, which is easing oil prices and inflation concerns, and a newly hawkish Federal Reserve signaling a firm stance against persistent price pressures. Meanwhile, the AI spending spree continues to reshape tech sector capital allocation, diverting funds from traditional buybacks while simultaneously creating new winners and disrupting established business models.</p>
 <h3>Geopolitical De-escalation and the Hawkish Fed's Standoff</h3>
 <p>A significant interim peace deal between the US and Iran has emerged, leading to a notable retreat in oil prices and a surge in market optimism <a href="https://www.bloomberg.com/news/articles/2026-06-17/asian-stocks-bonds-to-fall-on-hawkish-fed-signals-markets-wrap">Stocks climb as US-Iran deal spurs oil retreat</a>. The agreement, which includes Iran gaining access to $6 billion of frozen funds for US goods <a href="https://www.ft.com/content/905e17e6-0659-4e28-bab8-b733ba6be990">Iran to get access to $6bn of frozen funds</a> and the reopening of the Strait of Hormuz, has sent oil futures lower (<a href="https://www.bloomberg.com/news/articles/2026-06-17/latest-oil-market-news-and-analysis-for-june-18">Bloomberg: Oil falls as tankers move through Hormuz</a>).</p><p><strong>The Bottom Line:</strong> A US-Iran interim peace deal has significantly impacted financial markets, driving down oil prices and boosting optimism due to Iran's access to frozen funds and the reopening of the Strait of Hormuz.</p>
-        </div>
+</div>
+</div>
+</div>
+            </div>
+        </section>
 
-        <div class="recent-briefings">
-            <h3>Recent Briefings</h3>
+        <div class="recent">
+            <hr class="double-rule">
+            <span class="kicker">Recent briefings</span>
             <div class="recent-list">
-                <a href="2026-06-21-PM.html"><span>2026-06-21 Evening Briefing</span> <span class="date">Read →</span></a>
-                <a href="2026-06-21-AM.html"><span>2026-06-21 Morning Briefing</span> <span class="date">Read →</span></a>
-                <a href="2026-06-20-PM.html"><span>2026-06-20 Evening Briefing</span> <span class="date">Read →</span></a>
-                <a href="index.html"><span>View All Briefings</span> <span class="date">Archive →</span></a>
+                <a href="2026-07-08-PM.html"><span>Evening Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-08-AM.html"><span>Morning Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-07-PM.html"><span>Evening Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
+                <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
 
             </div>
         </div>
     </div>
 
-    </body>
+    <footer class="site-footer">
+        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
+        "The Post-Human Briefing&trade;" and "The Post-Human Debrief&trade;" are proprietary trademarks.
+    </footer>
+
+    <script>function phbToggleTheme(){var r=document.documentElement;var t=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',t);try{localStorage.setItem('phb-theme',t)}catch(e){}}</script>
+
+    <script>
+    (function() {
+        var players = document.querySelectorAll('.phb-player');
+        var fmt = function(s) {
+            if (!isFinite(s)) return '--:--';
+            var m = Math.floor(s / 60), r = Math.floor(s % 60);
+            return m + ':' + (r < 10 ? '0' : '') + r;
+        };
+        players.forEach(function(p) {
+            var audio = p.querySelector('audio');
+            var btn = p.querySelector('.pp-btn');
+            var track = p.querySelector('.pp-track');
+            var fill = p.querySelector('.pp-fill');
+            var time = p.querySelector('.pp-time');
+            var iconPlay = btn.querySelector('.pp-play');
+            var iconPause = btn.querySelector('.pp-pause');
+            if (!audio) return;
+            var update = function() {
+                var d = audio.duration, c = audio.currentTime;
+                fill.style.width = (d ? (c / d * 100) : 0) + '%';
+                time.textContent = fmt(c) + ' / ' + fmt(d);
+            };
+            audio.addEventListener('loadedmetadata', update);
+            audio.addEventListener('timeupdate', update);
+            audio.addEventListener('ended', function() {
+                iconPlay.style.display = ''; iconPause.style.display = 'none';
+            });
+            audio.addEventListener('error', function() {
+                p.classList.add('pp-error');
+                btn.disabled = true;
+                btn.style.opacity = '0.4';
+                time.textContent = 'audio unavailable';
+            });
+            btn.addEventListener('click', function() {
+                if (audio.paused) {
+                    document.querySelectorAll('.phb-player audio').forEach(function(a) {
+                        if (a !== audio) a.pause();
+                    });
+                    document.querySelectorAll('.phb-player').forEach(function(q) {
+                        if (q !== p) {
+                            var pl = q.querySelector('.pp-play'), pa = q.querySelector('.pp-pause');
+                            if (pl && pa) { pl.style.display = ''; pa.style.display = 'none'; }
+                        }
+                    });
+                    audio.play();
+                    iconPlay.style.display = 'none'; iconPause.style.display = '';
+                } else {
+                    audio.pause();
+                    iconPlay.style.display = ''; iconPause.style.display = 'none';
+                }
+            });
+            track.addEventListener('click', function(e) {
+                if (!audio.duration) return;
+                var r = track.getBoundingClientRect();
+                audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+            });
+        });
+    })();
+    </script>
+
+    <script>
+    (function() {
+        var bar = document.getElementById('progress-bar');
+        var onScroll = function() {
+            var h = document.documentElement;
+            var max = h.scrollHeight - h.clientHeight;
+            bar.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%';
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    })();
+    </script>
+</body>
 </html>
