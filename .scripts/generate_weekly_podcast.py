@@ -261,7 +261,12 @@ def update_episode_manifest(podcast_dir, episode):
         except Exception:
             episodes = []
 
+    replaced = next((e for e in episodes if e.get("file") == episode["file"]), None)
     episodes = [e for e in episodes if e.get("file") != episode["file"]]
+    if replaced and replaced.get("number"):
+        episode["number"] = replaced["number"]
+    else:
+        episode["number"] = (episodes[0].get("number", 0) + 1) if episodes else 1
     episodes.insert(0, episode)
     episodes = episodes[:MAX_EPISODES_KEPT]
 

@@ -443,7 +443,11 @@ AUDIO_PLAYER_JS = """
             var iconPlay = btn.querySelector('.pp-play');
             var iconPause = btn.querySelector('.pp-pause');
             if (!audio) return;
+            var inner = p.querySelector('.wave-inner');
             var update = function() {
+                // waveform fill clips a duplicate bar layer; keep it sized
+                // to the full track so the bars in both layers align
+                if (inner) inner.style.width = track.clientWidth + 'px';
                 var d = audio.duration, c = audio.currentTime;
                 fill.style.width = (d ? (c / d * 100) : 0) + '%';
                 time.textContent = fmt(c) + ' / ' + fmt(d);
@@ -495,15 +499,44 @@ FOOTER_HTML = """
 """
 
 
-def render_player(src):
-    """Markup for the shared custom audio player."""
-    return f"""<div class="phb-player">
+def waveform_bars(seed_text, count=56):
+    """Deterministic static waveform for a given episode (pure decoration,
+    but it is the visual signal that instantly reads as 'audio')."""
+    import hashlib
+    digest = hashlib.md5(seed_text.encode("utf-8")).digest()
+    bars = []
+    for i in range(count):
+        b = digest[(i * 7 + 3) % len(digest)]
+        h = 18 + ((b + i * 31) % 74)
+        bars.append(f'<span style="height:{h}%"></span>')
+    return ''.join(bars)
+
+
+def render_player(src, feature=False, wave_seed=None):
+    """Markup for the shared custom audio player.
+
+    feature=True renders the large podcast variant: big play control and a
+    waveform track (outer bars in hairline, a clipped teal duplicate as the
+    progress fill — the player JS drives both variants identically).
+    """
+    icon = 22 if feature else 15
+    cls = "phb-player pp-feature" if feature else "phb-player"
+    if feature:
+        bars = waveform_bars(wave_seed or src)
+        track = (
+            f'<div class="pp-track pp-wave"><div class="wave-bars">{bars}</div>'
+            f'<div class="pp-fill"><div class="wave-inner">'
+            f'<div class="wave-bars wave-played">{bars}</div></div></div></div>'
+        )
+    else:
+        track = '<div class="pp-track"><div class="pp-fill"></div></div>'
+    return f"""<div class="{cls}">
                 <audio preload="metadata" src="{src}"></audio>
                 <button class="pp-btn" aria-label="Play or pause">
-                    <svg class="pp-play" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-                    <svg class="pp-pause" style="display:none" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+                    <svg class="pp-play" width="{icon}" height="{icon}" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                    <svg class="pp-pause" style="display:none" width="{icon}" height="{icon}" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
                 </button>
-                <div class="pp-track"><div class="pp-fill"></div></div>
+                {track}
                 <span class="pp-time">0:00 / --:--</span>
             </div>"""
 
@@ -1093,18 +1126,31 @@ def build_podcast_section(repo_root):
                 </details>"""
     prev_block = f'\n            <div class="podcast-previous">{prev_html}\n            </div>' if prev_html else ''
 
+    ep_chip = ""
+    if latest.get("number"):
+        ep_chip = f'<span class="ep-chip">Episode {latest["number"]}</span>'
+    new_badge = ""
+    try:
+        published = datetime.strptime(latest.get("published", ""), '%Y-%m-%d')
+        if (datetime.now() - published).days <= 9:
+            new_badge = '<span class="new-badge">New</span>'
+    except ValueError:
+        pass
+
     return f"""
         <section class="podcast-section">
             <div class="podcast-label">
                 <span class="kicker teal">The Post-Human Debrief</span>
-                <span class="kicker">Weekly Podcast</span>
+                <span class="kicker">The Weekly Podcast</span>
             </div>
-            <hr class="thin-rule">
             <div class="podcast-feature">
-                <div class="podcast-meta kicker teal">Week of {latest['week_range']} &middot; {latest['duration_min']} min listen</div>
+                <div class="podcast-feature-head">
+                    {ep_chip}{new_badge}
+                    <span class="podcast-meta kicker">Week of {latest['week_range']} &middot; {latest['duration_min']} min listen</span>
+                </div>
                 <h2 class="podcast-title">{latest['title']}</h2>
                 <p class="podcast-desc">{latest['description']}</p>
-                {render_player(f"podcast/{latest['file']}")}
+                {render_player(f"podcast/{latest['file']}", feature=True, wave_seed=latest['title'])}
             </div>{prev_block}
         </section>"""
 
@@ -1321,7 +1367,7 @@ def update_index_page(repo_root, new_date_str):
             justify-content: space-between;
             align-items: baseline;
             gap: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .podcast-teaser {
             color: var(--ink-soft);
@@ -1329,18 +1375,86 @@ def update_index_page(repo_root, new_date_str):
             margin: 16px 0 0 0;
         }
         .podcast-teaser em { color: var(--teal); font-style: normal; font-weight: 500; }
-        .podcast-feature { padding-top: 18px; }
+
+        /* Featured episode: the podcast's marquee slot */
+        .podcast-feature {
+            border: 1px solid color-mix(in srgb, var(--teal) 40%, transparent);
+            border-top: 3px solid var(--teal);
+            background: color-mix(in srgb, var(--teal) 6%, transparent);
+            padding: 22px 28px 24px 28px;
+        }
+        .podcast-feature-head {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .ep-chip {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--bg);
+            background: var(--teal);
+            padding: 3px 10px;
+            clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
+        }
+        .new-badge {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ochre);
+            border: 1px solid var(--ochre);
+            padding: 2px 8px;
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+        }
         .podcast-title {
             font-family: var(--font-serif);
-            font-size: 1.7rem;
+            font-size: 1.9rem;
             font-weight: 600;
             letter-spacing: -0.01em;
+            line-height: 1.2;
             margin: 8px 0 8px 0;
         }
         .podcast-desc {
             color: var(--ink-soft);
             font-size: 0.98rem;
-            margin: 0 0 6px 0;
+            margin: 0 0 10px 0;
+        }
+
+        /* Feature player: big play control + waveform */
+        .phb-player.pp-feature { gap: 18px; padding-top: 6px; }
+        .pp-feature .pp-btn { width: 56px; height: 56px; }
+        .pp-track.pp-wave {
+            height: 48px;
+            background: transparent;
+            position: relative;
+        }
+        .wave-bars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 100%;
+            width: 100%;
+        }
+        .wave-bars span {
+            flex: 1 1 0;
+            min-width: 2px;
+            background: var(--hairline);
+            border-radius: 1px;
+        }
+        .pp-wave .pp-fill {
+            background: transparent;
+            overflow: hidden;
+        }
+        .wave-inner { height: 48px; }
+        .wave-played span { background: var(--teal); }
+        @media (max-width: 600px) {
+            .podcast-feature { padding: 18px 18px 20px 18px; }
+            .podcast-title { font-size: 1.5rem; }
         }
         .podcast-previous { margin-top: 18px; display: flex; flex-direction: column; }
         .podcast-prev-item {

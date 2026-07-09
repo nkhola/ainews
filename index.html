@@ -245,7 +245,7 @@
             justify-content: space-between;
             align-items: baseline;
             gap: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .podcast-teaser {
             color: var(--ink-soft);
@@ -253,18 +253,86 @@
             margin: 16px 0 0 0;
         }
         .podcast-teaser em { color: var(--teal); font-style: normal; font-weight: 500; }
-        .podcast-feature { padding-top: 18px; }
+
+        /* Featured episode: the podcast's marquee slot */
+        .podcast-feature {
+            border: 1px solid color-mix(in srgb, var(--teal) 40%, transparent);
+            border-top: 3px solid var(--teal);
+            background: color-mix(in srgb, var(--teal) 6%, transparent);
+            padding: 22px 28px 24px 28px;
+        }
+        .podcast-feature-head {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .ep-chip {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--bg);
+            background: var(--teal);
+            padding: 3px 10px;
+            clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
+        }
+        .new-badge {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ochre);
+            border: 1px solid var(--ochre);
+            padding: 2px 8px;
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+        }
         .podcast-title {
             font-family: var(--font-serif);
-            font-size: 1.7rem;
+            font-size: 1.9rem;
             font-weight: 600;
             letter-spacing: -0.01em;
+            line-height: 1.2;
             margin: 8px 0 8px 0;
         }
         .podcast-desc {
             color: var(--ink-soft);
             font-size: 0.98rem;
-            margin: 0 0 6px 0;
+            margin: 0 0 10px 0;
+        }
+
+        /* Feature player: big play control + waveform */
+        .phb-player.pp-feature { gap: 18px; padding-top: 6px; }
+        .pp-feature .pp-btn { width: 56px; height: 56px; }
+        .pp-track.pp-wave {
+            height: 48px;
+            background: transparent;
+            position: relative;
+        }
+        .wave-bars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 100%;
+            width: 100%;
+        }
+        .wave-bars span {
+            flex: 1 1 0;
+            min-width: 2px;
+            background: var(--hairline);
+            border-radius: 1px;
+        }
+        .pp-wave .pp-fill {
+            background: transparent;
+            overflow: hidden;
+        }
+        .wave-inner { height: 48px; }
+        .wave-played span { background: var(--teal); }
+        @media (max-width: 600px) {
+            .podcast-feature { padding: 18px 18px 20px 18px; }
+            .podcast-title { font-size: 1.5rem; }
         }
         .podcast-previous { margin-top: 18px; display: flex; flex-direction: column; }
         .podcast-prev-item {
@@ -386,20 +454,22 @@
         <section class="podcast-section">
             <div class="podcast-label">
                 <span class="kicker teal">The Post-Human Debrief</span>
-                <span class="kicker">Weekly Podcast</span>
+                <span class="kicker">The Weekly Podcast</span>
             </div>
-            <hr class="thin-rule">
             <div class="podcast-feature">
-                <div class="podcast-meta kicker teal">Week of July 2 to July 8, 2026 &middot; 23 min listen</div>
+                <div class="podcast-feature-head">
+                    <span class="ep-chip">Episode 1</span><span class="new-badge">New</span>
+                    <span class="podcast-meta kicker">Week of July 2 to July 8, 2026 &middot; 23 min listen</span>
+                </div>
                 <h2 class="podcast-title">Free Intelligence, Costly Reality</h2>
                 <p class="podcast-desc">This week, we examine the paradox of collapsing AI inference costs, the growing chasm between open and closed models, and escalating geopolitical tensions reshaping markets.</p>
-                <div class="phb-player">
+                <div class="phb-player pp-feature">
                 <audio preload="metadata" src="podcast/2026-W28.mp3"></audio>
                 <button class="pp-btn" aria-label="Play or pause">
-                    <svg class="pp-play" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-                    <svg class="pp-pause" style="display:none" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+                    <svg class="pp-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                    <svg class="pp-pause" style="display:none" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
                 </button>
-                <div class="pp-track"><div class="pp-fill"></div></div>
+                <div class="pp-track pp-wave"><div class="wave-bars"><span style="height:67%"></span><span style="height:89%"></span><span style="height:91%"></span><span style="height:68%"></span><span style="height:86%"></span><span style="height:54%"></span><span style="height:74%"></span><span style="height:41%"></span><span style="height:91%"></span><span style="height:91%"></span><span style="height:80%"></span><span style="height:55%"></span><span style="height:89%"></span><span style="height:45%"></span><span style="height:91%"></span><span style="height:73%"></span><span style="height:45%"></span><span style="height:67%"></span><span style="height:69%"></span><span style="height:46%"></span><span style="height:64%"></span><span style="height:32%"></span><span style="height:52%"></span><span style="height:19%"></span><span style="height:69%"></span><span style="height:69%"></span><span style="height:58%"></span><span style="height:33%"></span><span style="height:67%"></span><span style="height:23%"></span><span style="height:69%"></span><span style="height:51%"></span><span style="height:23%"></span><span style="height:45%"></span><span style="height:47%"></span><span style="height:24%"></span><span style="height:42%"></span><span style="height:84%"></span><span style="height:30%"></span><span style="height:71%"></span><span style="height:47%"></span><span style="height:47%"></span><span style="height:36%"></span><span style="height:85%"></span><span style="height:45%"></span><span style="height:75%"></span><span style="height:47%"></span><span style="height:29%"></span><span style="height:75%"></span><span style="height:23%"></span><span style="height:25%"></span><span style="height:76%"></span><span style="height:20%"></span><span style="height:62%"></span><span style="height:82%"></span><span style="height:49%"></span></div><div class="pp-fill"><div class="wave-inner"><div class="wave-bars wave-played"><span style="height:67%"></span><span style="height:89%"></span><span style="height:91%"></span><span style="height:68%"></span><span style="height:86%"></span><span style="height:54%"></span><span style="height:74%"></span><span style="height:41%"></span><span style="height:91%"></span><span style="height:91%"></span><span style="height:80%"></span><span style="height:55%"></span><span style="height:89%"></span><span style="height:45%"></span><span style="height:91%"></span><span style="height:73%"></span><span style="height:45%"></span><span style="height:67%"></span><span style="height:69%"></span><span style="height:46%"></span><span style="height:64%"></span><span style="height:32%"></span><span style="height:52%"></span><span style="height:19%"></span><span style="height:69%"></span><span style="height:69%"></span><span style="height:58%"></span><span style="height:33%"></span><span style="height:67%"></span><span style="height:23%"></span><span style="height:69%"></span><span style="height:51%"></span><span style="height:23%"></span><span style="height:45%"></span><span style="height:47%"></span><span style="height:24%"></span><span style="height:42%"></span><span style="height:84%"></span><span style="height:30%"></span><span style="height:71%"></span><span style="height:47%"></span><span style="height:47%"></span><span style="height:36%"></span><span style="height:85%"></span><span style="height:45%"></span><span style="height:75%"></span><span style="height:47%"></span><span style="height:29%"></span><span style="height:75%"></span><span style="height:23%"></span><span style="height:25%"></span><span style="height:76%"></span><span style="height:20%"></span><span style="height:62%"></span><span style="height:82%"></span><span style="height:49%"></span></div></div></div></div>
                 <span class="pp-time">0:00 / --:--</span>
             </div>
             </div>
@@ -485,7 +555,11 @@
             var iconPlay = btn.querySelector('.pp-play');
             var iconPause = btn.querySelector('.pp-pause');
             if (!audio) return;
+            var inner = p.querySelector('.wave-inner');
             var update = function() {
+                // waveform fill clips a duplicate bar layer; keep it sized
+                // to the full track so the bars in both layers align
+                if (inner) inner.style.width = track.clientWidth + 'px';
                 var d = audio.duration, c = audio.currentTime;
                 fill.style.width = (d ? (c / d * 100) : 0) + '%';
                 time.textContent = fmt(c) + ' / ' + fmt(d);
