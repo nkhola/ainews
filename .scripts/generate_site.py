@@ -1069,7 +1069,7 @@ def build_podcast_section(repo_root):
                 <span class="kicker">Weekly Podcast</span>
             </div>
             <hr class="thin-rule">
-            <p class="podcast-teaser">Two voices. One conversation. The entire week of AI and markets, debriefed every Sunday. <em>First episode coming soon.</em></p>
+            <p class="podcast-teaser">Two voices. One conversation. Everything that mattered this week in AI and markets. <em>First episode coming soon.</em></p>
         </section>"""
 
     latest = episodes[0]

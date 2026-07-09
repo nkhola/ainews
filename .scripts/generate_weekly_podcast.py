@@ -50,6 +50,27 @@ MAX_EPISODES_KEPT = 4
 SPOKEN_WORDS_PER_MINUTE = 150
 
 
+def _extract_briefing_text(repo_root, base_name, path):
+    """Text of one briefing: prefer the committed markdown in content/,
+    fall back to parsing the published page (works for both the old
+    section-card template and the current brief-section one, since the
+    ai-news / finance-news ids survived the redesign)."""
+    from generate_site import load_content
+    content = load_content(repo_root, base_name)
+    if content:
+        return f"{content['ai_md']}\n\n{content['fin_md']}"
+
+    from bs4 import BeautifulSoup
+    with open(path, "r", encoding="utf-8") as f:
+        soup = BeautifulSoup(f.read(), "html.parser")
+    parts = []
+    for div_id in ("ai-news", "finance-news"):
+        node = soup.find(id=div_id)
+        if node:
+            parts.append(html_to_speech_text(node.decode_contents()))
+    return "\n".join(parts) if parts else None
+
+
 def collect_week_briefings(repo_root, now=None):
     """Return (briefings_text, week_range_label) for the past 7 days."""
     eastern = timezone(timedelta(hours=-4))
@@ -68,22 +89,11 @@ def collect_week_briefings(repo_root, now=None):
 
     sections = []
     for date_str, name, path in files:
-        with open(path, "r", encoding="utf-8") as f:
-            content = f.read()
-        parts = []
-        for div_id in ("ai-news", "finance-news"):
-            m = re.search(
-                r'<div class="section-card" id="%s">(.*?)</div>\s*<div class="section-card"' % div_id,
-                content, re.S)
-            if not m:
-                m = re.search(
-                    r'<div class="section-card" id="%s">(.*?)<div class="recent-briefings">' % div_id,
-                    content, re.S)
-            if m:
-                parts.append(html_to_speech_text(m.group(1)))
-        if parts:
-            label = name.replace('.html', '').replace('-AM', ' Morning').replace('-PM', ' Evening')
-            sections.append(f"=== BRIEFING: {label} ===\n" + "\n".join(parts))
+        base_name = name.replace('.html', '')
+        text = _extract_briefing_text(repo_root, base_name, path)
+        if text:
+            label = base_name.replace('-AM', ' Morning').replace('-PM', ' Evening')
+            sections.append(f"=== BRIEFING: {label} ===\n{text}")
 
     if not sections:
         return None, None
@@ -242,6 +252,12 @@ def update_episode_manifest(podcast_dir, episode):
                 print(f"Deleted old episode: {mp3}")
             except Exception:
                 pass
+            script_file = mp3[:-4] + ".script.txt"
+            if os.path.exists(script_file):
+                try:
+                    os.remove(script_file)
+                except Exception:
+                    pass
 
     with open(manifest_path, "w", encoding="utf-8") as f:
         json.dump(episodes, f, indent=2)
@@ -262,8 +278,35 @@ def generate_weekly_podcast():
     print(f"Collected briefings for the week of {week_range} "
           f"({len(briefings_text)} chars).")
 
-    compiler = MasterCompiler()
-    script = compiler.synthesize_podcast_script(briefings_text, week_range)
+    eastern = timezone(timedelta(hours=-4))
+    now = datetime.now(eastern)
+    iso_year, iso_week, _ = now.isocalendar()
+    episode_stem = f"{iso_year}-W{iso_week:02d}"
+    episode_file = f"{episode_stem}.mp3"
+
+    podcast_dir = os.path.join(repo_root, "podcast")
+    os.makedirs(podcast_dir, exist_ok=True)
+    audio_file_path = os.path.join(podcast_dir, episode_file)
+    force = os.getenv("FORCE_REGEN") == "1"
+
+    if os.path.exists(audio_file_path) and not force:
+        print(f"podcast/{episode_file} already exists; skipping "
+              f"(FORCE_REGEN=1 to regenerate).")
+        return
+
+    # The script is the expensive artifact: persist it before synthesis so
+    # a TTS failure re-run never pays for the writing twice.
+    script_path = os.path.join(podcast_dir, f"{episode_stem}.script.txt")
+    if os.path.exists(script_path) and not force:
+        print(f"Reusing persisted script podcast/{episode_stem}.script.txt")
+        with open(script_path, encoding="utf-8") as f:
+            script = f.read()
+    else:
+        compiler = MasterCompiler()
+        script = compiler.synthesize_podcast_script(briefings_text, week_range)
+        with open(script_path, "w", encoding="utf-8") as f:
+            f.write(script)
+        print(f"Persisted script to podcast/{episode_stem}.script.txt")
 
     title, description, turns = parse_podcast_script(script)
     if len(turns) < 10:
@@ -275,15 +318,6 @@ def generate_weekly_podcast():
     duration_min = max(1, round(word_count / SPOKEN_WORDS_PER_MINUTE))
     print(f"Script: '{title}' — {len(turns)} turns, {word_count} words "
           f"(~{duration_min} min).")
-
-    eastern = timezone(timedelta(hours=-4))
-    now = datetime.now(eastern)
-    iso_year, iso_week, _ = now.isocalendar()
-    episode_file = f"{iso_year}-W{iso_week:02d}.mp3"
-
-    podcast_dir = os.path.join(repo_root, "podcast")
-    os.makedirs(podcast_dir, exist_ok=True)
-    audio_file_path = os.path.join(podcast_dir, episode_file)
 
     segments = split_turns_into_segments(turns)
     print(f"Synthesizing {len(segments)} multi-speaker segments...")

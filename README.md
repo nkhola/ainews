@@ -19,7 +19,7 @@
 
 [![Read the latest](https://img.shields.io/badge/Read-the_latest_briefing-b0512b?style=flat-square&labelColor=20242e)](https://nkhola.github.io/ainews/)
 [![Listen](https://img.shields.io/badge/Listen-neural_audio-a5762a?style=flat-square&labelColor=20242e)](https://nkhola.github.io/ainews/)
-[![Weekly podcast](https://img.shields.io/badge/Sundays-The_Post--Human_Debrief-d97950?style=flat-square&labelColor=20242e)](https://nkhola.github.io/ainews/)
+[![Weekly podcast](https://img.shields.io/badge/Weekly-The_Post--Human_Debrief-d97950?style=flat-square&labelColor=20242e)](https://nkhola.github.io/ainews/)
 [![Powered by](https://img.shields.io/badge/Powered_by-Vertex_AI-f4eee1?style=flat-square&labelColor=20242e)](https://cloud.google.com/vertex-ai)
 
 <br>
@@ -36,7 +36,7 @@ Most news is noise. The Post-Human Briefing is a fully autonomous editorial pipe
 |---|---|---|---|
 | 📰 | **The Briefing** | Twice daily · 9 AM & 6 PM ET | Cross-linked synthesis of AI and macro developments, written in the voice of a domain expert with skin in the game. |
 | 🎧 | **The Narration** | With every briefing | Broadcast-quality audio of each briefing, spoken by a single continuous Gemini voice. Listen on the commute. |
-| 🎙️ | **The Post-Human Debrief** | Weekly · Sunday evening | A two-voice conversational podcast. The entire week of briefings distilled into one anchor-and-analyst conversation, scripted and voiced end-to-end by the pipeline. |
+| 🎙️ | **The Post-Human Debrief** | Weekly | A two-voice conversational podcast. The entire week of briefings distilled into one anchor-and-analyst conversation, scripted and voiced end-to-end by the pipeline. |
 
 <br>
 
