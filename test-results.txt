@@ -1,3 +1,0 @@
-Initializing TextToSpeechClient with endpoint: us-central1-texttospeech.googleapis.com
-Sending synthesis request...
-FAILED to generate TTS. Exception: 503 502:Bad Gateway
