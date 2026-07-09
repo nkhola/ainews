@@ -179,16 +179,17 @@ def _synthesize_with_voice(client, texttospeech, chunks, voice_name):
 
 
 def tts_endpoint_candidates():
-    """Cloud TTS endpoints to try, most specific first.
+    """Cloud TTS endpoints to try, global first.
 
-    A regional Gemini-TTS backend can 502 for an extended stretch (observed
-    on us-central1) while the global endpoint stays healthy, so the global
-    endpoint is always the second candidate.
+    us-central1's Gemini-TTS backend returned 502s continuously for 19+
+    hours (2026-07-08/09) while the global endpoint stayed healthy the
+    whole time, and every doomed regional attempt costs minutes of retries.
+    Global is primary; the configured region remains the backup.
     """
     location = os.environ.get("VERTEX_LOCATION", "us-central1") or "us-central1"
     if location == "global":
         return ["texttospeech.googleapis.com"]
-    return [f"{location}-texttospeech.googleapis.com", "texttospeech.googleapis.com"]
+    return ["texttospeech.googleapis.com", f"{location}-texttospeech.googleapis.com"]
 
 
 def generate_audio_with_fallback(plain_text, audio_file_path):
@@ -985,6 +986,13 @@ def render_stage(repo_root, force=False):
 
     update_index_page(repo_root, datetime.now(timezone(timedelta(hours=-4))).strftime('%Y-%m-%d'))
     print(f"[render] {len(rendered)} page(s) rendered; index refreshed.")
+
+    # A synthesized edition with no page is a silent no-publish (this
+    # happened when CI jobs checked out a stale SHA). Fail loudly instead.
+    if newest and not os.path.exists(os.path.join(repo_root, f"{newest}.html")):
+        raise RuntimeError(
+            f"content/{newest} exists but {newest}.html was not rendered; "
+            f"refusing to succeed silently.")
     return rendered
 
 
