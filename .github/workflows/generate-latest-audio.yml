@@ -1,16 +1,17 @@
 name: Generate Latest Audio
 
+# On-demand only: the push-path trigger used to launch phantom runs whenever
+# this file was edited, racing manually dispatched runs to the same MP3.
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/generate-latest-audio.yml'
   workflow_dispatch:
     inputs:
       description:
         description: 'Generate audio for ONLY the single most recent briefing (Fast Test)'
         required: false
+
+concurrency:
+  group: narrate-latest
+  cancel-in-progress: false
 
 jobs:
   generate-audio:
