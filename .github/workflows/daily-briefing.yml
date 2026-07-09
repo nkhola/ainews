@@ -97,7 +97,11 @@ jobs:
     permissions:
       contents: write
     steps:
+      # ref: main — checkout defaults to the workflow's trigger SHA, which
+      # predates the synthesize job's push and would render nothing
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
@@ -136,6 +140,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
