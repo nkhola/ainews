@@ -25,10 +25,12 @@ def test_syntax_is_valid():
     except SyntaxError as e:
         pytest.fail(f"Syntax error in generate_site.py: {e}")
 
+@patch('generate_site.build_audio_script', return_value="Mock narration script.")
+@patch('generate_site.generate_audio_with_fallback')
 @patch('generate_site.NewsCrawler')
 @patch('generate_site.FinanceCrawler')
 @patch('generate_site.MasterCompiler')
-def test_generate_daily_briefing(MockMasterCompiler, MockFinanceCrawler, MockNewsCrawler):
+def test_generate_daily_briefing(MockMasterCompiler, MockFinanceCrawler, MockNewsCrawler, MockTTS, MockScript):
     """Test the main generation function to ensure it creates the expected files."""
     # Setup mock returns
     mock_compiler = MockMasterCompiler.return_value

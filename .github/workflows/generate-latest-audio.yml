@@ -55,13 +55,14 @@ jobs:
           LLM_FALLBACK_BASE_URL: ${{ secrets.LLM_FALLBACK_BASE_URL }}
           LLM_FALLBACK_MODEL: ${{ secrets.LLM_FALLBACK_MODEL }}
         run: |
-          python3 .scripts/generate_latest_audio.py
+          FORCE_REGEN=1 python3 .scripts/stage_narrate.py
 
       - name: Commit and Push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add audio/*.mp3
+          git add audio
+          git add content 2>/dev/null || true
           if ! git diff --staged --quiet; then
             git commit -m "audio: update latest briefing with vertex TTS"
             git pull --rebase --autostash origin main

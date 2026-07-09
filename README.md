@@ -45,20 +45,24 @@ Most news is noise. The Post-Human Briefing is a fully autonomous editorial pipe
 ```mermaid
 flowchart LR
     A[News & market<br>crawlers] --> B[Master Compiler<br>Gemini on Vertex AI]
-    B --> C[Daily briefing<br>HTML]
-    C --> D[Gemini-TTS<br>single voice]
+    B --> C[(Content store<br>markdown, committed)]
+    C --> R[Render<br>pages + index]
+    C --> D[Narrate<br>Gemini-TTS, one voice]
     C -->|7 days accumulate| E[Podcast writer<br>Gemini on Vertex AI]
     E --> F[Gemini-TTS<br>two-voice dialogue]
-    D & F --> G[Published<br>GitHub Pages]
+    R & D & F --> G[Published<br>GitHub Pages]
 
     style A fill:#20242e,stroke:#78715f,color:#f4eee1
     style B fill:#20242e,stroke:#b0512b,color:#f4eee1
-    style C fill:#20242e,stroke:#78715f,color:#f4eee1
+    style C fill:#20242e,stroke:#d97950,color:#f4eee1
+    style R fill:#20242e,stroke:#78715f,color:#f4eee1
     style D fill:#20242e,stroke:#a5762a,color:#f4eee1
     style E fill:#20242e,stroke:#b0512b,color:#f4eee1
     style F fill:#20242e,stroke:#a5762a,color:#f4eee1
     style G fill:#20242e,stroke:#d97950,color:#f4eee1
 ```
+
+The pipeline runs as three idempotent stages (synthesize &rarr; render &rarr; narrate), each a separate CI job committing its own artifact. The synthesized markdown in `content/` is the source of truth; pages are a pure render of it, and a failed stage can be re-run without repeating the LLM work of an earlier one.
 
 The editorial layer is a "Master Compiler" agent with strict anti-cliché guards and a mandatory *why-it-matters* mechanism for every theme; synthesis is enforced, not hoped for. Audio uses Gemini-TTS on Vertex AI: single-voice continuous narration for the dailies, and native multi-speaker synthesis (two prebuilt voices in one request) for the weekly Debrief, so the conversation has real back-and-forth rhythm instead of stitched-together monologues.
 

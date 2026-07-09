@@ -748,17 +748,30 @@ def build_recent_html(repo_root, exclude=None, count=3):
     return rows
 
 
-def generate_daily_briefing():
-    # Setup directories
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.dirname(script_dir)
+# ---------------------------------------------------------------------------
+# Staged pipeline.
+#
+# The pipeline is three idempotent stages with file-based contracts, so a
+# failure in one stage never repeats the expensive work of an earlier one:
+#
+#   synthesize  crawl + LLM  ->  content/<edition>/{ai.md,finance.md,meta.json}
+#   render      content/     ->  <edition>.html + index.html   (pure, free)
+#   narrate     content/     ->  content/<edition>/audio_script.txt
+#                            ->  audio/<edition>.mp3
+#
+# content/ is the canonical artifact and is committed. Each stage skips
+# itself when its output already exists (set FORCE_REGEN=1 to override), so
+# re-running the workflow after a partial failure costs no LLM tokens for
+# the stages that already succeeded.
+# ---------------------------------------------------------------------------
 
-    # Change working directory to .scripts so config.yaml is found by the crawlers
-    os.chdir(script_dir)
+CONTENT_DIRNAME = "content"
 
-    # Use Eastern Time for the briefing date
+
+def edition_info(now=None):
+    """(base_name, date_str, time_label) for the current edition, Eastern."""
     eastern = timezone(timedelta(hours=-4))
-    now = datetime.now(eastern)
+    now = now or datetime.now(eastern)
     date_str = now.strftime('%Y-%m-%d')
     force_time = os.getenv("FORCE_TIME_LABEL")
     if force_time == "AM":
@@ -768,91 +781,241 @@ def generate_daily_briefing():
     else:
         is_evening = now.hour >= 14
     time_label = "Evening" if is_evening else "Morning"
-    file_suffix = "PM" if is_evening else "AM"
-    base_name = f"{date_str}-{file_suffix}"
-    print(f"Generating {time_label.lower()} briefing for {date_str}...")
+    base_name = f"{date_str}-{'PM' if is_evening else 'AM'}"
+    return base_name, date_str, time_label
 
+
+def content_dir_for(repo_root, base_name):
+    return os.path.join(repo_root, CONTENT_DIRNAME, base_name)
+
+
+def load_content(repo_root, base_name):
+    """Load a persisted edition. Returns dict or None if absent/incomplete."""
+    import json
+    cdir = content_dir_for(repo_root, base_name)
+    ai_p = os.path.join(cdir, "ai.md")
+    fin_p = os.path.join(cdir, "finance.md")
+    meta_p = os.path.join(cdir, "meta.json")
+    if not (os.path.exists(ai_p) and os.path.exists(fin_p)):
+        return None
+    with open(ai_p, encoding="utf-8") as f:
+        ai_md = f.read()
+    with open(fin_p, encoding="utf-8") as f:
+        fin_md = f.read()
+    meta = {}
+    if os.path.exists(meta_p):
+        try:
+            with open(meta_p, encoding="utf-8") as f:
+                meta = json.load(f)
+        except Exception:
+            meta = {}
+    return {"ai_md": ai_md, "fin_md": fin_md, "meta": meta}
+
+
+def synthesize_stage(repo_root, base_name, date_str, time_label, force=False):
+    """Crawl sources and write the edition's markdown. The only stage that
+    spends synthesis tokens; skipped entirely when content already exists."""
+    import json
+    cdir = content_dir_for(repo_root, base_name)
+    if load_content(repo_root, base_name) and not force:
+        print(f"[synthesize] content/{base_name} already exists; skipping "
+              f"(FORCE_REGEN=1 to regenerate).")
+        return False
+
+    print(f"[synthesize] Generating {time_label.lower()} briefing for {date_str}...")
     compiler = MasterCompiler()
 
-    # 1. Fetch & Compile AI News
-    print("Fetching AI News...")
-    ai_crawler = NewsCrawler()
-    ai_raw = ai_crawler.get_latest_news()
+    print("[synthesize] Fetching AI News...")
+    ai_raw = NewsCrawler().get_latest_news()
     ai_md = compiler.synthesize_news(ai_raw, topic="ai", time_label=time_label)
 
-    # 2. Fetch & Compile Finance News
-    print("Fetching Finance News...")
-    fin_crawler = FinanceCrawler()
-    fin_raw = fin_crawler.get_latest_news()
+    print("[synthesize] Fetching Finance News...")
+    fin_raw = FinanceCrawler().get_latest_news()
     fin_md = compiler.synthesize_news(fin_raw, topic="finance", time_label=time_label)
 
-    # Calculate reading time (rough estimate: 200 words per minute)
     total_words = len(ai_md.split()) + len(fin_md.split())
-    reading_time = max(1, total_words // 200)
+    meta = {
+        "date": date_str,
+        "time_label": time_label,
+        "reading_time": max(1, total_words // 200),
+    }
 
-    # Convert to HTML
-    ai_html = markdown.markdown(ai_md, extensions=['tables', 'fenced_code'])
-    fin_html = markdown.markdown(fin_md, extensions=['tables', 'fenced_code'])
+    os.makedirs(cdir, exist_ok=True)
+    with open(os.path.join(cdir, "ai.md"), "w", encoding="utf-8") as f:
+        f.write(ai_md)
+    with open(os.path.join(cdir, "finance.md"), "w", encoding="utf-8") as f:
+        f.write(fin_md)
+    with open(os.path.join(cdir, "meta.json"), "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=2)
+    print(f"[synthesize] Wrote content/{base_name}/ ({total_words} words).")
+    return True
 
-    recent_html = build_recent_html(repo_root, exclude=f"{base_name}.html")
 
-    # --- AUDIO GENERATION ---
+def list_content_editions(repo_root):
+    croot = os.path.join(repo_root, CONTENT_DIRNAME)
+    if not os.path.isdir(croot):
+        return []
+    return sorted(
+        d for d in os.listdir(croot)
+        if re.match(r'^\d{4}-\d{2}-\d{2}', d)
+        and os.path.isdir(os.path.join(croot, d))
+    )
+
+
+def render_stage(repo_root, force=False):
+    """Render pages for persisted editions and refresh the index.
+
+    Pure content -> HTML; costs nothing, safe to re-run any time. Editions
+    that predate the content store keep their existing HTML (see
+    restyle_briefings.py for re-rendering those from their own markup).
+    """
+    editions = list_content_editions(repo_root)
+    newest = editions[-1] if editions else None
+    rendered = []
+    for base_name in editions:
+        page_path = os.path.join(repo_root, f"{base_name}.html")
+        if os.path.exists(page_path) and not force:
+            continue
+        content = load_content(repo_root, base_name)
+        if not content:
+            continue
+        meta = content["meta"]
+        parts = base_name.split('-')
+        date_str = meta.get("date") or "-".join(parts[:3])
+        time_label = meta.get("time_label") or (
+            ("Evening" if parts[3] == "PM" else "Morning") if len(parts) == 4 else "Daily")
+        reading_time = meta.get("reading_time") or max(
+            1, (len(content["ai_md"].split()) + len(content["fin_md"].split())) // 200)
+
+        ai_html = markdown.markdown(content["ai_md"], extensions=['tables', 'fenced_code'])
+        fin_html = markdown.markdown(content["fin_md"], extensions=['tables', 'fenced_code'])
+
+        # The newest edition gets a player even before narration lands
+        # (the player shows "audio unavailable" until the MP3 exists).
+        has_audio = (
+            os.path.exists(os.path.join(repo_root, "audio", f"{base_name}.mp3"))
+            or base_name == newest
+        )
+        page = render_briefing_page(
+            base_name=base_name,
+            date_str=date_str,
+            time_label=time_label,
+            reading_time=reading_time,
+            ai_html=ai_html,
+            fin_html=fin_html,
+            recent_html=build_recent_html(repo_root, exclude=f"{base_name}.html"),
+            has_audio=has_audio,
+        )
+        with open(page_path, "w", encoding="utf-8") as f:
+            f.write(page)
+        rendered.append(base_name)
+        print(f"[render] Wrote {base_name}.html")
+
+    update_index_page(repo_root, datetime.now(timezone(timedelta(hours=-4))).strftime('%Y-%m-%d'))
+    print(f"[render] {len(rendered)} page(s) rendered; index refreshed.")
+    return rendered
+
+
+def narrate_stage(repo_root, base_name=None, force=False):
+    """Produce the MP3 for an edition (newest by default).
+
+    The LLM audio script is persisted next to the content, so a TTS retry
+    reuses it instead of paying for a rewrite. Editions without a content
+    dir (pre-content-store archive) fall back to extracting from their HTML.
+    """
+    if base_name is None:
+        editions = list_content_editions(repo_root)
+        if editions:
+            base_name = editions[-1]
+        else:
+            pages = sorted(
+                f[:-5] for f in os.listdir(repo_root)
+                if f.endswith('.html') and re.match(r'^\d{4}-\d{2}-\d{2}', f))
+            if not pages:
+                print("[narrate] Nothing to narrate.")
+                return False
+            base_name = pages[-1]
+
     audio_dir = os.path.join(repo_root, "audio")
     os.makedirs(audio_dir, exist_ok=True)
-
-    # The narration comes from a dedicated audio-native script (welcome,
-    # spoken transitions, sign-off) written by the LLM from the same
-    # markdown. If that fails, fall back to the flattened briefing text.
-    def with_intro(intro, text):
-        return text if text.lower().startswith(intro.split('.')[0].lower()) else intro + text
-
-    flattened = (
-        with_intro("Artificial Intelligence. ", html_to_speech_text(ai_html))
-        + " " + with_intro("Markets and Macro. ", html_to_speech_text(fin_html))
-    )
-    briefing_source = (
-        f"## Artificial Intelligence\n\n{ai_md}\n\n## Markets and Macro\n\n{fin_md}"
-    )
-    plain_text = build_audio_script(
-        briefing_source, date_str, time_label,
-        compiler=compiler, fallback_text=flattened,
-    )
-
-    # Generate MP3 using Vertex AI with edge-tts fallback
     audio_file_path = os.path.join(audio_dir, f"{base_name}.mp3")
+    if os.path.exists(audio_file_path) and not force:
+        print(f"[narrate] audio/{base_name}.mp3 already exists; skipping "
+              f"(FORCE_REGEN=1 to regenerate).")
+        return False
+
+    parts = base_name.split('-')
+    date_str = "-".join(parts[:3])
+    time_label = ("Evening" if parts[3] == "PM" else "Morning") if len(parts) == 4 else "Morning"
+
+    content = load_content(repo_root, base_name)
+    if content:
+        script_path = os.path.join(content_dir_for(repo_root, base_name), "audio_script.txt")
+        if os.path.exists(script_path):
+            print(f"[narrate] Reusing persisted audio script for {base_name}.")
+            with open(script_path, encoding="utf-8") as f:
+                plain_text = f.read().strip()
+        else:
+            ai_html = markdown.markdown(content["ai_md"], extensions=['tables', 'fenced_code'])
+            fin_html = markdown.markdown(content["fin_md"], extensions=['tables', 'fenced_code'])
+            flattened = (
+                "Artificial Intelligence. " + html_to_speech_text(ai_html)
+                + " Markets and Macro. " + html_to_speech_text(fin_html)
+            )
+            source = (f"## Artificial Intelligence\n\n{content['ai_md']}\n\n"
+                      f"## Markets and Macro\n\n{content['fin_md']}")
+            plain_text = build_audio_script(
+                source, date_str, time_label, fallback_text=flattened)
+            with open(script_path, "w", encoding="utf-8") as f:
+                f.write(plain_text)
+            print(f"[narrate] Persisted audio script to content/{base_name}/audio_script.txt")
+    else:
+        # Archive edition: no content store, extract from the page itself.
+        from bs4 import BeautifulSoup
+        page_path = os.path.join(repo_root, f"{base_name}.html")
+        with open(page_path, encoding="utf-8") as f:
+            soup = BeautifulSoup(f.read(), "html.parser")
+        ai_div = soup.find(id='ai-news')
+        fin_div = soup.find(id='finance-news')
+        ai_text = html_to_speech_text(ai_div.decode_contents()) if ai_div else ""
+        fin_text = html_to_speech_text(fin_div.decode_contents()) if fin_div else ""
+        flattened = f"Artificial Intelligence. {ai_text} Markets and Macro. {fin_text}"
+        source = (f"## Artificial Intelligence\n\n{ai_text}\n\n"
+                  f"## Markets and Macro\n\n{fin_text}")
+        plain_text = build_audio_script(
+            source, date_str, time_label, fallback_text=flattened)
+
+    plain_text = re.sub(r'\s+', ' ', plain_text).strip()
     generate_audio_with_fallback(plain_text, audio_file_path)
 
     # Rolling window: Keep only the 10 most recent MP3s
     mp3_files = glob.glob(os.path.join(audio_dir, "*.mp3"))
     mp3_files.sort(key=os.path.getmtime, reverse=True)
-    if len(mp3_files) > 10:
-        for file_to_delete in mp3_files[10:]:
-            try:
-                os.remove(file_to_delete)
-                print(f"Deleted old audio file: {file_to_delete}")
-            except Exception as e:
-                pass
-    # ------------------------
+    for file_to_delete in mp3_files[10:]:
+        try:
+            os.remove(file_to_delete)
+            print(f"[narrate] Deleted old audio file: {file_to_delete}")
+        except Exception:
+            pass
+    return True
 
-    html_page = render_briefing_page(
-        base_name=base_name,
-        date_str=date_str,
-        time_label=time_label,
-        reading_time=reading_time,
-        ai_html=ai_html,
-        fin_html=fin_html,
-        recent_html=recent_html,
-        has_audio=os.path.exists(audio_file_path),
-    )
 
-    # Save daily file in the root
-    daily_file = os.path.join(repo_root, f"{base_name}.html")
-    with open(daily_file, "w", encoding="utf-8") as f:
-        f.write(html_page)
-    print(f"Saved daily briefing to {daily_file}")
+def generate_daily_briefing():
+    """Run the full pipeline in-process (local runs and tests).
 
-    # 4. Update Index Page
-    update_index_page(repo_root, date_str)
+    CI runs the same three stages as separate jobs — see
+    .github/workflows/daily-briefing.yml.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.dirname(script_dir)
+    # Crawlers resolve config.yaml relative to the working directory.
+    os.chdir(script_dir)
+
+    force = os.getenv("FORCE_REGEN") == "1"
+    base_name, date_str, time_label = edition_info()
+    synthesize_stage(repo_root, base_name, date_str, time_label, force=force)
+    render_stage(repo_root)
+    narrate_stage(repo_root, base_name, force=force)
 
 
 def build_podcast_section(repo_root):
