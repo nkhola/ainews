@@ -289,7 +289,9 @@ They are AI voices produced by an autonomous pipeline and do not pretend otherwi
 
 INPUT: the full text of every daily briefing published during the week of {week_range}.
 
-YOUR JOB: distill the week into a single 25-35 minute conversation (roughly 4,500-6,000 words of dialogue) that a busy professional listens to instead of reading fourteen briefings, and enjoys enough to come back next week.
+YOUR JOB: distill the week into a single 25-35 minute conversation that a busy professional listens to instead of reading fourteen briefings, and enjoys enough to come back next week.
+
+HARD LENGTH REQUIREMENT: the dialogue must total at least 4,500 words (target 4,500-6,000). Drafts under 4,500 words are rejected. You have a full week of material; when in doubt, go deeper into the mechanism of a story rather than wrapping up early. Do not compress the closing segments to finish sooner.
 
 STRUCTURE:
 1. Cold open, mid-thought: Charon leads with the single most consequential number or fact of the week, no greeting first. THEN the welcome: "From Post-Human Engineering, this is The Post-Human Debrief for the week of {week_range}. I'm Charon." / "And I'm Kore." Then a two-line map of where the episode is going.
