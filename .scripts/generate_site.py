@@ -33,12 +33,17 @@ TTS_STYLE_PROMPT = (
     "skip nothing, and never speak these instructions."
 )
 
-# Gemini-TTS prebuilt voice for the daily narration. Charon is the flattest,
-# most "informative newsreader" of the prebuilt voices (Puck, the previous
-# choice, is characterized as upbeat, which amplified tone drift between
-# chunks). Charon also anchors the weekly Debrief, so the daily voice and
-# the podcast host are the same voice: the voice of the Briefing.
-TTS_VOICE = "Charon"
+# Gemini-TTS prebuilt voices for the daily narration, in order of
+# preference. Charon is the flattest "informative newsreader" of the
+# prebuilt voices (Puck, the original choice, is characterized as upbeat,
+# which amplified tone drift between chunks) and also anchors the weekly
+# Debrief. If a voice's backend is down (observed: repeated 502s on Charon
+# while Puck worked minutes earlier), the whole file is resynthesized with
+# the next voice rather than silently degrading to a non-Gemini engine.
+TTS_VOICE_PREFERENCES = [
+    os.environ.get("TTS_VOICE") or "Charon",
+    "Schedar",   # characterized as "even" — closest neutral substitute
+]
 
 # Gemini-TTS accepts up to 4,000 bytes in the text field. Larger chunks mean
 # fewer synthesis seams (each seam risks a tone shift), so pack close to the
@@ -129,66 +134,83 @@ def build_audio_script(briefing_text, date_str, time_label, compiler=None,
         return re.sub(r'\s+', ' ', str(fallback)).strip()
 
 
+def _synthesize_with_voice(client, texttospeech, chunks, voice_name):
+    """Synthesize all chunks with one Gemini voice; raises on failure.
+
+    A failure mid-file restarts with the next voice at the caller, never
+    mixing voices within one briefing.
+    """
+    import time
+
+    voice = texttospeech.VoiceSelectionParams(
+        language_code="en-US",
+        name=voice_name,
+        model_name="gemini-2.5-flash-tts"
+    )
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3
+    )
+
+    full_audio_content = b""
+    for idx, chunk in enumerate(chunks):
+        print(f"  [{voice_name}] Synthesizing chunk {idx+1}/{len(chunks)}...")
+        synthesis_input = texttospeech.SynthesisInput(
+            text=chunk,
+            prompt=TTS_STYLE_PROMPT,
+        )
+        # Retry transient failures (502s) instead of shrinking chunks —
+        # small chunks are what caused the uneven pacing.
+        last_error = None
+        for attempt in range(4):
+            try:
+                response = client.synthesize_speech(
+                    input=synthesis_input, voice=voice, audio_config=audio_config
+                )
+                full_audio_content += response.audio_content
+                last_error = None
+                break
+            except Exception as e:
+                last_error = e
+                print(f"    Chunk {idx+1} attempt {attempt+1} failed: {e}")
+                time.sleep(5 * (attempt + 1))
+        if last_error is not None:
+            raise last_error
+    return full_audio_content
+
+
 def generate_audio_with_fallback(plain_text, audio_file_path):
-    print(f"Attempting Vertex AI TTS (Gemini {TTS_VOICE} voice) for {audio_file_path}...")
+    """Synthesize narration with Gemini-TTS, trying each preferred voice.
 
-    try:
-        import time
-        from google.cloud import texttospeech
+    Deliberately does NOT fall back to a non-Gemini engine by default: a
+    silently-published robotic voice is worse for the product than a loud
+    failure, and with the staged pipeline a narrate re-run is nearly free
+    (the audio script is persisted). Set EDGE_TTS_FALLBACK=1 to allow the
+    old edge-tts fallback as a last resort.
+    """
+    from google.cloud import texttospeech
 
-        location = os.environ.get("VERTEX_LOCATION", "us-central1") or "us-central1"
+    location = os.environ.get("VERTEX_LOCATION", "us-central1") or "us-central1"
+    endpoint = f"{location}-texttospeech.googleapis.com"
+    client = texttospeech.TextToSpeechClient(
+        client_options={"api_endpoint": endpoint}
+    )
 
-        endpoint = f"{location}-texttospeech.googleapis.com"
-        client = texttospeech.TextToSpeechClient(
-            client_options={"api_endpoint": endpoint}
-        )
+    chunks = split_text_for_tts(plain_text)
+    last_error = None
+    for voice_name in TTS_VOICE_PREFERENCES:
+        print(f"Attempting Vertex AI TTS (Gemini {voice_name} voice) for {audio_file_path}...")
+        try:
+            audio = _synthesize_with_voice(client, texttospeech, chunks, voice_name)
+            with open(audio_file_path, "wb") as out:
+                out.write(audio)
+            print(f"Vertex AI TTS successful ({voice_name}).")
+            return
+        except Exception as e:
+            last_error = e
+            print(f"Vertex AI TTS with {voice_name} failed: {e}")
 
-        voice = texttospeech.VoiceSelectionParams(
-            language_code="en-US",
-            name=TTS_VOICE,
-            model_name="gemini-2.5-flash-tts"
-        )
-
-        audio_config = texttospeech.AudioConfig(
-            audio_encoding=texttospeech.AudioEncoding.MP3
-        )
-
-        chunks = split_text_for_tts(plain_text)
-
-        full_audio_content = b""
-        for idx, chunk in enumerate(chunks):
-            print(f"  Synthesizing chunk {idx+1}/{len(chunks)}...")
-            synthesis_input = texttospeech.SynthesisInput(
-                text=chunk,
-                prompt=TTS_STYLE_PROMPT,
-            )
-            # Retry transient failures (502s) instead of shrinking chunks —
-            # small chunks are what caused the uneven pacing.
-            last_error = None
-            for attempt in range(3):
-                try:
-                    response = client.synthesize_speech(
-                        input=synthesis_input, voice=voice, audio_config=audio_config
-                    )
-                    full_audio_content += response.audio_content
-                    last_error = None
-                    break
-                except Exception as e:
-                    last_error = e
-                    print(f"    Chunk {idx+1} attempt {attempt+1} failed: {e}")
-                    time.sleep(2 * (attempt + 1))
-            if last_error is not None:
-                raise last_error
-
-        with open(audio_file_path, "wb") as out:
-            out.write(full_audio_content)
-        print("Vertex AI TTS successful.")
-        return
-    except Exception as e:
-        print(f"Vertex AI TTS failed: {e}. Falling back to edge-tts...")
-
-    # Fallback to edge-tts
-    try:
+    if os.environ.get("EDGE_TTS_FALLBACK") == "1":
+        print("All Gemini voices failed. EDGE_TTS_FALLBACK=1, using edge-tts...")
         subprocess.run([
             "edge-tts",
             "--text", plain_text,
@@ -196,8 +218,13 @@ def generate_audio_with_fallback(plain_text, audio_file_path):
             "--voice", "en-US-ChristopherNeural"
         ], check=True)
         print("edge-tts fallback successful.")
-    except Exception as e:
-        print(f"Error generating audio via edge-tts: {e}")
+        return
+
+    raise RuntimeError(
+        f"Gemini-TTS failed for all voices {TTS_VOICE_PREFERENCES}: {last_error}. "
+        f"Re-run the narrate stage (the audio script is persisted, so a retry "
+        f"costs no LLM tokens), or set EDGE_TTS_FALLBACK=1 to accept a "
+        f"non-Gemini voice.")
 
 
 # ---------------------------------------------------------------------------

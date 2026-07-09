@@ -259,7 +259,7 @@ STRUCTURE:
 
 SPOKEN-WORD RULES:
 - Plain text only: no markdown, no headings, no bullets, no URLs, no citations, no stage directions, no bracketed notes, no speaker labels.
-- Write numbers, tickers, and abbreviations the way a newsreader says them: "3.2 billion dollars", "up four percent", "the S and P 500", "N-VIDIA", "A-P-I".
+- Write numbers and symbols the way a newsreader says them: "3.2 billion dollars", "up four percent", "the S and P 500". Leave company names and common acronyms exactly as normally written ("Nvidia", "AI", "API", "GPU"); never insert hyphens or spaces to phoneticize them.
 - Even, neutral register throughout: no hype, no editorializing beyond what the briefing itself says, no exclamation marks.
 - Medium-length sentences that breathe. A comma where a reader would pause.
 - Never mention that this was written, generated, or converted; never refer to "the briefing says"."""
