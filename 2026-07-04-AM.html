@@ -147,6 +147,73 @@
         }
         .phb-player.pp-error .pp-time { min-width: 0; }
 
+        /* Waveform player variant (progress = clipped duplicate bar layer) */
+        .phb-player.pp-feature { gap: 18px; padding-top: 6px; }
+        .pp-feature .pp-btn { width: 56px; height: 56px; }
+        .pp-track.pp-wave {
+            height: 48px;
+            background: transparent;
+            position: relative;
+        }
+        .wave-bars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 100%;
+            width: 100%;
+        }
+        .wave-bars span {
+            flex: 1 1 0;
+            min-width: 2px;
+            background: var(--hairline);
+            border-radius: 1px;
+        }
+        .pp-wave .pp-fill {
+            background: transparent;
+            overflow: hidden;
+        }
+        .wave-inner { height: 48px; }
+        .wave-played span { background: var(--accent); }
+
+        .pp-skip {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s ease;
+        }
+        .pp-skip:hover { color: var(--ink); }
+        .pp-rate {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            background: transparent;
+            border: 1px solid var(--hairline);
+            padding: 3px 9px;
+            cursor: pointer;
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+            transition: color 0.15s ease, border-color 0.15s ease;
+            min-width: 46px;
+            text-align: center;
+        }
+        .pp-rate:hover { color: var(--ink); border-color: var(--muted); }
+        @media (max-width: 600px) {
+            .phb-player.pp-feature { gap: 8px; }
+            .pp-feature .pp-btn { width: 44px; height: 44px; }
+            .pp-skip { width: 26px; height: 26px; }
+            .pp-feature .pp-time { min-width: 0; font-size: 0.68rem; }
+        }
+
         footer.site-footer {
             max-width: 720px;
             margin: 72px auto 0 auto;
@@ -224,6 +291,9 @@
             padding: 16px 0;
             margin-bottom: 8px;
         }
+        /* Reading page gets a slightly quieter waveform than the podcast */
+        .listen-block .pp-btn { width: 46px; height: 46px; }
+        .listen-block .pp-track.pp-wave, .listen-block .wave-inner { height: 38px; }
 
         section.brief-section { padding-top: 40px; }
         .section-head { margin-bottom: 8px; }
@@ -331,19 +401,6 @@
             <div class="dateline">Saturday, July 4, 2026 &nbsp;&middot;&nbsp; 8 min read</div>
         </header>
 
-        <div class="listen-block">
-            <span class="kicker">Listen to this briefing</span>
-            <div class="phb-player">
-                <audio preload="metadata" src="audio/2026-07-04-AM.mp3"></audio>
-                <button class="pp-btn" aria-label="Play or pause">
-                    <svg class="pp-play" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-                    <svg class="pp-pause" style="display:none" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
-                </button>
-                <div class="pp-track"><div class="pp-fill"></div></div>
-                <span class="pp-time">0:00 / --:--</span>
-            </div>
-        </div>
-
         <section class="brief-section" id="ai-news">
             <div class="section-head">
                 <hr class="double-rule">
@@ -413,9 +470,9 @@ The accelerating decentralization of AI capabilities, coupled with sophisticated
             <hr class="double-rule">
             <span class="kicker">Recent briefings</span>
             <div class="recent-list">
-                <a href="2026-07-08-PM.html"><span>Evening Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
-                <a href="2026-07-08-AM.html"><span>Morning Briefing &middot; Wednesday, July 8, 2026</span> <span class="go">Read</span></a>
-                <a href="2026-07-07-PM.html"><span>Evening Briefing &middot; Tuesday, July 7, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-10-AM.html"><span>Morning Briefing &middot; Friday, July 10, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-09-PM.html"><span>Evening Briefing &middot; Thursday, July 9, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-09-AM.html"><span>Morning Briefing &middot; Thursday, July 9, 2026</span> <span class="go">Read</span></a>
                 <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
 
             </div>
@@ -446,7 +503,11 @@ The accelerating decentralization of AI capabilities, coupled with sophisticated
             var iconPlay = btn.querySelector('.pp-play');
             var iconPause = btn.querySelector('.pp-pause');
             if (!audio) return;
+            var inner = p.querySelector('.wave-inner');
             var update = function() {
+                // waveform fill clips a duplicate bar layer; keep it sized
+                // to the full track so the bars in both layers align
+                if (inner) inner.style.width = track.clientWidth + 'px';
                 var d = audio.duration, c = audio.currentTime;
                 fill.style.width = (d ? (c / d * 100) : 0) + '%';
                 time.textContent = fmt(c) + ' / ' + fmt(d);
@@ -485,6 +546,23 @@ The accelerating decentralization of AI capabilities, coupled with sophisticated
                 var r = track.getBoundingClientRect();
                 audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
             });
+            var back = p.querySelector('.pp-back');
+            var fwd = p.querySelector('.pp-fwd');
+            var rateBtn = p.querySelector('.pp-rate');
+            if (back) back.addEventListener('click', function() {
+                audio.currentTime = Math.max(0, audio.currentTime - 15);
+            });
+            if (fwd) fwd.addEventListener('click', function() {
+                if (audio.duration) audio.currentTime = Math.min(audio.duration, audio.currentTime + 15);
+            });
+            if (rateBtn) {
+                var rates = [1, 1.25, 1.5, 2], ri = 0;
+                rateBtn.addEventListener('click', function() {
+                    ri = (ri + 1) % rates.length;
+                    audio.playbackRate = rates[ri];
+                    rateBtn.textContent = rates[ri] + '×';
+                });
+            }
         });
     })();
     </script>

@@ -412,6 +412,73 @@ BASE_CSS = """
         }
         .phb-player.pp-error .pp-time { min-width: 0; }
 
+        /* Waveform player variant (progress = clipped duplicate bar layer) */
+        .phb-player.pp-feature { gap: 18px; padding-top: 6px; }
+        .pp-feature .pp-btn { width: 56px; height: 56px; }
+        .pp-track.pp-wave {
+            height: 48px;
+            background: transparent;
+            position: relative;
+        }
+        .wave-bars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 100%;
+            width: 100%;
+        }
+        .wave-bars span {
+            flex: 1 1 0;
+            min-width: 2px;
+            background: var(--hairline);
+            border-radius: 1px;
+        }
+        .pp-wave .pp-fill {
+            background: transparent;
+            overflow: hidden;
+        }
+        .wave-inner { height: 48px; }
+        .wave-played span { background: var(--accent); }
+
+        .pp-skip {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s ease;
+        }
+        .pp-skip:hover { color: var(--ink); }
+        .pp-rate {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            background: transparent;
+            border: 1px solid var(--hairline);
+            padding: 3px 9px;
+            cursor: pointer;
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+            transition: color 0.15s ease, border-color 0.15s ease;
+            min-width: 46px;
+            text-align: center;
+        }
+        .pp-rate:hover { color: var(--ink); border-color: var(--muted); }
+        @media (max-width: 600px) {
+            .phb-player.pp-feature { gap: 8px; }
+            .pp-feature .pp-btn { width: 44px; height: 44px; }
+            .pp-skip { width: 26px; height: 26px; }
+            .pp-feature .pp-time { min-width: 0; font-size: 0.68rem; }
+        }
+
         footer.site-footer {
             max-width: 720px;
             margin: 72px auto 0 auto;
@@ -487,6 +554,23 @@ AUDIO_PLAYER_JS = """
                 var r = track.getBoundingClientRect();
                 audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
             });
+            var back = p.querySelector('.pp-back');
+            var fwd = p.querySelector('.pp-fwd');
+            var rateBtn = p.querySelector('.pp-rate');
+            if (back) back.addEventListener('click', function() {
+                audio.currentTime = Math.max(0, audio.currentTime - 15);
+            });
+            if (fwd) fwd.addEventListener('click', function() {
+                if (audio.duration) audio.currentTime = Math.min(audio.duration, audio.currentTime + 15);
+            });
+            if (rateBtn) {
+                var rates = [1, 1.25, 1.5, 2], ri = 0;
+                rateBtn.addEventListener('click', function() {
+                    ri = (ri + 1) % rates.length;
+                    audio.playbackRate = rates[ri];
+                    rateBtn.textContent = rates[ri] + '×';
+                });
+            }
         });
     })();
     </script>
@@ -522,6 +606,7 @@ def render_player(src, feature=False, wave_seed=None):
     """
     icon = 22 if feature else 15
     cls = "phb-player pp-feature" if feature else "phb-player"
+    skip_back = skip_fwd = rate_btn = ""
     if feature:
         bars = waveform_bars(wave_seed or src)
         track = (
@@ -529,16 +614,32 @@ def render_player(src, feature=False, wave_seed=None):
             f'<div class="pp-fill"><div class="wave-inner">'
             f'<div class="wave-bars wave-played">{bars}</div></div></div></div>'
         )
+        skip_back = (
+            '<button class="pp-skip pp-back" aria-label="Back 15 seconds" title="Back 15s">'
+            '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
+            '<polyline points="2 5 2 10 7 10"></polyline><path d="M3.8 14.7a8.5 8.5 0 1 0 1.2-8.2L2 10"></path>'
+            '<text x="12.5" y="17" font-size="8.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="inherit">15</text></svg></button>'
+        )
+        skip_fwd = (
+            '<button class="pp-skip pp-fwd" aria-label="Forward 15 seconds" title="Forward 15s">'
+            '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
+            '<polyline points="22 5 22 10 17 10"></polyline><path d="M20.2 14.7A8.5 8.5 0 1 1 19 6.5L22 10"></path>'
+            '<text x="11.5" y="17" font-size="8.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="inherit">15</text></svg></button>'
+        )
+        rate_btn = '<button class="pp-rate" aria-label="Playback speed" title="Playback speed">1&times;</button>'
     else:
         track = '<div class="pp-track"><div class="pp-fill"></div></div>'
     return f"""<div class="{cls}">
                 <audio preload="metadata" src="{src}"></audio>
+                {skip_back}
                 <button class="pp-btn" aria-label="Play or pause">
                     <svg class="pp-play" width="{icon}" height="{icon}" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
                     <svg class="pp-pause" style="display:none" width="{icon}" height="{icon}" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
                 </button>
+                {skip_fwd}
                 {track}
                 <span class="pp-time">0:00 / --:--</span>
+                {rate_btn}
             </div>"""
 
 
@@ -556,7 +657,7 @@ def render_briefing_page(base_name, date_str, time_label, reading_time,
         audio_block = f"""
         <div class="listen-block">
             <span class="kicker">Listen to this briefing</span>
-            {render_player(f"audio/{base_name}.mp3")}
+            {render_player(f"audio/{base_name}.mp3", feature=True, wave_seed=base_name)}
         </div>
 """
 
@@ -625,6 +726,9 @@ def render_briefing_page(base_name, date_str, time_label, reading_time,
             padding: 16px 0;
             margin-bottom: 8px;
         }
+        /* Reading page gets a slightly quieter waveform than the podcast */
+        .listen-block .pp-btn { width: 46px; height: 46px; }
+        .listen-block .pp-track.pp-wave, .listen-block .wave-inner { height: 38px; }
 
         section.brief-section { padding-top: 40px; }
         .section-head { margin-bottom: 8px; }
@@ -925,22 +1029,121 @@ def synthesize_stage(repo_root, base_name, date_str, time_label, force=False):
 
 
 def list_content_editions(repo_root):
+    """Editions with complete synthesized markdown. A dir holding only a
+    persisted audio_script.txt (archive editions narrated after the content
+    store landed) is not a content edition."""
     croot = os.path.join(repo_root, CONTENT_DIRNAME)
     if not os.path.isdir(croot):
         return []
     return sorted(
         d for d in os.listdir(croot)
         if re.match(r'^\d{4}-\d{2}-\d{2}', d)
-        and os.path.isdir(os.path.join(croot, d))
+        and os.path.exists(os.path.join(croot, d, "ai.md"))
+        and os.path.exists(os.path.join(croot, d, "finance.md"))
     )
+
+
+def render_content_edition(repo_root, base_name, newest):
+    """Render one edition's page from the content store. True if written."""
+    content = load_content(repo_root, base_name)
+    if not content:
+        return False
+    meta = content["meta"]
+    parts = base_name.split('-')
+    date_str = meta.get("date") or "-".join(parts[:3])
+    time_label = meta.get("time_label") or (
+        ("Evening" if parts[3] == "PM" else "Morning") if len(parts) == 4 else "Daily")
+    reading_time = meta.get("reading_time") or max(
+        1, (len(content["ai_md"].split()) + len(content["fin_md"].split())) // 200)
+
+    ai_html = markdown.markdown(content["ai_md"], extensions=['tables', 'fenced_code'])
+    fin_html = markdown.markdown(content["fin_md"], extensions=['tables', 'fenced_code'])
+
+    # The newest edition gets a player even before narration lands
+    # (the player shows "audio unavailable" until the MP3 exists).
+    has_audio = (
+        os.path.exists(os.path.join(repo_root, "audio", f"{base_name}.mp3"))
+        or base_name == newest
+    )
+    page = render_briefing_page(
+        base_name=base_name,
+        date_str=date_str,
+        time_label=time_label,
+        reading_time=reading_time,
+        ai_html=ai_html,
+        fin_html=fin_html,
+        recent_html=build_recent_html(repo_root, exclude=f"{base_name}.html"),
+        has_audio=has_audio,
+    )
+    with open(os.path.join(repo_root, f"{base_name}.html"), "w", encoding="utf-8") as f:
+        f.write(page)
+    return True
+
+
+def extract_page_sections(soup):
+    """(ai_html, fin_html) article content from a rendered briefing page.
+
+    Tolerates both the current template (content inside .brief-body) and
+    the pre-redesign one (content directly in the section, after chrome).
+    """
+    out = []
+    for div_id in ("ai-news", "finance-news"):
+        node = soup.find(id=div_id)
+        if node is None:
+            out.append(None)
+            continue
+        body = node.find(class_="brief-body")
+        if body is not None:
+            inner = body.decode_contents().strip()
+        else:
+            for chrome in node.find_all(class_=("section-header", "section-head")):
+                chrome.decompose()
+            inner = node.decode_contents().strip()
+        out.append(inner or None)
+    return out[0], out[1]
+
+
+def rerender_archive_page(repo_root, filename):
+    """Re-render a pre-content-store page from its own markup (e.g. to add
+    or remove the audio block after MP3 eviction). True if written."""
+    from bs4 import BeautifulSoup
+    path = os.path.join(repo_root, filename)
+    with open(path, encoding="utf-8") as f:
+        soup = BeautifulSoup(f.read(), "html.parser")
+    ai_html, fin_html = extract_page_sections(soup)
+    if not ai_html and not fin_html:
+        print(f"[render] Cannot re-render {filename}: no extractable content.")
+        return False
+
+    base_name = filename[:-5]
+    parts = base_name.split('-')
+    date_str = "-".join(parts[:3])
+    time_label = ("Evening" if parts[3] == "PM" else "Morning") if len(parts) == 4 else "Daily"
+    m = re.search(r'(\d+)\s*min read', soup.get_text())
+    reading_time = int(m.group(1)) if m else max(1, len(soup.get_text().split()) // 200)
+
+    page = render_briefing_page(
+        base_name=base_name,
+        date_str=date_str,
+        time_label=time_label,
+        reading_time=reading_time,
+        ai_html=ai_html or "",
+        fin_html=fin_html or "",
+        recent_html=build_recent_html(repo_root, exclude=filename),
+        has_audio=os.path.exists(os.path.join(repo_root, "audio", f"{base_name}.mp3")),
+    )
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(page)
+    return True
 
 
 def render_stage(repo_root, force=False):
     """Render pages for persisted editions and refresh the index.
 
-    Pure content -> HTML; costs nothing, safe to re-run any time. Editions
-    that predate the content store keep their existing HTML (see
-    restyle_briefings.py for re-rendering those from their own markup).
+    Pure content -> HTML; costs nothing, safe to re-run any time. Also
+    syncs audio blocks across the whole archive: when the rolling window
+    evicts an MP3, the next render drops that page's listen section
+    instead of advertising a dead player.
     """
     editions = list_content_editions(repo_root)
     newest = editions[-1] if editions else None
@@ -949,40 +1152,32 @@ def render_stage(repo_root, force=False):
         page_path = os.path.join(repo_root, f"{base_name}.html")
         if os.path.exists(page_path) and not force:
             continue
-        content = load_content(repo_root, base_name)
-        if not content:
+        if render_content_edition(repo_root, base_name, newest):
+            rendered.append(base_name)
+            print(f"[render] Wrote {base_name}.html")
+
+    # Audio-eviction sync across every published page.
+    pages = sorted(
+        f for f in os.listdir(repo_root)
+        if f.endswith('.html') and f != 'index.html' and re.match(r'^\d{4}-\d{2}-\d{2}', f))
+    for filename in pages:
+        base_name = filename[:-5]
+        if base_name in rendered:
             continue
-        meta = content["meta"]
-        parts = base_name.split('-')
-        date_str = meta.get("date") or "-".join(parts[:3])
-        time_label = meta.get("time_label") or (
-            ("Evening" if parts[3] == "PM" else "Morning") if len(parts) == 4 else "Daily")
-        reading_time = meta.get("reading_time") or max(
-            1, (len(content["ai_md"].split()) + len(content["fin_md"].split())) // 200)
-
-        ai_html = markdown.markdown(content["ai_md"], extensions=['tables', 'fenced_code'])
-        fin_html = markdown.markdown(content["fin_md"], extensions=['tables', 'fenced_code'])
-
-        # The newest edition gets a player even before narration lands
-        # (the player shows "audio unavailable" until the MP3 exists).
-        has_audio = (
+        with open(os.path.join(repo_root, filename), encoding="utf-8") as f:
+            markup = f.read()
+        has_player = 'class="listen-block"' in markup
+        wants_player = (
             os.path.exists(os.path.join(repo_root, "audio", f"{base_name}.mp3"))
             or base_name == newest
         )
-        page = render_briefing_page(
-            base_name=base_name,
-            date_str=date_str,
-            time_label=time_label,
-            reading_time=reading_time,
-            ai_html=ai_html,
-            fin_html=fin_html,
-            recent_html=build_recent_html(repo_root, exclude=f"{base_name}.html"),
-            has_audio=has_audio,
-        )
-        with open(page_path, "w", encoding="utf-8") as f:
-            f.write(page)
-        rendered.append(base_name)
-        print(f"[render] Wrote {base_name}.html")
+        if has_player != wants_player:
+            ok = (render_content_edition(repo_root, base_name, newest)
+                  if base_name in editions
+                  else rerender_archive_page(repo_root, filename))
+            if ok:
+                verb = "restored on" if wants_player else "removed from"
+                print(f"[render] Audio block {verb} {filename}")
 
     update_index_page(repo_root, datetime.now(timezone(timedelta(hours=-4))).strftime('%Y-%m-%d'))
     print(f"[render] {len(rendered)} page(s) rendered; index refreshed.")
@@ -1310,12 +1505,14 @@ def update_index_page(repo_root, new_date_str):
 
         .masthead {
             text-align: center;
-            padding: 40px 0 28px 0;
+            /* tighter verticals offset the larger logo so the lead story
+               stays at the same scroll depth */
+            padding: 24px 0 24px 0;
         }
         .masthead img {
-            width: 76px;
+            width: 110px;
             height: auto;
-            border-radius: 10px;
+            border-radius: 12px;
         }
         .masthead h1 {
             font-family: var(--font-serif);
@@ -1323,7 +1520,7 @@ def update_index_page(repo_root, new_date_str):
             font-weight: 600;
             letter-spacing: -0.02em;
             line-height: 1.05;
-            margin: 18px 0 12px 0;
+            margin: 12px 0 10px 0;
             color: var(--ink);
         }
         .masthead .tagline {
@@ -1433,33 +1630,8 @@ def update_index_page(repo_root, new_date_str):
             margin: 0 0 10px 0;
         }
 
-        /* Feature player: big play control + waveform */
-        .phb-player.pp-feature { gap: 18px; padding-top: 6px; }
-        .pp-feature .pp-btn { width: 56px; height: 56px; }
-        .pp-track.pp-wave {
-            height: 48px;
-            background: transparent;
-            position: relative;
-        }
-        .wave-bars {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            height: 100%;
-            width: 100%;
-        }
-        .wave-bars span {
-            flex: 1 1 0;
-            min-width: 2px;
-            background: var(--hairline);
-            border-radius: 1px;
-        }
-        .pp-wave .pp-fill {
-            background: transparent;
-            overflow: hidden;
-        }
-        .wave-inner { height: 48px; }
-        .wave-played span { background: var(--teal); }
+        /* Podcast waveform plays in teal, the audio identity color */
+        .podcast-section .wave-played span { background: var(--teal); }
         @media (max-width: 600px) {
             .podcast-feature { padding: 18px 18px 20px 18px; }
             .podcast-title { font-size: 1.5rem; }
