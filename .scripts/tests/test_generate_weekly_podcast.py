@@ -91,21 +91,33 @@ def test_build_podcast_section_teaser_and_episodes():
         ]
         with open(os.path.join(podcast_dir, "episodes.json"), "w") as f:
             json.dump(episodes, f)
+        for ep in episodes:
+            open(os.path.join(podcast_dir, ep["file"]), "wb").close()
         html = generate_site.build_podcast_section(repo_root)
         assert "Latest Ep" in html
         assert 'src="podcast/2026-W27.mp3"' in html
         assert "Older Ep" in html
+        assert 'href="podcast.html"' in html
         assert "coming soon" not in html.lower()
 
+        # The dedicated page lists every episode, archived ones sans player
+        os.remove(os.path.join(podcast_dir, "2026-W26.mp3"))
+        assert generate_site.build_podcast_page(repo_root) is True
+        page = open(os.path.join(repo_root, "podcast.html")).read()
+        assert "Latest Ep" in page and "Older Ep" in page
+        assert "Audio archived" in page
+        assert 'src="podcast/2026-W26.mp3"' not in page
 
-def test_manifest_rolling_window():
+
+def test_manifest_keeps_metadata_but_evicts_old_audio():
     with tempfile.TemporaryDirectory() as podcast_dir:
-        # Seed manifest at the cap plus matching mp3 files
+        # Seed manifest at the audio cap plus matching mp3 files
         old = []
-        for week in range(23, 23 + podcast.MAX_EPISODES_KEPT):
+        for week in range(23, 23 + podcast.MAX_AUDIO_KEPT):
             name = f"2026-W{week}.mp3"
-            old.append({"file": name, "title": name, "description": "",
-                        "week_range": "", "published": "", "duration_min": 1})
+            old.insert(0, {"file": name, "title": name, "description": "",
+                           "week_range": "", "published": "", "duration_min": 1,
+                           "number": week - 22})
             open(os.path.join(podcast_dir, name), "wb").close()
         with open(os.path.join(podcast_dir, "episodes.json"), "w") as f:
             json.dump(old, f)
@@ -116,8 +128,12 @@ def test_manifest_rolling_window():
             "file": new_name, "title": "New", "description": "",
             "week_range": "", "published": "", "duration_min": 1})
 
-        assert len(episodes) == podcast.MAX_EPISODES_KEPT
+        # Metadata is unbounded and numbering continues
+        assert len(episodes) == podcast.MAX_AUDIO_KEPT + 1
         assert episodes[0]["file"] == new_name
+        assert episodes[0]["number"] == podcast.MAX_AUDIO_KEPT + 1
+        # Audio window: newest MAX_AUDIO_KEPT mp3s kept, oldest evicted
         remaining = sorted(f for f in os.listdir(podcast_dir) if f.endswith(".mp3"))
         assert new_name in remaining
-        assert len(remaining) == podcast.MAX_EPISODES_KEPT
+        assert len(remaining) == podcast.MAX_AUDIO_KEPT
+        assert "2026-W23.mp3" not in remaining

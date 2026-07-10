@@ -197,16 +197,16 @@
             font-size: 0.72rem;
             font-weight: 500;
             color: var(--ink-soft);
-            background: transparent;
-            border: 1px solid var(--hairline);
-            padding: 3px 9px;
+            background: var(--surface-2);
+            border: none;
+            padding: 4px 10px;
             cursor: pointer;
             clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
-            transition: color 0.15s ease, border-color 0.15s ease;
+            transition: color 0.15s ease;
             min-width: 46px;
             text-align: center;
         }
-        .pp-rate:hover { color: var(--ink); border-color: var(--muted); }
+        .pp-rate:hover { color: var(--ink); }
         @media (max-width: 600px) {
             .phb-player.pp-feature { gap: 8px; }
             .pp-feature .pp-btn { width: 44px; height: 44px; }
@@ -405,12 +405,12 @@
             <span class="kicker">Listen to this briefing</span>
             <div class="phb-player pp-feature">
                 <audio preload="metadata" src="audio/2026-07-10-AM.mp3"></audio>
-                <button class="pp-skip pp-back" aria-label="Back 15 seconds" title="Back 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 5 2 10 7 10"></polyline><path d="M3.8 14.7a8.5 8.5 0 1 0 1.2-8.2L2 10"></path><text x="12.5" y="17" font-size="8.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="inherit">15</text></svg></button>
+                <button class="pp-skip pp-back" aria-label="Back 15 seconds" title="Back 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 5 2 10 7 10"></polyline><path d="M3.8 14.7a8.5 8.5 0 1 0 1.2-8.2L2 10"></path></svg></button>
                 <button class="pp-btn" aria-label="Play or pause">
                     <svg class="pp-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
                     <svg class="pp-pause" style="display:none" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
                 </button>
-                <button class="pp-skip pp-fwd" aria-label="Forward 15 seconds" title="Forward 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 5 22 10 17 10"></polyline><path d="M20.2 14.7A8.5 8.5 0 1 1 19 6.5L22 10"></path><text x="11.5" y="17" font-size="8.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="inherit">15</text></svg></button>
+                <button class="pp-skip pp-fwd" aria-label="Forward 15 seconds" title="Forward 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 5 22 10 17 10"></polyline><path d="M20.2 14.7A8.5 8.5 0 1 1 19 6.5L22 10"></path></svg></button>
                 <div class="pp-track pp-wave"><div class="wave-bars"><span style="height:73%"></span><span style="height:78%"></span><span style="height:82%"></span><span style="height:90%"></span><span style="height:36%"></span><span style="height:50%"></span><span style="height:20%"></span><span style="height:23%"></span><span style="height:28%"></span><span style="height:59%"></span><span style="height:71%"></span><span style="height:77%"></span><span style="height:76%"></span><span style="height:39%"></span><span style="height:24%"></span><span style="height:39%"></span><span style="height:51%"></span><span style="height:56%"></span><span style="height:60%"></span><span style="height:68%"></span><span style="height:88%"></span><span style="height:28%"></span><span style="height:72%"></span><span style="height:75%"></span><span style="height:80%"></span><span style="height:37%"></span><span style="height:49%"></span><span style="height:55%"></span><span style="height:54%"></span><span style="height:91%"></span><span style="height:76%"></span><span style="height:91%"></span><span style="height:29%"></span><span style="height:34%"></span><span style="height:38%"></span><span style="height:46%"></span><span style="height:66%"></span><span style="height:80%"></span><span style="height:50%"></span><span style="height:53%"></span><span style="height:58%"></span><span style="height:89%"></span><span style="height:27%"></span><span style="height:33%"></span><span style="height:32%"></span><span style="height:69%"></span><span style="height:54%"></span><span style="height:69%"></span><span style="height:81%"></span><span style="height:86%"></span><span style="height:90%"></span><span style="height:24%"></span><span style="height:44%"></span><span style="height:58%"></span><span style="height:28%"></span><span style="height:31%"></span></div><div class="pp-fill"><div class="wave-inner"><div class="wave-bars wave-played"><span style="height:73%"></span><span style="height:78%"></span><span style="height:82%"></span><span style="height:90%"></span><span style="height:36%"></span><span style="height:50%"></span><span style="height:20%"></span><span style="height:23%"></span><span style="height:28%"></span><span style="height:59%"></span><span style="height:71%"></span><span style="height:77%"></span><span style="height:76%"></span><span style="height:39%"></span><span style="height:24%"></span><span style="height:39%"></span><span style="height:51%"></span><span style="height:56%"></span><span style="height:60%"></span><span style="height:68%"></span><span style="height:88%"></span><span style="height:28%"></span><span style="height:72%"></span><span style="height:75%"></span><span style="height:80%"></span><span style="height:37%"></span><span style="height:49%"></span><span style="height:55%"></span><span style="height:54%"></span><span style="height:91%"></span><span style="height:76%"></span><span style="height:91%"></span><span style="height:29%"></span><span style="height:34%"></span><span style="height:38%"></span><span style="height:46%"></span><span style="height:66%"></span><span style="height:80%"></span><span style="height:50%"></span><span style="height:53%"></span><span style="height:58%"></span><span style="height:89%"></span><span style="height:27%"></span><span style="height:33%"></span><span style="height:32%"></span><span style="height:69%"></span><span style="height:54%"></span><span style="height:69%"></span><span style="height:81%"></span><span style="height:86%"></span><span style="height:90%"></span><span style="height:24%"></span><span style="height:44%"></span><span style="height:58%"></span><span style="height:28%"></span><span style="height:31%"></span></div></div></div></div>
                 <span class="pp-time">0:00 / --:--</span>
                 <button class="pp-rate" aria-label="Playback speed" title="Playback speed">1&times;</button>

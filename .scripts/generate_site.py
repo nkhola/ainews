@@ -462,16 +462,16 @@ BASE_CSS = """
             font-size: 0.72rem;
             font-weight: 500;
             color: var(--ink-soft);
-            background: transparent;
-            border: 1px solid var(--hairline);
-            padding: 3px 9px;
+            background: var(--surface-2);
+            border: none;
+            padding: 4px 10px;
             cursor: pointer;
             clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
-            transition: color 0.15s ease, border-color 0.15s ease;
+            transition: color 0.15s ease;
             min-width: 46px;
             text-align: center;
         }
-        .pp-rate:hover { color: var(--ink); border-color: var(--muted); }
+        .pp-rate:hover { color: var(--ink); }
         @media (max-width: 600px) {
             .phb-player.pp-feature { gap: 8px; }
             .pp-feature .pp-btn { width: 44px; height: 44px; }
@@ -617,14 +617,12 @@ def render_player(src, feature=False, wave_seed=None):
         skip_back = (
             '<button class="pp-skip pp-back" aria-label="Back 15 seconds" title="Back 15s">'
             '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
-            '<polyline points="2 5 2 10 7 10"></polyline><path d="M3.8 14.7a8.5 8.5 0 1 0 1.2-8.2L2 10"></path>'
-            '<text x="12.5" y="17" font-size="8.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="inherit">15</text></svg></button>'
+            '<polyline points="2 5 2 10 7 10"></polyline><path d="M3.8 14.7a8.5 8.5 0 1 0 1.2-8.2L2 10"></path></svg></button>'
         )
         skip_fwd = (
             '<button class="pp-skip pp-fwd" aria-label="Forward 15 seconds" title="Forward 15s">'
             '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
-            '<polyline points="22 5 22 10 17 10"></polyline><path d="M20.2 14.7A8.5 8.5 0 1 1 19 6.5L22 10"></path>'
-            '<text x="11.5" y="17" font-size="8.5" text-anchor="middle" fill="currentColor" stroke="none" font-family="inherit">15</text></svg></button>'
+            '<polyline points="22 5 22 10 17 10"></polyline><path d="M20.2 14.7A8.5 8.5 0 1 1 19 6.5L22 10"></path></svg></button>'
         )
         rate_btn = '<button class="pp-rate" aria-label="Playback speed" title="Playback speed">1&times;</button>'
     else:
@@ -1292,21 +1290,27 @@ def generate_daily_briefing():
     narrate_stage(repo_root, base_name, force=force)
 
 
+def load_episodes(repo_root):
+    import json
+    manifest_path = os.path.join(repo_root, "podcast", "episodes.json")
+    if not os.path.exists(manifest_path):
+        return []
+    try:
+        with open(manifest_path, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+
 def build_podcast_section(repo_root):
     """Render the Weekly Debrief section for the index page.
 
     Reads podcast/episodes.json (written by generate_weekly_podcast.py).
-    Falls back to a slim teaser row until the first episode exists.
+    Falls back to a slim teaser row until the first episode exists. The
+    front page features the latest episode plus a few recent ones; the
+    full catalogue lives on podcast.html.
     """
-    import json
-    manifest_path = os.path.join(repo_root, "podcast", "episodes.json")
-    episodes = []
-    if os.path.exists(manifest_path):
-        try:
-            with open(manifest_path, "r", encoding="utf-8") as f:
-                episodes = json.load(f)
-        except Exception:
-            episodes = []
+    episodes = load_episodes(repo_root)
 
     if not episodes:
         return """
@@ -1321,7 +1325,9 @@ def build_podcast_section(repo_root):
 
     latest = episodes[0]
     prev_html = ""
-    for ep in episodes[1:]:
+    for ep in episodes[1:4]:
+        if not os.path.exists(os.path.join(repo_root, "podcast", ep["file"])):
+            continue
         prev_html += f"""
                 <details class="podcast-prev-item">
                     <summary><span class="prev-title">{ep['title']}</span><span class="prev-meta">{ep['week_range']} &middot; {ep['duration_min']} min</span></summary>
@@ -1344,7 +1350,7 @@ def build_podcast_section(repo_root):
         <section class="podcast-section">
             <div class="podcast-label">
                 <span class="kicker teal">The Post-Human Debrief</span>
-                <span class="kicker">The Weekly Podcast</span>
+                <a class="kicker" href="podcast.html">All episodes &rarr;</a>
             </div>
             <div class="podcast-feature">
                 <div class="podcast-feature-head">
@@ -1356,6 +1362,164 @@ def build_podcast_section(repo_root):
                 {render_player(f"podcast/{latest['file']}", feature=True, wave_seed=latest['title'])}
             </div>{prev_block}
         </section>"""
+
+
+def build_podcast_page(repo_root):
+    """Render podcast.html: the Debrief's home, listing every episode.
+
+    Episodes whose MP3 aged out of the rolling window stay listed (the
+    manifest keeps all metadata) but show an archived note instead of a
+    dead player.
+    """
+    episodes = load_episodes(repo_root)
+    if not episodes:
+        return False
+
+    items = ""
+    for ep in episodes:
+        chip = f'<span class="ep-chip">Episode {ep["number"]}</span>' if ep.get("number") else ""
+        has_mp3 = os.path.exists(os.path.join(repo_root, "podcast", ep["file"]))
+        if has_mp3:
+            player = render_player(f"podcast/{ep['file']}", feature=True, wave_seed=ep["title"])
+        else:
+            player = '<span class="archived-note kicker">Audio archived</span>'
+        items += f"""
+        <article class="episode">
+            <div class="episode-head">
+                {chip}
+                <span class="kicker">Week of {ep['week_range']} &middot; {ep['duration_min']} min</span>
+            </div>
+            <h2 class="episode-title">{ep['title']}</h2>
+            <p class="episode-desc">{ep['description']}</p>
+            {player}
+        </article>
+"""
+
+    page_css = """
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 28px 24px 40px 24px;
+        }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--hairline);
+        }
+        .top-nav a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .top-nav a:hover { color: var(--ink); }
+        .top-nav .nav-right { display: flex; align-items: center; gap: 18px; }
+
+        .show-head { padding: 44px 0 26px 0; }
+        .show-head .kicker { color: var(--teal); }
+        .show-head h1 {
+            font-family: var(--font-serif);
+            font-size: 2.7rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.12;
+            margin: 10px 0 12px 0;
+        }
+        .show-head p {
+            color: var(--ink-soft);
+            font-size: 1.05rem;
+            max-width: 54ch;
+            margin: 0;
+        }
+
+        .episode {
+            border-top: 1px solid var(--hairline);
+            padding: 30px 0 34px 0;
+        }
+        .episode-head {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .ep-chip {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--bg);
+            background: var(--teal);
+            padding: 3px 10px;
+            clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
+        }
+        .episode-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            margin: 6px 0 8px 0;
+        }
+        .episode-desc {
+            color: var(--ink-soft);
+            font-size: 0.98rem;
+            margin: 0 0 10px 0;
+        }
+        .episode button.pp-btn { background: var(--teal); }
+        .episode button.pp-btn:hover { background: var(--ink); }
+        .episode .wave-played span { background: var(--teal); }
+        .archived-note { display: inline-block; padding-top: 4px; color: var(--muted); }
+        @media (max-width: 600px) {
+            .show-head h1 { font-size: 2.1rem; }
+            .episode-title { font-size: 1.45rem; }
+        }
+"""
+
+    page = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Post-Human Debrief — Weekly Podcast</title>
+    <meta name="description" content="The weekly podcast from Post-Human Engineering: two AI voices on everything that mattered in AI and markets.">
+    {THEME_BOOT}
+    {SITE_FONTS}
+    <link rel="icon" type="image/png" href="img/logo_favicon.png">
+    <style>{BASE_CSS}{page_css}</style>
+</head>
+<body>
+    <div class="page">
+        <nav class="top-nav">
+            <a href="index.html">&larr; The Post-Human Briefing</a>
+            <div class="nav-right">
+                <a href="https://www.khola.blog/" target="_blank" rel="noopener">Khola.Blog</a>
+                {THEME_TOGGLE_BTN}
+            </div>
+        </nav>
+
+        <header class="show-head">
+            <span class="kicker">The Post-Human Debrief</span>
+            <h1>The Weekly Podcast</h1>
+            <p>Two voices. One conversation. Charon and Kore debrief everything that mattered this week in AI and markets, distilled from fourteen daily briefings. New episodes weekly.</p>
+        </header>
+{items}
+    </div>
+{FOOTER_HTML}
+    {THEME_TOGGLE_JS}
+{AUDIO_PLAYER_JS}
+</body>
+</html>
+"""
+    with open(os.path.join(repo_root, "podcast.html"), "w", encoding="utf-8") as f:
+        f.write(page)
+    print("Updated podcast.html")
+    return True
 
 
 def build_lead_story(repo_root, latest_file):
@@ -1564,8 +1728,8 @@ def update_index_page(repo_root, new_date_str):
 
         .kicker.teal { color: var(--teal); }
         .podcast-section { padding: 44px 0 10px 0; }
-        .podcast-section .pp-btn { background: var(--teal); }
-        .podcast-section .pp-btn:hover { background: var(--ink); }
+        .podcast-section button.pp-btn { background: var(--teal); }
+        .podcast-section button.pp-btn:hover { background: var(--ink); }
         .podcast-section .pp-fill { background: var(--teal); }
         .podcast-label {
             display: flex;
@@ -1612,8 +1776,8 @@ def update_index_page(repo_root, new_date_str):
             letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--ochre);
-            border: 1px solid var(--ochre);
-            padding: 2px 8px;
+            background: var(--surface-2);
+            padding: 3px 9px;
             clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
         }
         .podcast-title {
@@ -1697,8 +1861,8 @@ def update_index_page(repo_root, new_date_str):
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--ink-soft);
-            border: 1px solid var(--hairline);
-            padding: 3px 10px;
+            background: var(--surface-2);
+            padding: 4px 11px;
             /* cubist snip: one clipped corner, echoing the logo's shards */
             clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
             transition: all 0.15s ease;
@@ -1706,7 +1870,6 @@ def update_index_page(repo_root, new_date_str):
         .edition-chip:hover {
             color: var(--bg);
             background: var(--accent);
-            border-color: var(--accent);
         }
 
         @media (max-width: 600px) {
@@ -1768,6 +1931,10 @@ def update_index_page(repo_root, new_date_str):
     with open(index_file, "w", encoding="utf-8") as f:
         f.write(index_template)
     print("Updated index.html")
+
+    # The Debrief's home page rides along with every index refresh so it
+    # can never go stale relative to the manifest.
+    build_podcast_page(repo_root)
 
 if __name__ == "__main__":
     generate_daily_briefing()

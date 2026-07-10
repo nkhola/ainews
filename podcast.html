@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Post-Human Briefing — 2026-06-21 Morning</title>
+    <title>The Post-Human Debrief — Weekly Podcast</title>
+    <meta name="description" content="The weekly podcast from Post-Human Engineering: two AI voices on everything that mattered in AI and markets.">
     <script>(function(){var t=null;try{t=localStorage.getItem('phb-theme')}catch(e){}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}document.documentElement.setAttribute('data-theme',t);})();</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -227,21 +228,11 @@
             line-height: 2;
         }
 
-        .progress-bar {
-            position: fixed;
-            top: 0; left: 0;
-            height: 2px;
-            width: 0%;
-            background: var(--accent);
-            z-index: 10;
-        }
-
         .page {
             max-width: 720px;
             margin: 0 auto;
             padding: 28px 24px 40px 24px;
         }
-
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -249,11 +240,6 @@
             gap: 12px;
             padding-bottom: 18px;
             border-bottom: 1px solid var(--hairline);
-        }
-        .top-nav .nav-left, .top-nav .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 18px;
         }
         .top-nav a {
             font-family: var(--font-mono);
@@ -263,13 +249,11 @@
             color: var(--muted);
         }
         .top-nav a:hover { color: var(--ink); }
+        .top-nav .nav-right { display: flex; align-items: center; gap: 18px; }
 
-        .briefing-head {
-            padding: 44px 0 28px 0;
-            text-align: left;
-        }
-        .briefing-head .kicker { color: var(--accent); }
-        .briefing-head h1 {
+        .show-head { padding: 44px 0 26px 0; }
+        .show-head .kicker { color: var(--teal); }
+        .show-head h1 {
             font-family: var(--font-serif);
             font-size: 2.7rem;
             font-weight: 600;
@@ -277,189 +261,95 @@
             line-height: 1.12;
             margin: 10px 0 12px 0;
         }
-        .briefing-head .dateline {
-            font-family: var(--font-mono);
-            font-size: 0.78rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-
-        .listen-block {
-            border-top: 1px solid var(--hairline);
-            border-bottom: 1px solid var(--hairline);
-            padding: 16px 0;
-            margin-bottom: 8px;
-        }
-        /* Reading page gets a slightly quieter waveform than the podcast */
-        .listen-block .pp-btn { width: 46px; height: 46px; }
-        .listen-block .pp-track.pp-wave, .listen-block .wave-inner { height: 38px; }
-
-        section.brief-section { padding-top: 40px; }
-        .section-head { margin-bottom: 8px; }
-        .section-head h2 {
-            font-family: var(--font-serif);
-            font-size: 1.7rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            margin: 10px 0 0 0;
-        }
-        .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
-        .brief-body > p:first-of-type::first-letter {
-            font-family: var(--font-serif);
-            font-size: 3.4em;
-            font-weight: 600;
-            float: left;
-            line-height: 0.82;
-            padding: 4px 10px 0 0;
-            color: var(--accent);
-        }
-        .brief-body h3 {
-            font-family: var(--font-serif);
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--ink);
-            margin: 2.2em 0 0.5em 0;
-            letter-spacing: -0.01em;
-        }
-        .brief-body h4 {
-            font-family: var(--font-mono);
-            font-size: 0.72rem;
-            font-weight: 500;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--ochre);
-            margin: 1.6em 0 0.4em 0;
-        }
-        .brief-body p { margin: 0 0 1.2em 0; }
-        .brief-body ul { padding-left: 1.3em; margin: 0 0 1.2em 0; }
-        .brief-body li { margin-bottom: 0.5em; }
-        .brief-body a {
-            color: var(--accent);
-            text-decoration: underline;
-            text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
-            text-underline-offset: 3px;
-        }
-        .brief-body a:hover { color: var(--accent-hover); text-decoration-color: var(--accent-hover); }
-        .brief-body blockquote {
-            border-left: 2px solid var(--ochre);
-            margin: 1.4em 0;
-            padding: 2px 0 2px 18px;
-            font-family: var(--font-serif);
-            font-style: italic;
+        .show-head p {
             color: var(--ink-soft);
+            font-size: 1.05rem;
+            max-width: 54ch;
+            margin: 0;
         }
-        .brief-body strong { color: var(--ink); }
 
-        .recent {
-            margin-top: 64px;
-            padding-top: 8px;
+        .episode {
+            border-top: 1px solid var(--hairline);
+            padding: 30px 0 34px 0;
         }
-        .recent .kicker { display: block; margin: 14px 0 10px 0; }
-        .recent-list { display: flex; flex-direction: column; }
-        .recent-list a {
+        .episode-head {
             display: flex;
-            justify-content: space-between;
             align-items: baseline;
             gap: 12px;
-            padding: 11px 2px;
-            border-bottom: 1px solid var(--hairline);
-            color: var(--ink);
-            font-size: 0.95rem;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
         }
-        .recent-list a:hover { color: var(--accent); }
-        .recent-list a .go {
+        .ep-chip {
             font-family: var(--font-mono);
-            font-size: 0.72rem;
-            letter-spacing: 0.08em;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: var(--muted);
+            color: var(--bg);
+            background: var(--teal);
+            padding: 3px 10px;
+            clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
         }
-        .recent-list a:hover .go { color: var(--accent); }
-
+        .episode-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            margin: 6px 0 8px 0;
+        }
+        .episode-desc {
+            color: var(--ink-soft);
+            font-size: 0.98rem;
+            margin: 0 0 10px 0;
+        }
+        .episode button.pp-btn { background: var(--teal); }
+        .episode button.pp-btn:hover { background: var(--ink); }
+        .episode .wave-played span { background: var(--teal); }
+        .archived-note { display: inline-block; padding-top: 4px; color: var(--muted); }
         @media (max-width: 600px) {
-            .briefing-head h1 { font-size: 2.1rem; }
+            .show-head h1 { font-size: 2.1rem; }
+            .episode-title { font-size: 1.45rem; }
         }
 </style>
 </head>
 <body>
-    <div class="progress-bar" id="progress-bar"></div>
     <div class="page">
         <nav class="top-nav">
-            <div class="nav-left">
-                <a href="index.html">&larr; The Post-Human Briefing</a>
-            </div>
+            <a href="index.html">&larr; The Post-Human Briefing</a>
             <div class="nav-right">
                 <a href="https://www.khola.blog/" target="_blank" rel="noopener">Khola.Blog</a>
                 <button class="theme-toggle" onclick="phbToggleTheme()" aria-label="Toggle color theme" title="Toggle theme"><svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
             </div>
         </nav>
 
-        <header class="briefing-head">
-            <span class="kicker">The Post-Human Briefing</span>
-            <h1>Morning Briefing</h1>
-            <div class="dateline">Sunday, June 21, 2026 &nbsp;&middot;&nbsp; 5 min read</div>
+        <header class="show-head">
+            <span class="kicker">The Post-Human Debrief</span>
+            <h1>The Weekly Podcast</h1>
+            <p>Two voices. One conversation. Charon and Kore debrief everything that mattered this week in AI and markets, distilled from fourteen daily briefings. New episodes weekly.</p>
         </header>
 
-        <section class="brief-section" id="ai-news">
-            <div class="section-head">
-                <hr class="double-rule">
-                <h2>Artificial Intelligence</h2>
+        <article class="episode">
+            <div class="episode-head">
+                <span class="ep-chip">Episode 1</span>
+                <span class="kicker">Week of July 2 to July 8, 2026 &middot; 23 min</span>
             </div>
-            <div class="brief-body">
-<div class="brief-body">
-<div class="brief-body">
-<div class="brief-body">
-<p>Good morning,</p>
-<p>Today's signals point to a deepening bifurcation in the AI ecosystem: while local inference capabilities continue to impress with efficiency gains, the economic realities of compute and model distribution are creating friction, pushing the community towards decentralized solutions and re-evaluating the sustainability of current cloud-based offerings.</p>
-<h3>The Ascendance of Local Inference and Edge AI</h3>
-<p>The local AI frontier shows significant progress, driven by both model quality and optimization techniques. <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ub4ods/gemma_4_26b_a4b_is_genuinely_the_best_model_i/">Gemma 4 26b a4b is garnering praise</a> for its performance in language learning and scientific queries, suggesting that smaller, quantized models are becoming genuinely competitive for specific tasks. This is further bolstered by findings that <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ubl0df/gemma_4_qat_seems_to_respond_significantly_better/">Gemma 4 QAT (Quantization Aware Training) responds significantly better to KV cache quantization</a>, a critical optimization for reducing memory footprint and increasing inference speed on consumer hardware. Similarly, <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ub69xu/glm_52_what_speeds_are_we_getting_locally/">GLM 5.2 is showing promising local speeds</a>, indicating that efficient architectures are translating into practical, real-time local applications. Beyond text, the potential for local processing extends to novel multimodal applications, as demonstrated by a <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ub2kmt/deep_neural_network_that_can_turn_any_image_into/">deep neural network capable of turning any image into a playable game locally</a>. This points to a future where complex AI tasks, traditionally confined to data centers, become accessible on edge devices, fundamentally shifting the locus of computation.</p>
-<h4>Why it matters</h4>
-<p>These developments underscore the power of algorithmic and architectural optimization (a core tenet of information theory and efficient computation) to push high-fidelity models onto constrained hardware, democratizing access and enabling new low-latency applications.</p>
-<h3>Open vs. Closed Models and Decentralized Distribution</h3>
-<p>The tension between open and closed model development remains a central theme, with clear signals of both the value of open models and the community's frustration with perceived limitations. The <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ubk57k/vercel_ceo_almost_shocked_by_how_good_glm52_is_at/">Vercel CEO's "shock" at GLM-5.2's coding prowess</a> highlights the competitive edge and rapid iteration possible within the open-source ecosystem. However, the community is also grappling with the question of whether major players like Qwen will <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ubjnh5/qwen_is_never_going_to_open_source_qwen_37_arent_they/">continue to open source their most advanced models</a>, indicating a growing concern about the long-term commitment of some developers to open access. This uncertainty is fueling initiatives like <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ubasxo/it_s_time_to_decentralize_model_distribution/">Noema Atlas, which aims to decentralize model distribution</a>. Such efforts seek to mitigate the risks associated with centralized control over foundational models, ensuring broader access and resilience against potential restrictions.</p>
-<h4>Why it matters</h4>
-<p>The struggle over model accessibility and distribution reflects a fundamental debate about the control and dissemination of knowledge (an information theory problem), with decentralized approaches emerging as a response to perceived market failures and power imbalances.</p>
-<h3>Trade-offs &amp; Evolution: The Hard Economics of AI Compute</h3>
-<p>The economic realities of AI development and deployment are becoming increasingly stark, influencing both hardware acquisition and model consumption. The anecdotal evidence of <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ub693e/six_months_ago_i_turned_down_8165_for_an_rtx_6000_pro/">GPU prices rising significantly</a> over a short period underscores the persistent supply-demand imbalance in high-performance compute. This directly impacts the viability of local inference for many, pushing up the barrier to entry for individual researchers and small teams. Concurrently, discussions around <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ubbj6n/what_happens_when_they_stop_subsidizing_llm/">LLM subscription subsidies</a> and the broader concept of <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ubrcwj/tokenomics/">tokenomics</a> are surfacing. The community is questioning the sustainability of current pricing models for cloud-based LLM services, suggesting that many are operating at a loss or with heavy subsidies. This implies a future reckoning where the true cost of inference, particularly for large, proprietary models, will need to be borne by users, potentially shifting demand back towards more efficient, locally runnable alternatives.</p>
-<h4>Why it matters</h4>
-<p>The escalating cost of compute and the unsustainability of current LLM pricing models reveal a critical market inefficiency, forcing a re-evaluation of resource allocation and the long-term economic models for AI services.</p>
-<p>The Bottom Line: The AI landscape is rapidly maturing, with a clear trend towards optimizing for local execution and decentralizing distribution, driven by both technical innovation and the inescapable economics of compute.</p>
-</div>
-</div>
-</div>
+            <h2 class="episode-title">Free Intelligence, Costly Reality</h2>
+            <p class="episode-desc">This week, we examine the paradox of collapsing AI inference costs, the growing chasm between open and closed models, and escalating geopolitical tensions reshaping markets.</p>
+            <div class="phb-player pp-feature">
+                <audio preload="metadata" src="podcast/2026-W28.mp3"></audio>
+                <button class="pp-skip pp-back" aria-label="Back 15 seconds" title="Back 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 5 2 10 7 10"></polyline><path d="M3.8 14.7a8.5 8.5 0 1 0 1.2-8.2L2 10"></path></svg></button>
+                <button class="pp-btn" aria-label="Play or pause">
+                    <svg class="pp-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                    <svg class="pp-pause" style="display:none" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+                </button>
+                <button class="pp-skip pp-fwd" aria-label="Forward 15 seconds" title="Forward 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 5 22 10 17 10"></polyline><path d="M20.2 14.7A8.5 8.5 0 1 1 19 6.5L22 10"></path></svg></button>
+                <div class="pp-track pp-wave"><div class="wave-bars"><span style="height:67%"></span><span style="height:89%"></span><span style="height:91%"></span><span style="height:68%"></span><span style="height:86%"></span><span style="height:54%"></span><span style="height:74%"></span><span style="height:41%"></span><span style="height:91%"></span><span style="height:91%"></span><span style="height:80%"></span><span style="height:55%"></span><span style="height:89%"></span><span style="height:45%"></span><span style="height:91%"></span><span style="height:73%"></span><span style="height:45%"></span><span style="height:67%"></span><span style="height:69%"></span><span style="height:46%"></span><span style="height:64%"></span><span style="height:32%"></span><span style="height:52%"></span><span style="height:19%"></span><span style="height:69%"></span><span style="height:69%"></span><span style="height:58%"></span><span style="height:33%"></span><span style="height:67%"></span><span style="height:23%"></span><span style="height:69%"></span><span style="height:51%"></span><span style="height:23%"></span><span style="height:45%"></span><span style="height:47%"></span><span style="height:24%"></span><span style="height:42%"></span><span style="height:84%"></span><span style="height:30%"></span><span style="height:71%"></span><span style="height:47%"></span><span style="height:47%"></span><span style="height:36%"></span><span style="height:85%"></span><span style="height:45%"></span><span style="height:75%"></span><span style="height:47%"></span><span style="height:29%"></span><span style="height:75%"></span><span style="height:23%"></span><span style="height:25%"></span><span style="height:76%"></span><span style="height:20%"></span><span style="height:62%"></span><span style="height:82%"></span><span style="height:49%"></span></div><div class="pp-fill"><div class="wave-inner"><div class="wave-bars wave-played"><span style="height:67%"></span><span style="height:89%"></span><span style="height:91%"></span><span style="height:68%"></span><span style="height:86%"></span><span style="height:54%"></span><span style="height:74%"></span><span style="height:41%"></span><span style="height:91%"></span><span style="height:91%"></span><span style="height:80%"></span><span style="height:55%"></span><span style="height:89%"></span><span style="height:45%"></span><span style="height:91%"></span><span style="height:73%"></span><span style="height:45%"></span><span style="height:67%"></span><span style="height:69%"></span><span style="height:46%"></span><span style="height:64%"></span><span style="height:32%"></span><span style="height:52%"></span><span style="height:19%"></span><span style="height:69%"></span><span style="height:69%"></span><span style="height:58%"></span><span style="height:33%"></span><span style="height:67%"></span><span style="height:23%"></span><span style="height:69%"></span><span style="height:51%"></span><span style="height:23%"></span><span style="height:45%"></span><span style="height:47%"></span><span style="height:24%"></span><span style="height:42%"></span><span style="height:84%"></span><span style="height:30%"></span><span style="height:71%"></span><span style="height:47%"></span><span style="height:47%"></span><span style="height:36%"></span><span style="height:85%"></span><span style="height:45%"></span><span style="height:75%"></span><span style="height:47%"></span><span style="height:29%"></span><span style="height:75%"></span><span style="height:23%"></span><span style="height:25%"></span><span style="height:76%"></span><span style="height:20%"></span><span style="height:62%"></span><span style="height:82%"></span><span style="height:49%"></span></div></div></div></div>
+                <span class="pp-time">0:00 / --:--</span>
+                <button class="pp-rate" aria-label="Playback speed" title="Playback speed">1&times;</button>
             </div>
-        </section>
+        </article>
 
-        <section class="brief-section" id="finance-news">
-            <div class="section-head">
-                <hr class="double-rule">
-                <h2>Markets &amp; Macro</h2>
-            </div>
-            <div class="brief-body">
-<div class="brief-body">
-<div class="brief-body">
-<div class="brief-body">
-<p>The market is grappling with a stark divergence: an S&amp;P 500 stretched to its second-highest CAPE ratio in history, signaling extreme valuation, while geopolitical tensions in the Middle East and Eastern Europe continue to simmer despite a perceived US-Iran deal. This creates a complex backdrop where concentrated tech growth, driven by AI and ambitious ventures, clashes with broader market fragility and persistent global instability.</p>
-<h3>Geopolitical Tensions &amp; Energy Dynamics</h3>
-<p>The US and Iran are engaged in <a href="https://www.ft.com/content/c1014643-940c-4874-998a-0a52eb517c49">high-stakes negotiations in Switzerland</a>, with Vice President JD Vance participating in talks aimed at nuclear issues and regional security, including the Lebanon conflict. While a <a href="https://www.bloomberg.com/news/articles/2026-06-21/oil-glut-bets-are-back-in-play-as-crude-sinks-after-us-iran-deal">US-Iran deal has led to bets on an oil glut</a> and a subsequent dip in crude futures, the situation remains volatile. Iran's <a href="https://seekingalpha.com/news/4605302-iran-oil-exports-poised-for-return-under-new-u-s-deal-but-recovery-faces-hurdles">oil exports are poised for a return</a> under the new deal, but recovery faces hurdles.</p>
-</div>
-</div>
-</div>
-            </div>
-        </section>
-
-        <div class="recent">
-            <hr class="double-rule">
-            <span class="kicker">Recent briefings</span>
-            <div class="recent-list">
-                <a href="2026-07-10-AM.html"><span>Morning Briefing &middot; Friday, July 10, 2026</span> <span class="go">Read</span></a>
-                <a href="2026-07-09-PM.html"><span>Evening Briefing &middot; Thursday, July 9, 2026</span> <span class="go">Read</span></a>
-                <a href="2026-07-09-AM.html"><span>Morning Briefing &middot; Thursday, July 9, 2026</span> <span class="go">Read</span></a>
-                <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
-
-            </div>
-        </div>
     </div>
 
     <footer class="site-footer">
@@ -550,17 +440,5 @@
     })();
     </script>
 
-    <script>
-    (function() {
-        var bar = document.getElementById('progress-bar');
-        var onScroll = function() {
-            var h = document.documentElement;
-            var max = h.scrollHeight - h.clientHeight;
-            bar.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%';
-        };
-        window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll();
-    })();
-    </script>
 </body>
 </html>

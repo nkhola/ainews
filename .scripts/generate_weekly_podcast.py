@@ -44,8 +44,10 @@ PODCAST_STYLE_PROMPT = (
 # always land between turns.
 SEGMENT_MAX_BYTES = 3000
 
-# Keep the repo lean: episodes are ~15-30 MB each.
-MAX_EPISODES_KEPT = 4
+# Episode metadata is kept forever (podcast.html lists the full catalogue);
+# only the MP3s age out, newest N kept (~5-8 MB each). Scripts are small
+# and stay as the written record of every episode.
+MAX_AUDIO_KEPT = 12
 
 SPOKEN_WORDS_PER_MINUTE = 150
 
@@ -268,22 +270,17 @@ def update_episode_manifest(podcast_dir, episode):
     else:
         episode["number"] = (episodes[0].get("number", 0) + 1) if episodes else 1
     episodes.insert(0, episode)
-    episodes = episodes[:MAX_EPISODES_KEPT]
 
-    kept_files = {e["file"] for e in episodes}
+    # Rolling audio window: metadata stays forever, MP3s beyond the newest
+    # MAX_AUDIO_KEPT are evicted (podcast.html shows those as archived).
+    kept_files = {e["file"] for e in episodes[:MAX_AUDIO_KEPT]}
     for mp3 in glob.glob(os.path.join(podcast_dir, "*.mp3")):
         if os.path.basename(mp3) not in kept_files:
             try:
                 os.remove(mp3)
-                print(f"Deleted old episode: {mp3}")
+                print(f"Evicted old episode audio: {mp3}")
             except Exception:
                 pass
-            script_file = mp3[:-4] + ".script.txt"
-            if os.path.exists(script_file):
-                try:
-                    os.remove(script_file)
-                except Exception:
-                    pass
 
     with open(manifest_path, "w", encoding="utf-8") as f:
         json.dump(episodes, f, indent=2)
