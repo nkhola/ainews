@@ -26,11 +26,9 @@ from src.agents.master_compiler import MasterCompiler
 # Deliberately flat delivery: chunks are synthesized independently, and a
 # neutral, even register is what keeps consecutive chunks indistinguishable.
 TTS_STYLE_PROMPT = (
-    "Read the text verbatim in the even, measured, neutral tone of a "
-    "public-radio news reader. Calm and steady, no dramatics, no enthusiasm "
-    "swings: keep exactly the same pace, pitch, and energy from the first "
-    "word to the last. Read only the text: add nothing, repeat nothing, "
-    "skip nothing, and never speak these instructions."
+    "Synthesize speech for the provided news transcript. This note is "
+    "direction only: even, unhurried, neutral news-reader delivery with "
+    "constant pace and energy throughout. Speak only the transcript."
 )
 
 # Gemini-TTS prebuilt voices for the daily narration, in order of
@@ -159,13 +157,18 @@ def _synthesize_with_voice(client, texttospeech, chunks, voice_name):
             prompt=TTS_STYLE_PROMPT,
         )
         # Retry transient failures (502s) instead of shrinking chunks —
-        # small chunks are what caused the uneven pacing.
+        # small chunks are what caused the uneven pacing. A QA failure
+        # (style direction spoken aloud) also retries: it is sampling
+        # noise, and a fresh synthesis usually clears it.
         last_error = None
         for attempt in range(4):
             try:
                 response = client.synthesize_speech(
                     input=synthesis_input, voice=voice, audio_config=audio_config
                 )
+                if not audio_matches_text(response.audio_content, chunk):
+                    raise RuntimeError(
+                        f"chunk {idx+1} spoke non-transcript content (QA)")
                 full_audio_content += response.audio_content
                 last_error = None
                 break
@@ -176,6 +179,64 @@ def _synthesize_with_voice(client, texttospeech, chunks, voice_name):
         if last_error is not None:
             raise last_error
     return full_audio_content
+
+
+def audio_matches_text(audio_bytes, expected_text):
+    """QA a synthesized chunk: does the audio speak ONLY the transcript?
+
+    Gemini-TTS is an LLM and occasionally reads its style direction aloud
+    (a documented failure mode). Since the pipeline cannot listen, a
+    multimodal Gemini call does: it hears the chunk against the transcript
+    and flags any spoken content that is not in it. Returns True when
+    clean, or when QA itself is unavailable (QA infra problems never block
+    publication). Set AUDIO_QA=0 to disable.
+    """
+    if os.environ.get("AUDIO_QA") == "0":
+        return True
+    project = os.environ.get("VERTEX_PROJECT_ID")
+    if not project:
+        return True
+    try:
+        import base64
+        import requests as rq
+        import google.auth
+        from google.auth.transport.requests import Request
+
+        creds, _ = google.auth.default(
+            scopes=['https://www.googleapis.com/auth/cloud-platform'])
+        creds.refresh(Request())
+        model = (os.environ.get("LLM_MODEL") or "google/gemini-3.5-flash").split("/")[-1]
+        url = (f"https://aiplatform.googleapis.com/v1/projects/{project}/"
+               f"locations/global/publishers/google/models/{model}:generateContent")
+        instruction = (
+            "TRANSCRIPT:\n" + expected_text + "\n\n"
+            "Listen to the audio clip and compare it to the transcript above. "
+            "Reply with exactly one word. Reply LEAK if the audio speaks any "
+            "meaningful sentence that is not in the transcript, such as "
+            "delivery or style directions being read aloud (for example "
+            "'neutral news-reader delivery' or 'speak only the transcript'). "
+            "Reply CLEAN otherwise. Minor wording, pronunciation, or number-"
+            "formatting differences are CLEAN."
+        )
+        body = {
+            "contents": [{"role": "user", "parts": [
+                {"text": instruction},
+                {"inline_data": {"mime_type": "audio/mp3",
+                                 "data": base64.b64encode(audio_bytes).decode()}},
+            ]}],
+            "generationConfig": {"temperature": 0},
+        }
+        resp = rq.post(url, json=body, timeout=180,
+                       headers={"Authorization": f"Bearer {creds.token}"})
+        resp.raise_for_status()
+        verdict = resp.json()["candidates"][0]["content"]["parts"][0]["text"].strip().upper()
+        if "LEAK" in verdict:
+            print("    Audio QA: LEAK detected (direction spoken aloud).")
+            return False
+        return True
+    except Exception as e:
+        print(f"    Audio QA unavailable ({e}); accepting chunk unverified.")
+        return True
 
 
 def tts_endpoint_candidates():

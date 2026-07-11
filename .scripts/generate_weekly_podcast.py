@@ -33,10 +33,9 @@ from src.agents.master_compiler import MasterCompiler
 SPEAKER_VOICES = {"HOST": "Charon", "ANALYST": "Kore"}
 
 PODCAST_STYLE_PROMPT = (
-    "A weekly news podcast: two co-hosts in one continuous, relaxed studio "
-    "conversation. Natural back-and-forth rhythm, warm and engaged, steady "
-    "energy from start to finish. Read every turn exactly as written, with "
-    "no additions and no sign-offs beyond the script."
+    "Synthesize speech for the provided dialogue. This note is direction "
+    "only: a relaxed two-host news podcast, natural back-and-forth, warm "
+    "and steady from start to finish. Speak only the dialogue turns."
 )
 
 # Gemini-TTS multi-speaker limit: prompt and dialogue each <=4,000 bytes,
@@ -232,12 +231,17 @@ def _synthesize_podcast_on_endpoint(segments, audio_file_path, endpoint):
             multi_speaker_markup=markup,
             prompt=PODCAST_STYLE_PROMPT,
         )
+        segment_text = " ".join(text for _, text in segment)
         last_error = None
         for attempt in range(3):
             try:
                 response = client.synthesize_speech(
                     input=synthesis_input, voice=voice, audio_config=audio_config
                 )
+                from generate_site import audio_matches_text
+                if not audio_matches_text(response.audio_content, segment_text):
+                    raise RuntimeError(
+                        f"segment {idx+1} spoke non-transcript content (QA)")
                 full_audio += response.audio_content
                 last_error = None
                 break
