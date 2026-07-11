@@ -20,16 +20,12 @@ from src.fetchers.news_crawler import NewsCrawler
 from src.fetchers.finance_crawler import FinanceCrawler
 from src.agents.master_compiler import MasterCompiler
 
-# Style instructions for Gemini-TTS. These go in SynthesisInput.prompt (a
-# dedicated field that is never spoken), NOT prepended to the text — inline
-# instructions get read aloud by the model.
-# Deliberately flat delivery: chunks are synthesized independently, and a
-# neutral, even register is what keeps consecutive chunks indistinguishable.
-TTS_STYLE_PROMPT = (
-    "Synthesize speech for the provided news transcript. This note is "
-    "direction only: even, unhurried, neutral news-reader delivery with "
-    "constant pace and energy throughout. Speak only the transcript."
-)
+# No TTS style prompt, deliberately. Reliable article-audio pipelines
+# (NYT Listen, OpenAI posts) use no natural-language style channel at all:
+# the register is baked into the voice choice and the script's own words.
+# Gemini-TTS occasionally reads any style prompt aloud (documented failure
+# mode we hit twice), so the instruction channel is simply not used.
+# audio_matches_text() remains as the QA backstop for any spoken drift.
 
 # Gemini-TTS prebuilt voices for the daily narration, in order of
 # preference. Charon is the flattest "informative newsreader" of the
@@ -152,10 +148,7 @@ def _synthesize_with_voice(client, texttospeech, chunks, voice_name):
     full_audio_content = b""
     for idx, chunk in enumerate(chunks):
         print(f"  [{voice_name}] Synthesizing chunk {idx+1}/{len(chunks)}...")
-        synthesis_input = texttospeech.SynthesisInput(
-            text=chunk,
-            prompt=TTS_STYLE_PROMPT,
-        )
+        synthesis_input = texttospeech.SynthesisInput(text=chunk)
         # Retry transient failures (502s) instead of shrinking chunks —
         # small chunks are what caused the uneven pacing. A QA failure
         # (style direction spoken aloud) also retries: it is sampling

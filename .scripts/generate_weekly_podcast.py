@@ -32,11 +32,9 @@ from src.agents.master_compiler import MasterCompiler
 # Two-voice cast. Charon reads the HOST (anchor), Kore the ANALYST.
 SPEAKER_VOICES = {"HOST": "Charon", "ANALYST": "Kore"}
 
-PODCAST_STYLE_PROMPT = (
-    "Synthesize speech for the provided dialogue. This note is direction "
-    "only: a relaxed two-host news podcast, natural back-and-forth, warm "
-    "and steady from start to finish. Speak only the dialogue turns."
-)
+# No style prompt for the podcast either: the two-voice casting and the
+# script's conversational writing carry the style, and the prompt channel
+# is Gemini-TTS's documented leak vector.
 
 # Gemini-TTS multi-speaker limit: prompt and dialogue each <=4,000 bytes,
 # combined <=8,000. Pack turns close to the limit so seams are rare, and
@@ -227,10 +225,7 @@ def _synthesize_podcast_on_endpoint(segments, audio_file_path, endpoint):
                 for speaker, text in segment
             ]
         )
-        synthesis_input = texttospeech.SynthesisInput(
-            multi_speaker_markup=markup,
-            prompt=PODCAST_STYLE_PROMPT,
-        )
+        synthesis_input = texttospeech.SynthesisInput(multi_speaker_markup=markup)
         segment_text = " ".join(text for _, text in segment)
         last_error = None
         for attempt in range(3):
