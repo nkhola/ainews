@@ -1734,34 +1734,12 @@ def update_index_page(repo_root, new_date_str):
     archive_html = build_archive_html(files)
     podcast_section_html = build_podcast_section(repo_root)
 
-    # Right-rail ledger: the editions after the lead, at a glance.
-    rail_items = ""
-    for f in files[1:7]:
-        parts = f.replace('.html', '').split('-')
-        date_part = "-".join(parts[:3])
-        label = ("Evening" if parts[3] == "PM" else "Morning") if len(parts) == 4 else "Daily"
-        d = datetime.strptime(date_part, '%Y-%m-%d')
-        rail_items += (f'                <a class="rail-item" href="{f}">'
-                       f'<span>{label} &middot; {d.strftime("%A, %B %-d")}</span>'
-                       f'<span class="go">Read</span></a>\n')
-    this_week_html = ""
-    if rail_items:
-        this_week_html = f"""
-        <div class="rail-week">
-            <div class="rail-head">
-                <span class="kicker accent">Previous editions</span>
-            </div>
-            <hr class="thin-rule">
-            <div class="rail-list">
-{rail_items}            </div>
-        </div>"""
-
     eastern = timezone(timedelta(hours=-4))
     today_line = datetime.now(eastern).strftime('%A, %B %-d, %Y')
 
     index_css = """
         .front-page {
-            max-width: 720px;
+            max-width: clamp(720px, 78vw, 920px);
             margin: 0 auto;
             padding: 28px 24px 40px 24px;
         }
@@ -1982,60 +1960,9 @@ def update_index_page(repo_root, new_date_str):
             background: var(--accent);
         }
 
-        /* Broadsheet: on wide screens the front page opens into two
-           columns under the masthead - lead story left behind a column
-           rule, the Debrief and a ledger of previous editions in the
-           right rail, and the archive flowing into two columns. */
-        .rail-week { padding: 44px 0 10px 0; }
-        .rail-head { margin-bottom: 10px; }
-        .rail-list { display: flex; flex-direction: column; }
-        .rail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 12px;
-            padding: 10px 2px;
-            border-bottom: 1px solid var(--hairline);
-            color: var(--ink);
-            font-size: 0.92rem;
-        }
-        .rail-item:hover { color: var(--accent); }
-        .rail-item .go {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-        .rail-item:hover .go { color: var(--accent); }
-
+        /* Wide screens: the single column breathes wider (fluid, autoscaling)
+           and the archive flows into two newspaper columns. */
         @media (min-width: 1000px) {
-            .front-page { max-width: 1100px; }
-            .broadsheet {
-                display: grid;
-                grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-                gap: 0 44px;
-                align-items: start;
-            }
-            .bs-main {
-                border-right: 1px solid var(--hairline);
-                padding-right: 44px;
-            }
-            .bs-main .lead-excerpt { font-size: 1.6rem; }
-            .bs-rail .podcast-section { padding-top: 30px; }
-            /* the rail is narrow: wrap the feature player like on phones */
-            .bs-rail .phb-player.pp-feature { flex-wrap: wrap; gap: 10px 8px; }
-            .bs-rail .pp-feature .pp-track.pp-wave {
-                order: 10;
-                flex-basis: 100%;
-                min-width: 0;
-            }
-            .bs-rail .pp-feature .pp-btn { width: 44px; height: 44px; }
-            .bs-rail .pp-skip { width: 28px; height: 28px; }
-            .bs-rail .pp-feature .pp-time { margin-left: auto; min-width: 0; font-size: 0.7rem; }
-            .bs-rail .podcast-title { font-size: 1.35rem; }
-            /* the full catalogue lives on podcast.html; keep the rail tight */
-            .bs-rail .podcast-previous { display: none; }
             .week-columns { columns: 2; column-gap: 44px; }
             .week-columns .week-group { break-inside: avoid; }
         }
@@ -2078,16 +2005,8 @@ def update_index_page(repo_root, new_date_str):
             <p class="tagline">Frontier AI &middot; Global Markets &middot; Zero Human Editors</p>
         </header>
         <hr class="double-rule">
-
-        <div class="broadsheet">
-            <div class="bs-main">
 {lead_html}
-            </div>
-            <aside class="bs-rail">
 {podcast_section_html}
-{this_week_html}
-            </aside>
-        </div>
 
         <section class="archive">
             <div class="archive-head">
