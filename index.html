@@ -464,6 +464,64 @@
             background: var(--accent);
         }
 
+        /* Broadsheet: on wide screens the front page opens into two
+           columns under the masthead - lead story left behind a column
+           rule, the Debrief and a ledger of previous editions in the
+           right rail, and the archive flowing into two columns. */
+        .rail-week { padding: 44px 0 10px 0; }
+        .rail-head { margin-bottom: 10px; }
+        .rail-list { display: flex; flex-direction: column; }
+        .rail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+            padding: 10px 2px;
+            border-bottom: 1px solid var(--hairline);
+            color: var(--ink);
+            font-size: 0.92rem;
+        }
+        .rail-item:hover { color: var(--accent); }
+        .rail-item .go {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .rail-item:hover .go { color: var(--accent); }
+
+        @media (min-width: 1000px) {
+            .front-page { max-width: 1100px; }
+            .broadsheet {
+                display: grid;
+                grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+                gap: 0 44px;
+                align-items: start;
+            }
+            .bs-main {
+                border-right: 1px solid var(--hairline);
+                padding-right: 44px;
+            }
+            .bs-main .lead-excerpt { font-size: 1.6rem; }
+            .bs-rail .podcast-section { padding-top: 30px; }
+            /* the rail is narrow: wrap the feature player like on phones */
+            .bs-rail .phb-player.pp-feature { flex-wrap: wrap; gap: 10px 8px; }
+            .bs-rail .pp-feature .pp-track.pp-wave {
+                order: 10;
+                flex-basis: 100%;
+                min-width: 0;
+            }
+            .bs-rail .pp-feature .pp-btn { width: 44px; height: 44px; }
+            .bs-rail .pp-skip { width: 28px; height: 28px; }
+            .bs-rail .pp-feature .pp-time { margin-left: auto; min-width: 0; font-size: 0.7rem; }
+            .bs-rail .podcast-title { font-size: 1.35rem; }
+            /* the full catalogue lives on podcast.html; keep the rail tight */
+            .bs-rail .podcast-previous { display: none; }
+            .week-columns { columns: 2; column-gap: 44px; }
+            .week-columns .week-group { break-inside: avoid; }
+        }
+
         @media (max-width: 600px) {
             .top-bar { flex-wrap: wrap; gap: 8px 12px; }
             .masthead h1 { font-size: 2.3rem; }
@@ -491,6 +549,9 @@
         </header>
         <hr class="double-rule">
 
+        <div class="broadsheet">
+            <div class="bs-main">
+
         <section class="lead-story">
             <div class="lead-meta kicker accent">Latest edition &middot; Evening &middot; Friday, July 10, 2026 &middot; 10 min read</div>
                 <p class="lead-excerpt"><a href="2026-07-10-PM.html">Today marks a significant acceleration in the AI domain with OpenAI's GPT-5.6 launch, pushing the boundaries of agentic capabilities and enterprise integration, while the broader research community grapples with the architectural and ethical challenges of increasingly autonomous AI systems. The competitive arena intensifies as other&hellip;</a></p>
@@ -511,6 +572,8 @@
                 
             </div>
         </section>
+            </div>
+            <aside class="bs-rail">
 
         <section class="podcast-section">
             <div class="podcast-label">
@@ -539,12 +602,30 @@
             </div>
         </section>
 
+        <div class="rail-week">
+            <div class="rail-head">
+                <span class="kicker accent">Previous editions</span>
+            </div>
+            <hr class="thin-rule">
+            <div class="rail-list">
+                <a class="rail-item" href="2026-07-10-AM.html"><span>Morning &middot; Friday, July 10</span><span class="go">Read</span></a>
+                <a class="rail-item" href="2026-07-09-PM.html"><span>Evening &middot; Thursday, July 9</span><span class="go">Read</span></a>
+                <a class="rail-item" href="2026-07-09-AM.html"><span>Morning &middot; Thursday, July 9</span><span class="go">Read</span></a>
+                <a class="rail-item" href="2026-07-08-PM.html"><span>Evening &middot; Wednesday, July 8</span><span class="go">Read</span></a>
+                <a class="rail-item" href="2026-07-08-AM.html"><span>Morning &middot; Wednesday, July 8</span><span class="go">Read</span></a>
+                <a class="rail-item" href="2026-07-07-PM.html"><span>Evening &middot; Tuesday, July 7</span><span class="go">Read</span></a>
+            </div>
+        </div>
+            </aside>
+        </div>
+
         <section class="archive">
             <div class="archive-head">
                 <span class="kicker accent">All briefings</span>
                 <span class="kicker">Morning &amp; Evening, ET</span>
             </div>
             <hr class="thin-rule">
+            <div class="week-columns">
             <div class="week-group">
                 <span class="kicker week-label">Week of July 6, 2026</span>
                 <div class="archive-row"><span class="archive-date">Friday, July 10</span><span class="edition-chips"><a class="edition-chip" href="2026-07-10-AM.html">Morning</a><a class="edition-chip" href="2026-07-10-PM.html">Evening</a></span></div>
@@ -594,6 +675,7 @@
                 <div class="archive-row"><span class="archive-date">Monday, June 8</span><span class="edition-chips"><a class="edition-chip" href="2026-06-08.html">Briefing</a></span></div>
             </div>
 
+            </div>
         </section>
     </div>
 

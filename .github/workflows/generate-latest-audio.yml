@@ -5,9 +5,10 @@ name: Generate Latest Audio
 on:
   workflow_dispatch:
     inputs:
-      description:
-        description: 'Generate audio for ONLY the single most recent briefing (Fast Test)'
+      edition:
+        description: 'Edition to narrate, e.g. 2026-07-10-AM (empty = newest)'
         required: false
+        default: ''
 
 concurrency:
   group: narrate-latest
@@ -56,7 +57,7 @@ jobs:
           LLM_FALLBACK_BASE_URL: ${{ secrets.LLM_FALLBACK_BASE_URL }}
           LLM_FALLBACK_MODEL: ${{ secrets.LLM_FALLBACK_MODEL }}
         run: |
-          FORCE_REGEN=1 python3 .scripts/stage_narrate.py
+          FORCE_REGEN=1 python3 .scripts/stage_narrate.py ${{ github.event.inputs.edition }}
 
       - name: Commit and Push changes
         # always(): persisted LLM scripts must survive a failed TTS step
