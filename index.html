@@ -57,6 +57,8 @@
             min-height: 100vh;
             transition: background 0.25s ease, color 0.25s ease;
             -webkit-font-smoothing: antialiased;
+            /* long tokens (model names, link text) must break, not scroll */
+            overflow-wrap: break-word;
         }
 
         a { color: var(--accent); text-decoration: none; }
@@ -209,10 +211,22 @@
         }
         .pp-rate:hover { color: var(--ink); }
         @media (max-width: 600px) {
-            .phb-player.pp-feature { gap: 8px; }
+            /* controls on one row, waveform full-width on the next:
+               the bar stack has a fixed minimum width that otherwise
+               forces horizontal scrolling on phones */
+            .phb-player.pp-feature { flex-wrap: wrap; gap: 10px 8px; }
+            .pp-feature .pp-track.pp-wave {
+                order: 10;
+                flex-basis: 100%;
+                min-width: 0;
+            }
             .pp-feature .pp-btn { width: 44px; height: 44px; }
-            .pp-skip { width: 26px; height: 26px; }
-            .pp-feature .pp-time { min-width: 0; font-size: 0.68rem; }
+            .pp-skip { width: 28px; height: 28px; }
+            .pp-feature .pp-time {
+                margin-left: auto;
+                min-width: 0;
+                font-size: 0.7rem;
+            }
         }
 
         footer.site-footer {
@@ -451,6 +465,7 @@
         }
 
         @media (max-width: 600px) {
+            .top-bar { flex-wrap: wrap; gap: 8px 12px; }
             .masthead h1 { font-size: 2.3rem; }
             .lead-excerpt { font-size: 1.25rem; }
             .archive-row { flex-direction: column; align-items: flex-start; gap: 6px; }
@@ -483,7 +498,18 @@
             <div class="lead-actions">
                 <a class="read-link" href="2026-07-10-PM.html">Read the full briefing &rarr;</a>
             </div>
-            
+            <div class="phb-player">
+                <audio preload="metadata" src="audio/2026-07-10-PM.mp3"></audio>
+                
+                <button class="pp-btn" aria-label="Play or pause">
+                    <svg class="pp-play" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                    <svg class="pp-pause" style="display:none" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+                </button>
+                
+                <div class="pp-track"><div class="pp-fill"></div></div>
+                <span class="pp-time">0:00 / --:--</span>
+                
+            </div>
         </section>
 
         <section class="podcast-section">
@@ -606,6 +632,7 @@
             };
             audio.addEventListener('loadedmetadata', update);
             audio.addEventListener('timeupdate', update);
+            window.addEventListener('resize', update);
             audio.addEventListener('ended', function() {
                 iconPlay.style.display = ''; iconPause.style.display = 'none';
             });

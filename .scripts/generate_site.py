@@ -321,6 +321,8 @@ BASE_CSS = """
             min-height: 100vh;
             transition: background 0.25s ease, color 0.25s ease;
             -webkit-font-smoothing: antialiased;
+            /* long tokens (model names, link text) must break, not scroll */
+            overflow-wrap: break-word;
         }
 
         a { color: var(--accent); text-decoration: none; }
@@ -473,10 +475,22 @@ BASE_CSS = """
         }
         .pp-rate:hover { color: var(--ink); }
         @media (max-width: 600px) {
-            .phb-player.pp-feature { gap: 8px; }
+            /* controls on one row, waveform full-width on the next:
+               the bar stack has a fixed minimum width that otherwise
+               forces horizontal scrolling on phones */
+            .phb-player.pp-feature { flex-wrap: wrap; gap: 10px 8px; }
+            .pp-feature .pp-track.pp-wave {
+                order: 10;
+                flex-basis: 100%;
+                min-width: 0;
+            }
             .pp-feature .pp-btn { width: 44px; height: 44px; }
-            .pp-skip { width: 26px; height: 26px; }
-            .pp-feature .pp-time { min-width: 0; font-size: 0.68rem; }
+            .pp-skip { width: 28px; height: 28px; }
+            .pp-feature .pp-time {
+                margin-left: auto;
+                min-width: 0;
+                font-size: 0.7rem;
+            }
         }
 
         footer.site-footer {
@@ -522,6 +536,7 @@ AUDIO_PLAYER_JS = """
             };
             audio.addEventListener('loadedmetadata', update);
             audio.addEventListener('timeupdate', update);
+            window.addEventListener('resize', update);
             audio.addEventListener('ended', function() {
                 iconPlay.style.display = ''; iconPause.style.display = 'none';
             });
@@ -783,6 +798,18 @@ def render_briefing_page(base_name, date_str, time_label, reading_time,
             color: var(--ink-soft);
         }
         .brief-body strong { color: var(--ink); }
+        .brief-body table {
+            display: block;
+            max-width: 100%;
+            overflow-x: auto;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .brief-body td, .brief-body th {
+            border: 1px solid var(--hairline);
+            padding: 6px 10px;
+            text-align: left;
+        }
 
         .recent {
             margin-top: 64px;
@@ -1873,6 +1900,7 @@ def update_index_page(repo_root, new_date_str):
         }
 
         @media (max-width: 600px) {
+            .top-bar { flex-wrap: wrap; gap: 8px 12px; }
             .masthead h1 { font-size: 2.3rem; }
             .lead-excerpt { font-size: 1.25rem; }
             .archive-row { flex-direction: column; align-items: flex-start; gap: 6px; }
