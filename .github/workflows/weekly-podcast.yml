@@ -5,7 +5,12 @@ on:
     # Sunday at 23:00 UTC (7:00 PM Eastern) — after the Sunday PM briefing lands
     - cron: '0 23 * * 0'
   workflow_dispatch:
-
+    inputs:
+      force_regen:
+        description: 'Regenerate even if artifacts exist'
+        required: false
+        default: false
+        type: boolean
 jobs:
   generate-podcast:
     runs-on: ubuntu-latest
@@ -39,6 +44,7 @@ jobs:
 
       - name: Generate Weekly Podcast
         env:
+          FORCE_REGEN: ${{ github.event.inputs.force_regen == 'true' && '1' || '' }}
           VERTEX_PROJECT_ID: ${{ secrets.VERTEX_PROJECT_ID }}
           VERTEX_LOCATION: ${{ secrets.VERTEX_LOCATION }}
           GOOGLE_CLOUD_PROJECT: ${{ secrets.VERTEX_PROJECT_ID }}
