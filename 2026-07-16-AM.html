@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Post-Human Briefing — 2026-07-16 Morning</title>
+    <script>(function(){var t=null;try{t=localStorage.getItem('phb-theme')}catch(e){}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}document.documentElement.setAttribute('data-theme',t);})();</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/logo_favicon.png">
+    <style>
+        :root {
+            --bg: #f4eee1;
+            --surface: #faf6ea;
+            --surface-2: #ece4d1;
+            --ink: #20242e;
+            --ink-soft: #494e5c;
+            --muted: #78715f;
+            --accent: #b0512b;
+            --accent-hover: #8f3f1e;
+            --ochre: #a5762a;
+            --teal: #3d6a78;
+            --hairline: #ddd3bd;
+            --rule: #20242e;
+            --font-serif: 'Fraunces', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        [data-theme="dark"] {
+            --bg: #14161d;
+            --surface: #1a1d26;
+            --surface-2: #232733;
+            --ink: #eae5d6;
+            --ink-soft: #c2bcab;
+            --muted: #8f8a79;
+            --accent: #d97950;
+            --accent-hover: #e89570;
+            --ochre: #cf9c45;
+            --teal: #7aa7b5;
+            --hairline: #2d3140;
+            --rule: #eae5d6;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font-sans);
+            line-height: 1.7;
+            min-height: 100vh;
+            transition: background 0.25s ease, color 0.25s ease;
+            -webkit-font-smoothing: antialiased;
+            /* long tokens (model names, link text) must break, not scroll */
+            overflow-wrap: break-word;
+        }
+
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { color: var(--accent-hover); }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid var(--hairline);
+            border-radius: 50%;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        .theme-toggle:hover { color: var(--ink); border-color: var(--muted); }
+        [data-theme="dark"] .icon-moon { display: none; }
+        [data-theme="light"] .icon-sun { display: none; }
+
+        .kicker {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .double-rule {
+            border: 0;
+            border-top: 3px solid var(--rule);
+            border-bottom: 1px solid var(--rule);
+            height: 3px;
+            margin: 0;
+        }
+        .thin-rule {
+            border: 0;
+            border-top: 1px solid var(--hairline);
+            margin: 0;
+        }
+
+        /* Audio player */
+        .phb-player {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0 2px 0;
+        }
+        .phb-player button.pp-btn {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent);
+            color: var(--bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+            padding: 0;
+        }
+        .phb-player button.pp-btn:hover { background: var(--accent-hover); }
+        .phb-player .pp-track {
+            flex-grow: 1;
+            height: 3px;
+            background: var(--hairline);
+            cursor: pointer;
+            position: relative;
+        }
+        .phb-player .pp-fill {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 0%;
+            background: var(--accent);
+        }
+        .phb-player .pp-time {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--muted);
+            min-width: 88px;
+            text-align: right;
+        }
+        .phb-player.pp-error .pp-time { min-width: 0; }
+
+        /* Waveform player variant (progress = clipped duplicate bar layer) */
+        .phb-player.pp-feature { gap: 18px; padding-top: 6px; }
+        .pp-feature .pp-btn { width: 56px; height: 56px; }
+        .pp-track.pp-wave {
+            height: 48px;
+            background: transparent;
+            position: relative;
+        }
+        .wave-bars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 100%;
+            width: 100%;
+        }
+        .wave-bars span {
+            flex: 1 1 0;
+            min-width: 2px;
+            background: var(--hairline);
+            border-radius: 1px;
+        }
+        .pp-wave .pp-fill {
+            background: transparent;
+            overflow: hidden;
+        }
+        .wave-inner { height: 48px; }
+        .wave-played span { background: var(--accent); }
+
+        .pp-skip {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s ease;
+        }
+        .pp-skip:hover { color: var(--ink); }
+        .pp-rate {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            background: var(--surface-2);
+            border: none;
+            padding: 4px 10px;
+            cursor: pointer;
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+            transition: color 0.15s ease;
+            min-width: 46px;
+            text-align: center;
+        }
+        .pp-rate:hover { color: var(--ink); }
+        @media (max-width: 600px) {
+            /* controls on one row, waveform full-width on the next:
+               the bar stack has a fixed minimum width that otherwise
+               forces horizontal scrolling on phones */
+            .phb-player.pp-feature { flex-wrap: wrap; gap: 10px 8px; }
+            .pp-feature .pp-track.pp-wave {
+                order: 10;
+                flex-basis: 100%;
+                min-width: 0;
+            }
+            .pp-feature .pp-btn { width: 44px; height: 44px; }
+            .pp-skip { width: 28px; height: 28px; }
+            .pp-feature .pp-time {
+                margin-left: auto;
+                min-width: 0;
+                font-size: 0.7rem;
+            }
+        }
+
+        footer.site-footer {
+            max-width: 720px;
+            margin: 72px auto 0 auto;
+            padding: 24px 24px 48px 24px;
+            border-top: 1px solid var(--hairline);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            text-align: center;
+            line-height: 2;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 2px;
+            width: 0%;
+            background: var(--accent);
+            z-index: 10;
+        }
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 28px 24px 40px 24px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--hairline);
+        }
+        .top-nav .nav-left, .top-nav .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .top-nav a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .top-nav a:hover { color: var(--ink); }
+
+        .briefing-head {
+            padding: 44px 0 28px 0;
+            text-align: left;
+        }
+        .briefing-head .kicker { color: var(--accent); }
+        .briefing-head h1 {
+            font-family: var(--font-serif);
+            font-size: 2.7rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.12;
+            margin: 10px 0 12px 0;
+        }
+        .briefing-head .dateline {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .listen-block {
+            border-top: 1px solid var(--hairline);
+            border-bottom: 1px solid var(--hairline);
+            padding: 16px 0;
+            margin-bottom: 8px;
+        }
+        /* Reading page gets a slightly quieter waveform than the podcast */
+        .listen-block .pp-btn { width: 46px; height: 46px; }
+        .listen-block .pp-track.pp-wave, .listen-block .wave-inner { height: 38px; }
+
+        section.brief-section { padding-top: 40px; }
+        .section-head { margin-bottom: 8px; }
+        .section-head h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 10px 0 0 0;
+        }
+        .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
+        .brief-body > p:first-of-type::first-letter {
+            font-family: var(--font-serif);
+            font-size: 3.4em;
+            font-weight: 600;
+            float: left;
+            line-height: 0.82;
+            padding: 4px 10px 0 0;
+            color: var(--accent);
+        }
+        .brief-body h3 {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin: 2.2em 0 0.5em 0;
+            letter-spacing: -0.01em;
+        }
+        .brief-body h4 {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ochre);
+            margin: 1.6em 0 0.4em 0;
+        }
+        .brief-body p { margin: 0 0 1.2em 0; }
+        .brief-body ul { padding-left: 1.3em; margin: 0 0 1.2em 0; }
+        .brief-body li { margin-bottom: 0.5em; }
+        .brief-body a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+            text-underline-offset: 3px;
+        }
+        .brief-body a:hover { color: var(--accent-hover); text-decoration-color: var(--accent-hover); }
+        .brief-body blockquote {
+            border-left: 2px solid var(--ochre);
+            margin: 1.4em 0;
+            padding: 2px 0 2px 18px;
+            font-family: var(--font-serif);
+            font-style: italic;
+            color: var(--ink-soft);
+        }
+        .brief-body strong { color: var(--ink); }
+        .brief-body table {
+            display: block;
+            max-width: 100%;
+            overflow-x: auto;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .brief-body td, .brief-body th {
+            border: 1px solid var(--hairline);
+            padding: 6px 10px;
+            text-align: left;
+        }
+
+        .recent {
+            margin-top: 64px;
+            padding-top: 8px;
+        }
+        .recent .kicker { display: block; margin: 14px 0 10px 0; }
+        .recent-list { display: flex; flex-direction: column; }
+        .recent-list a {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+            padding: 11px 2px;
+            border-bottom: 1px solid var(--hairline);
+            color: var(--ink);
+            font-size: 0.95rem;
+        }
+        .recent-list a:hover { color: var(--accent); }
+        .recent-list a .go {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .recent-list a:hover .go { color: var(--accent); }
+
+        @media (max-width: 600px) {
+            .briefing-head h1 { font-size: 2.1rem; }
+        }
+</style>
+</head>
+<body>
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="page">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html">&larr; The Post-Human Briefing</a>
+            </div>
+            <div class="nav-right">
+                <a href="https://www.khola.blog/" target="_blank" rel="noopener">Khola.Blog</a>
+                <button class="theme-toggle" onclick="phbToggleTheme()" aria-label="Toggle color theme" title="Toggle theme"><svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+            </div>
+        </nav>
+
+        <header class="briefing-head">
+            <span class="kicker">The Post-Human Briefing</span>
+            <h1>Morning Briefing</h1>
+            <div class="dateline">Thursday, July 16, 2026 &nbsp;&middot;&nbsp; 14 min read</div>
+        </header>
+
+        <div class="listen-block">
+            <span class="kicker">Listen to this briefing</span>
+            <div class="phb-player pp-feature">
+                <audio preload="metadata" src="audio/2026-07-16-AM.mp3"></audio>
+                <button class="pp-skip pp-back" aria-label="Back 15 seconds" title="Back 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 5 2 10 7 10"></polyline><path d="M3.8 14.7a8.5 8.5 0 1 0 1.2-8.2L2 10"></path></svg></button>
+                <button class="pp-btn" aria-label="Play or pause">
+                    <svg class="pp-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                    <svg class="pp-pause" style="display:none" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+                </button>
+                <button class="pp-skip pp-fwd" aria-label="Forward 15 seconds" title="Forward 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 5 22 10 17 10"></polyline><path d="M20.2 14.7A8.5 8.5 0 1 1 19 6.5L22 10"></path></svg></button>
+                <div class="pp-track pp-wave"><div class="wave-bars"><span style="height:90%"></span><span style="height:66%"></span><span style="height:22%"></span><span style="height:21%"></span><span style="height:37%"></span><span style="height:34%"></span><span style="height:61%"></span><span style="height:21%"></span><span style="height:29%"></span><span style="height:46%"></span><span style="height:48%"></span><span style="height:57%"></span><span style="height:27%"></span><span style="height:80%"></span><span style="height:89%"></span><span style="height:88%"></span><span style="height:68%"></span><span style="height:44%"></span><span style="height:74%"></span><span style="height:73%"></span><span style="height:89%"></span><span style="height:86%"></span><span style="height:39%"></span><span style="height:73%"></span><span style="height:81%"></span><span style="height:24%"></span><span style="height:26%"></span><span style="height:35%"></span><span style="height:79%"></span><span style="height:58%"></span><span style="height:67%"></span><span style="height:66%"></span><span style="height:46%"></span><span style="height:22%"></span><span style="height:52%"></span><span style="height:51%"></span><span style="height:67%"></span><span style="height:64%"></span><span style="height:91%"></span><span style="height:51%"></span><span style="height:59%"></span><span style="height:76%"></span><span style="height:78%"></span><span style="height:87%"></span><span style="height:57%"></span><span style="height:36%"></span><span style="height:45%"></span><span style="height:44%"></span><span style="height:24%"></span><span style="height:74%"></span><span style="height:30%"></span><span style="height:29%"></span><span style="height:45%"></span><span style="height:42%"></span><span style="height:69%"></span><span style="height:29%"></span></div><div class="pp-fill"><div class="wave-inner"><div class="wave-bars wave-played"><span style="height:90%"></span><span style="height:66%"></span><span style="height:22%"></span><span style="height:21%"></span><span style="height:37%"></span><span style="height:34%"></span><span style="height:61%"></span><span style="height:21%"></span><span style="height:29%"></span><span style="height:46%"></span><span style="height:48%"></span><span style="height:57%"></span><span style="height:27%"></span><span style="height:80%"></span><span style="height:89%"></span><span style="height:88%"></span><span style="height:68%"></span><span style="height:44%"></span><span style="height:74%"></span><span style="height:73%"></span><span style="height:89%"></span><span style="height:86%"></span><span style="height:39%"></span><span style="height:73%"></span><span style="height:81%"></span><span style="height:24%"></span><span style="height:26%"></span><span style="height:35%"></span><span style="height:79%"></span><span style="height:58%"></span><span style="height:67%"></span><span style="height:66%"></span><span style="height:46%"></span><span style="height:22%"></span><span style="height:52%"></span><span style="height:51%"></span><span style="height:67%"></span><span style="height:64%"></span><span style="height:91%"></span><span style="height:51%"></span><span style="height:59%"></span><span style="height:76%"></span><span style="height:78%"></span><span style="height:87%"></span><span style="height:57%"></span><span style="height:36%"></span><span style="height:45%"></span><span style="height:44%"></span><span style="height:24%"></span><span style="height:74%"></span><span style="height:30%"></span><span style="height:29%"></span><span style="height:45%"></span><span style="height:42%"></span><span style="height:69%"></span><span style="height:29%"></span></div></div></div></div>
+                <span class="pp-time">0:00 / --:--</span>
+                <button class="pp-rate" aria-label="Playback speed" title="Playback speed">1&times;</button>
+            </div>
+        </div>
+
+        <section class="brief-section" id="ai-news">
+            <div class="section-head">
+                <hr class="double-rule">
+                <h2>Artificial Intelligence</h2>
+            </div>
+            <div class="brief-body">
+<h3>EXECUTIVE SUMMARY</h3>
+<p>Today's AI landscape reveals a dual acceleration: a rapid expansion of open-source models and agentic systems, juxtaposed with urgent, complex challenges in ensuring their safety, interpretability, and efficient deployment. The industry is grappling with how to scale AI capabilities while simultaneously building robust guardrails against emergent vulnerabilities and ensuring practical, reliable integration into high-stakes domains.</p>
+<h3>The Open-Source Imperative and its Growing Pains</h3>
+<p>The open-source AI ecosystem continues its vigorous expansion, with new, highly performant models entering the arena. <a href="https://www.latent.space/p/ainews-thinkys-inkling-975b-a41b">Thinking Machines released "Inkling"</a>, quickly claiming the top spot for American open-weight models, while the <a href="https://www.reddit.com/r/LocalLLaMA/comments/1uxao7y/german_ai_consortium_releases_soofi_s_an_open_30b">German AI consortium unveiled Soofi S</a>, excelling in both English and German benchmarks. Google also continues to refine its offerings, <a href="https://www.reddit.com/r/LocalLLaMA/comments/1uxfu4k/google_is_updating_gemma_4s_chat_templates/">updating Gemma 4's chat templates</a> to improve tool calling and reduce "laziness." This proliferation underscores the sentiment that <a href="https://www.reddit.com/r/LocalLLaMA/comments/1ux9xze/the_best_model_is_the_one_you_can_actually_run/">the best model is often the one you can actually run</a>, driving innovation in efficiency, such as the <a href="https://www.reddit.com/r/LocalLLaMA/comments/1uxm2d8/hy3_1bit_8993_gb/">Hy3 1Bit quantization</a>.</p>
+<p>However, this rapid decentralization comes with significant challenges, particularly around trust and security. xAI faced considerable backlash over its Grok CLI tool's default data upload behavior, leading to a swift, albeit reactive, decision to <a href="https://simonwillison.net/2026/Jul/15/grok-build/#atom-everything">open-source the entire Grok Build codebase</a> under an Apache 2.0 license. This move, while aiming to rebuild trust, highlights the inherent tension between rapid development and robust privacy safeguards. Meanwhile, <a href="https://simonwillison.net/2026/Jul/16/linus-torvalds/#atom-everything">Linus Torvalds weighed in</a>, asserting that AI is a "clearly useful tool" and dismissing anti-AI sentiment within the open-source community, signaling a broader acceptance of AI's utility. The temporary <a href="https://www.reddit.com/r/LocalLLaMA/comments/1uxwjl9/looks_like_hugging_face_is_down/">Hugging Face outage</a> also serves as a reminder of the critical infrastructure dependencies underlying this burgeoning ecosystem.</p>
+<h4>Why it matters</h4>
+<p>The open-source movement democratizes AI capabilities, but the Grok incident illustrates that transparency in code must be matched by transparency and ethical defaults in data handling to maintain user trust and prevent privacy breaches, a fundamental aspect of information security.</p>
+<h3>Agentic AI: Navigating Autonomy, Safety, and Control</h3>
+<p>The push towards autonomous, agentic AI systems is accelerating, but with it comes a heightened focus on control, safety, and reliability. OpenAI's <a href="https://openai.com/index/unlocking-self-improvement-gpt-red">GPT-Red</a> demonstrates a self-play approach to improve AI safety and prompt injection robustness, an essential feedback mechanism for complex systems. This is critical given real-world vulnerabilities, such as the <a href="https://simonwillison.net/2026/Jul/15/claude-web-fetch-exfiltration/#atom-everything">Claude web_fetch exfiltration exploit</a>, where an attacker successfully leveraged nested links to extract sensitive user data, bypassing Anthropic's intended safeguards.</p>
+<p>The deployment of agents in physical and high-stakes domains is also seeing significant advancements and new challenges. <a href="https://arxiv.org/abs/2607.13049">SPINE</a> offers an agentic framework for systematically debugging and deploying bimanual robots, bridging the cyber-physical gap with multi-agent workflows. For long-horizon agents, <a href="https://arxiv.org/abs/2607.13157">Oracle Agent Memory</a> proposes a database-native memory substrate to manage task state, user preferences, and procedural knowledge across sessions, addressing a key systems problem for sustained autonomy. The complexity of managing these systems is further acknowledged by the <a href="https://arxiv.org/abs/2607.13285">Harness Handbook</a>, a behavior-centric representation for making evolving agent harnesses readable and editable.</p>
+<p>The financial implications of agentic AI are also being addressed, with a new <a href="https://arxiv.org/abs/2607.13230">AI-native insurance framework</a> for underwriting and pricing risks associated with autonomous AI deployments, treating insurance as both an operational cost and a regulatory mechanism. However, the limitations remain stark in critical applications: a study on <a href="https://arxiv.org/abs/2607.12051">agentic LLM systems for breast cancer treatment recommendations</a> found persistent clinically relevant failures, despite tool use and increased autonomy, highlighting that unsupervised clinical use is still far off. Furthermore, <a href="https://arxiv.org/abs/2607.13172">DROPJ</a> introduces a human-centered method for learning safe agent behavior from preferences and justifications via world models, emphasizing human oversight in safety-critical environments.</p>
+<h4>Why it matters</h4>
+<p>The increasing autonomy of AI agents demands a sophisticated control theory approach, integrating self-improvement mechanisms, robust memory architectures, and human-in-the-loop safety protocols to mitigate emergent risks and ensure reliable operation in complex, real-world environments.</p>
+<h3>Efficiency and Specialized Deployment of Foundation Models</h3>
+<p>The practical deployment of foundation models is increasingly driven by efficiency and specialization. The <a href="https://arxiv.org/abs/2607.13239">Foundation Model Deployment Portfolio problem</a> addresses how to minimize the total cost of ownership for AI in transportation management, demonstrating that a mixed portfolio leveraging open-source APIs can significantly reduce costs while meeting performance constraints. This aligns with the broader trend of optimizing models for specific tasks: <a href="https://arxiv.org/abs/2607.11933">transforming LLMs into efficient cross-encoders via knowledge distillation</a> for RAG reranking achieves substantial accuracy gains with reduced inference costs.</p>
+<p>The challenge of data leakage and temporal validity in LLMs is being tackled by <a href="https://arxiv.org/abs/2607.11889">scaling Point-in-Time Language Models</a>, which are trained exclusively on chronologically filtered data to eliminate lookahead bias, demonstrating that performance gaps with unrestricted models can be narrowed through scale. In specialized domains, <a href="https://arxiv.org/abs/2607.13115">small language models are improving molecular property prediction</a> by using graph-based tools, showcasing the power of agentic tool use to overcome inherent architectural limitations (e.g., structural blindness from SMILES strings). However, the need for domain-specific evaluation is critical, as highlighted by <a href="https://arxiv.org/abs/2607.11891">CANDI-QA</a>, a new dataset for evaluating LLMs in niche domains like medical diagnostics, revealing limitations without enhanced contextual or symbolic integration.</p>
+<h4>Why it matters</h4>
+<p>Efficient and specialized deployment of AI models is paramount for practical adoption, requiring a focus on cost-optimal resource allocation, knowledge distillation, and the strategic integration of domain-specific tools and datasets to achieve reliable performance.</p>
+<h3>AI as a Catalyst for Scientific Discovery and Knowledge Formalization</h3>
+<p>AI is rapidly evolving from a scientific tool to an active participant in the scientific process, driving new paradigms for discovery and knowledge management. <a href="https://www.latent.space/p/the-lab-of-the-future-should-feel">Lila Sciences envisions the "lab of the future"</a> as a data center, betting on science itself as the next untapped source of training data, with robots automating data generation. Google DeepMind is also focusing on <a href="https://deepmind.google/blog/our-approach-to-bioresilience/">bioresilience</a>, applying AI models to understand and enhance biological systems.</p>
+<p>Beyond data generation, AI is transforming scientific collaboration and knowledge representation. <a href="https://arxiv.org/abs/2607.13220">Mycelium</a> introduces "Networked Intelligence," an active shared workspace that connects human researchers and AI agents, routing context-dependent observations and hypotheses to inform decisions, effectively scaling collaborative science. This approach acknowledges that complex scientific problems are rarely solved by single reasoners. Complementing this, <a href="https://arxiv.org/abs/2607.13292">Theory-Level Autoformalization</a> advocates for formalizing complete scientific theories, not just isolated statements, into structured, machine-verifiable knowledge bases, enabling deeper computational reasoning. Crucially, ensuring the integrity and provenance of scientific data is addressed by <a href="https://arxiv.org/abs/2607.13037">OriginBlame</a>, a record- and token-level data provenance system that enables precise data removal and unlearning, vital for ethical data management in scientific datasets.</p>
+<h4>Why it matters</h4>
+<p>AI is transitioning from a passive analytical tool to an active, collaborative agent in scientific discovery, demanding new frameworks for data generation, knowledge formalization, and transparent data provenance to accelerate research.</p>
+<h3>Trade-offs &amp; Evolution</h3>
+<p>The day's developments highlight several critical trade-offs and evolving understandings in AI:</p>
+<ol>
+<li><strong>Openness vs. Security:</strong> The immediate open-sourcing of <a href="https://simonwillison.net/2026/Jul/15/grok-build/#atom-everything">xAI's Grok Build</a> following a privacy scandal demonstrates a reactive shift towards transparency and community trust, but also underscores the inherent tension between rapid feature deployment and robust security-by-design in open-source projects. This contrasts with the more controlled, self-play based <a href="https://openai.com/index/unlocking-self-improvement-gpt-red">GPT-Red</a> approach to robustness.</li>
+<li><strong>LLM Generalization vs. Specialized Performance:</strong> While LLMs show impressive general capabilities, their limitations in specialized, high-stakes domains are becoming clearer. The <a href="https://arxiv.org/abs/2607.11893">failure of state-of-the-art LLMs in Braille translation</a> and the <a href="https://arxiv.org/abs/2607.12051">persistent clinical failures in breast cancer treatment recommendations</a> demonstrate that general models still require significant task-specific supervision or tool integration to achieve reliable, dependable results. This reinforces the need for benchmarks like <a href="https://arxiv.org/abs/2607.11891">CANDI-QA</a> for niche domains.</li>
+<li><strong>Apparent Capability vs. Underlying Mechanism:</strong> Research into LLM cognition, such as the <a href="https://arxiv.org/abs/2607.11945">belief-reality separation</a> study, reveals specific architectural mechanisms (value slots, routers) responsible for complex behaviors. Simultaneously, studies like <a href="https://arxiv.org/abs/2607.12079">fMRIFlamingo</a> show that high-capacity language models can <em>obscure</em> failures in brain decoding, where apparent success is driven by the language prior rather than genuine neural input. This "right answer, wrong reasoning" phenomenon is further explored by <a href="https://arxiv.org/abs/2607.13069">Interventional Grounding Audits</a>, emphasizing the need for rigorous, mechanistic interpretability beyond superficial performance.</li>
+<li><strong>Performance vs. Stability in Optimization:</strong> The <a href="https://arxiv.org/abs/2607.11944">Prompt Optimization Coupling Effect (POCE)</a> reveals that combining stochastic optimization signals can simultaneously improve performance and amplify variance, challenging the assumption that performance gains always translate to more stable systems. This highlights the need to evaluate prompt optimization systems on both accuracy and stability.</li>
+</ol>
+<h3>THE BOTTOM LINE</h3>
+<p>The increasing complexity and autonomy of AI systems necessitate a fundamental shift towards rigorous, mechanistic understanding and robust control mechanisms, moving beyond superficial performance metrics to ensure safety, reliability, and genuine utility in real-world applications.</p>
+            </div>
+        </section>
+
+        <section class="brief-section" id="finance-news">
+            <div class="section-head">
+                <hr class="double-rule">
+                <h2>Markets &amp; Macro</h2>
+            </div>
+            <div class="brief-body">
+<p>The market is grappling with the dual forces of an expanding AI ecosystem facing valuation skepticism and intensifying geopolitical instability, particularly in the Middle East, which is driving energy prices higher and complicating the inflation outlook. While recent inflation data had bond traders dialing back Fed hike bets, the renewed risk premium in oil markets introduces a hawkish counter-narrative, creating a volatile macro environment.</p>
+<h3>The AI Engine: Unchecked Growth Meets Valuation Reality</h3>
+<p>The AI boom continues to fuel significant activity across the tech sector, with Taiwan Semiconductor Manufacturing Co (TSM) reporting a 77% surge in Q2 net profit and raising its capital spending forecast due to sustained demand for AI processors <a href="https://www.proactiveinvestors.com/companies/news/1095573/tsmc-q2-profit-beats-estimates-ups-spending-as-ai-boom-continues-1095573.html?.tsrc=rss">TSMC Q2 profit beats estimates, ups spending as AI boom continues</a>. This momentum extends to private markets, where Nvidia-backed AI infrastructure startup Fireworks secured $1.51 billion in funding at a $17.5 billion valuation <a href="https://finance.yahoo.com/technology/ai/articles/nvidia-backed-startup-fireworks-valued-145247058.html?.tsrc=rss">Nvidia-backed startup Fireworks valued at $17.5 billion in latest funding</a>. Alphabet (GOOG/GOOGL) is also expected to deliver robust Q2 results, buoyed byhealthy ad growth and Gemini momentum, according to BofA <a href="https://finance.yahoo.com/markets/stocks/articles/alphabet-seen-delivering-robust-q2-145707344.html?.tsrc=rss">Alphabet Seen Delivering Robust Q2 on Ad Growth, Gemini Momentum, BofA Says</a>. The demand for AI infrastructure is also driving executive moves, with Soluna naming a former Microsoft executive as chief development officer to oversee AI/HPC data-center projects <a href="https://blockspace.media/insight/soluna-names-ryan-carver-chief-development-officer/">Soluna names former Microsoft executive Ryan Carver chief development officer</a>. ScaleFlux's CEO will keynote alongside Nvidia's VP of Storage Technology, highlighting evolving AI infrastructure and memory solutions <a href="https://finance.yahoo.com/technology/ai/articles/scaleflux-ceo-deliver-fms-2026-143500797.html?.tsrc=rss">ScaleFlux CEO to Deliver FMS 2026 Keynote with NVIDIA on Memory Solutions to Scale AI Data Pipeline</a>. China's AI start-up Moonshot is also poised to launch a model challenging Anthropic's lead, signaling a narrowing gap in frontier AI capabilities <a href="https://www.ft.com/content/c6ecd8ce-c441-4d7c-aea6-fae3e28fb6ff?syn-25a6b1a6=1">Chinese AI start-up Moonshot to launch model challenging Anthropic’s lead</a>.</p>
+<p>However, skepticism about the immediate return on investment for AI is emerging. JPMorgan Chase CEO Jamie Dimon noted that while AI reduces jobs in some areas, it hasn't yet shrunk operating costs <a href="https://finance.yahoo.com/video/companies-getting-return-investment-ai-150000234.html?.tsrc=rss">Are companies getting a return on investment from AI yet?</a>. This sentiment aligns with a broader market concern, as chip stocks declined amid worries that massive AI investments might not justify current lofty valuations <a href="https://www.bloomberg.com/news/articles/2026-07-15/stock-market-today-dow-s-p-live-updates">Chip Stocks Hit by AI Spending Worry as Oil Climbs: Markets Wrap</a>. An AI critic even warns of a "Lehman Bros. moment" for the AI bubble, predicting a fallout for tech stocks and the entire market <a href="https://www.marketwatch.com/story/the-lehman-brothers-of-the-ai-bubble-is-coming-says-this-critic-warning-of-a-fallout-for-tech-and-the-entire-market-eec47e4d?mod=mw_rss_topstories">The Lehman Bros. moment of the AI bubble is coming, says this critic warning of fallout for tech stocks and the entire market</a>. The political dimension also complicates the chip narrative, with US lawmakers urging a ban on Chinese memory chips, despite Apple lobbying for clearance to buy from China’s CXMT during a global memory shortage <a href="https://www.ft.com/content/9e7cdf3c-2e52-492f-afeb-b63d86a53ce6?syn-25a6b1a6=1">US lawmakers urge Trump administration to ban Chinese memory chips</a>. Even General Electric, which boosted its profit outlook, saw its stock fall as booming order growth cooled, suggesting that even strong performers face scrutiny on growth sustainability <a href="https://www.marketwatch.com/story/ge-boosts-profit-outlook-but-stock-falls-as-booming-order-growth-cools-f5184533?mod=mw_rss_topstories">GE boosts profit outlook, but stock falls as booming order growth cools</a>. Micron stock also continues to fall, with a wide range of outcomes priced by the options market, reflecting uncertainty around its AI darling status <a href="https://www.fool.com/investing/2026/07/16/why-is-micron-stock-still-falling/">Why Is Micron Stock Still Falling?</a> and <a href="https://www.trefis.com/articles/607480/just-how-wide-is-the-range-of-outcomes-for-micron-stock/2026-07-16?.tsrc=rss">Just How Wide Is The Range Of Outcomes For Micron Stock?</a>.</p>
+<h4>Why it matters</h4>
+<p>The divergence between continued investment and production growth in AI infrastructure and the growing skepticism about immediate financial returns signals a potential re-evaluation of AI sector valuations, particularly for companies not directly producing the foundational hardware.</p>
+<h3>Geopolitical Tensions and Inflationary Pressures</h3>
+<p>The Middle East is once again a flashpoint, with the US hitting a tanker heading for Kharg Island under a renewed Iran blockade, threatening global oil supplies and escalating military clashes over the Strait of Hormuz <a href="https://www.ft.com/content/c2325003-2199-491a-83d4-c1e70c7e8e44">US hits tanker heading for Kharg Island under renewed Iran blockade</a>. Former US Defense Chief Mark Esper warns that the US will not win an Iran war from the air, suggesting more bombing will not change Tehran's behavior <a href="https://www.ft.com/content/80245363-32d8-4fe6-805f-c4e3dec6279c?syn-25a6b1a6=1">US will not win Iran war from the air, Trump’s ex-defence chief warns</a>. These tensions have already led to a spike in oil prices and the dollar, causing emerging market currencies to dip <a href="https://www.bloomberg.com/news/articles/2026-07-16/emerging-stocks-slump-as-korea-curbs-fan-selloff-in-chip-giants">Emerging Currencies Dip as Oil, Dollar Spike Over Iran Worries</a>. J.P. Morgan strategists highlight a looming supply crunch in oil, exacerbated by constraints on Russia's refining system, adding to the crisis <a href="https://www.marketwatch.com/story/oil-is-facing-a-supply-crunch-and-the-war-in-iran-isnt-the-only-problem-60ce7e74?mod=mw_rss_topstories">Oil is facing a supply crunch — and the war in Iran isn’t the only problem</a>. This rekindled geopolitical risk has also led to a decline in gold prices, as it paradoxically reignites expectations for Fed rate hikes to contain stubborn inflation <a href="https://www.bloomberg.com/news/articles/2026-07-15/gold-steadies-as-soft-inflation-war-risk-cloud-fed-rate-outlook">Gold Falls as US-Iran Hostilities Rekindles Fed Hike Bets</a>. Meanwhile, Ukraine faces internal political turmoil, with its outgoing defense minister attacking Zelenskyy as thousands protest his firing, a move seen as a setback for the country's military efforts <a href="https://www.ft.com/content/06865b90-5b62-46c5-ae8d-147842b41cd0?syn-25a6b1a6=1">Ukraine’s outgoing defence minister attacks Zelenskyy as thousands protest against firing</a> and <a href="https://www.ft.com/content/fd757904-212b-40a8-86cb-0b36d1af6b6b?syn-25a6b1a6=1">Ukraine’s self-defeating reshuffle</a>.</p>
+<h4>Why it matters</h4>
+<p>Escalating geopolitical tensions, particularly in the Middle East, directly impact global energy prices and supply chains, creating renewed inflationary pressures that could force central banks to maintain a hawkish stance despite recent softer inflation data.</p>
+<h3>Trade-offs &amp; Evolution: Fed Expectations and Market Sentiment</h3>
+<p>Recent benign inflation reports had bond traders bailing on Fed hike wagers, exiting positions bought in anticipation of further rate increases this year <a href="https://www.bloomberg.com/news/articles/2026-07-16/bond-traders-bail-on-fed-hike-wagers-on-softer-inflation-outlook">Bond Traders Bail on Fed Hike Wagers on Softer Inflation Outlook</a>. However, the resurgence of Middle East tensions and the associated oil price spike are now rekindling those very Fed hike bets, illustrating the fragile and reactive nature of market expectations <a href="https://www.bloomberg.com/news/articles/2026-07-15/gold-steadies-as-soft-inflation-war-risk-cloud-fed-rate-outlook">Gold Falls as US-Iran Hostilities Rekindles Fed Hike Bets</a>. This dynamic is creating a tug-of-war between disinflationary hopes and renewed geopolitical inflation risks. In the broader market, US stocks declined, with lower tech stocks dragging markets <a href="https://seekingalpha.com/news/4614526-sp500-nasdaq-composite-dji-stock-market-news">U.S. stocks decline as lower tech stocks drag markets</a>. Despite this, the US economy shows signs of resilience, with retail sales getting a boost from car buyers and Amazon Prime Day, signaling continued consumer spending <a href="https://www.marketwatch.com/story/retail-sales-get-boost-from-car-buyers-and-amazon-prime-day-economy-hasnt-lost-its-mojo-70fe8733?mod=mw_rss_topstories">Retail sales get a boost from car buyers and Amazon Prime Day. The economy hasn’t lost its mojo.</a>. Even with market volatility, some investors are finding opportunities in small-cap outperformance and dividend stocks <a href="https://www.marketwatch.com/story/small-cap-outperformance-is-persisting-and-these-15-quality-stocks-pay-rich-dividends-5a814386?mod=mw_rss_topstories">Small-cap outperformance is persisting — and these 15 quality stocks pay rich dividends</a> and <a href="https://www.fool.com/investing/2026/07/16/the-smartest-dividend-stocks-to-buy-with-1000-in/?.tsrc=rss">The Smartest Dividend Stocks to Buy With $1,000 in July and Never Sell</a>.</p>
+<h4>Why it matters</h4>
+<p>The market's narrative on Fed policy and inflation is highly susceptible to external shocks, particularly energy price movements, leading to rapid shifts in rate expectations and overall market sentiment.</p>
+<h3>Sector-Specific Dynamics and Emerging Trends</h3>
+<p>Beyond the macro, specific sectors are navigating their own challenges and opportunities. The EV market remains competitive, with Tesla chasing robotaxis while Rivian's R2 launch is seen as a compelling play despite its stock falling 12% in H1 2026 due to a difficult EV environment and increased spending <a href="https://www.fool.com/investing/2026/07/16/tesla-and-rivian-are-both-down-12-heres-the-better/">Tesla and Rivian Are Both Down 12%. Here's the Better Buy for the Second Half of 2026.</a> and <a href="https://www.fool.com/investing/2026/07/16/why-is-rivian-stock-fell-12-in-the-first-half-of-2026/">Why Rivian Stock Fell 12% in the First Half of 2026</a>. Li Auto launched an updated L6 at the same price as the prior version, indicating pricing pressure in the Chinese EV market <a href="https://seekingalpha.com/news/4614565-li-auto-launches-an-updated-l6-at-the-same-price-as-the-prior-version?utm_source=feed_news_all&amp;utm_medium=referral&amp;feed_item_type=news">Li Auto launches an updated L6 at the same price as the prior version</a>. In the space sector, SpaceX's stock dipped below its IPO price ahead of its 13th Starship test flight, highlighting the speculative nature of "betting on Elon" <a href="https://finance.yahoo.com/video/spacex-stock-dips-below-ipo-price-ahead-of-starship-test-flight-its-a-bet-on-elon-150934643.html?.tsrc=rss">SpaceX stock dips below IPO price ahead of Starship test flight: 'It's a bet on Elon'</a>. AST SpaceMobile and Rocket Lab present a contrast between a larger vision and current revenue generation <a href="https://www.fool.com/investing/2026/07/16/ast-spacemobile-vs-rocket-lab-1-number-separates/?.tsrc=rss">AST SpaceMobile vs. Rocket Lab: 1 Number Separates These Space Stocks</a>.</p>
+<p>Financial innovation continues, with Visa debuting a platform for stablecoin mining, movement, and management <a href="https://seekingalpha.com/news/4614570-visa-debuts-platform-for-stablecoin-mining-movement-and-management?utm_source=feed_news_all&amp;utm_medium=referral&amp;feed_item_type=news">Visa debuts platform for stablecoin mining, movement, and management</a>. Prediction markets are also gaining traction, with Jump Trading doubling its team to ride a record boom in these contracts, which is impacting traditional gaming bonds <a href="https://www.bloomberg.com/news/articles/2026-07-16/jump-trading-doubles-team-to-ride-record-prediction-market-boom">Jump Trading Doubles Team to Ride Record Prediction Market Boom</a> and <a href="https://www.bloomberg.com/news/articles/2026-07-16/gaming-bonds-lose-allure-as-threat-from-prediction-markets-grow">Gaming Bonds Lose Allure as Threat From Prediction Markets Grows</a>. Energy IPOs are surging as investors seek to capitalize on the AI boom's power demands, even as many of these stocks perform poorly post-listing <a href="https://www.ft.com/content/af8f4659-df0c-4c83-9fcc-8239714d0928">Energy IPOs surge as investors hunt for ways to play AI boom</a>. Abbott Laboratories surged after raising its 2026 profit guidance, driven by strong performance across its business lines <a href="https://www.bloomberg.com/news/articles/2026-07-16/abbott-boosts-2026-profit-guidance-as-sales-across-business-rise">Abbott Laboratories Surges on 2026 Profit Guidance Raise</a>. Conversely, gold saw significant investor outflows, nearly $15 billion, indicating a shift from its safe-haven status <a href="https://seekingalpha.com/news/4614574-from-safe-haven-to-sell-off-gld-investor-outflows-total-nearly-15b?utm_source=feed_news_all&amp;utm_medium=referral&amp;feed_item_type=news">From safe haven to sell-off: GLD investor outflows total nearly $15B</a>.</p>
+<h4>Why it matters</h4>
+<p>Sector-specific developments reveal how technological shifts, regulatory environments, and investor sentiment create distinct winners and losers, even within broader market trends.</p>
+<p>THE BOTTOM LINE: The market is caught between the undeniable momentum of AI's technological expansion and the sobering reality of geopolitical instability, which together dictate the near-term trajectory of inflation and interest rate expectations.</p>
+            </div>
+        </section>
+
+        <div class="recent">
+            <hr class="double-rule">
+            <span class="kicker">Recent briefings</span>
+            <div class="recent-list">
+                <a href="2026-07-15-PM.html"><span>Evening Briefing &middot; Wednesday, July 15, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-15-AM.html"><span>Morning Briefing &middot; Wednesday, July 15, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-07-14-PM.html"><span>Evening Briefing &middot; Tuesday, July 14, 2026</span> <span class="go">Read</span></a>
+                <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
+        "The Post-Human Briefing&trade;" and "The Post-Human Debrief&trade;" are proprietary trademarks.
+    </footer>
+
+    <script>function phbToggleTheme(){var r=document.documentElement;var t=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',t);try{localStorage.setItem('phb-theme',t)}catch(e){}}</script>
+
+    <script>
+    (function() {
+        var players = document.querySelectorAll('.phb-player');
+        var fmt = function(s) {
+            if (!isFinite(s)) return '--:--';
+            var m = Math.floor(s / 60), r = Math.floor(s % 60);
+            return m + ':' + (r < 10 ? '0' : '') + r;
+        };
+        players.forEach(function(p) {
+            var audio = p.querySelector('audio');
+            var btn = p.querySelector('.pp-btn');
+            var track = p.querySelector('.pp-track');
+            var fill = p.querySelector('.pp-fill');
+            var time = p.querySelector('.pp-time');
+            var iconPlay = btn.querySelector('.pp-play');
+            var iconPause = btn.querySelector('.pp-pause');
+            if (!audio) return;
+            var inner = p.querySelector('.wave-inner');
+            var update = function() {
+                // waveform fill clips a duplicate bar layer; keep it sized
+                // to the full track so the bars in both layers align
+                if (inner) inner.style.width = track.clientWidth + 'px';
+                var d = audio.duration, c = audio.currentTime;
+                fill.style.width = (d ? (c / d * 100) : 0) + '%';
+                time.textContent = fmt(c) + ' / ' + fmt(d);
+            };
+            audio.addEventListener('loadedmetadata', update);
+            audio.addEventListener('timeupdate', update);
+            window.addEventListener('resize', update);
+            audio.addEventListener('ended', function() {
+                iconPlay.style.display = ''; iconPause.style.display = 'none';
+            });
+            audio.addEventListener('error', function() {
+                p.classList.add('pp-error');
+                btn.disabled = true;
+                btn.style.opacity = '0.4';
+                time.textContent = 'audio unavailable';
+            });
+            btn.addEventListener('click', function() {
+                if (audio.paused) {
+                    document.querySelectorAll('.phb-player audio').forEach(function(a) {
+                        if (a !== audio) a.pause();
+                    });
+                    document.querySelectorAll('.phb-player').forEach(function(q) {
+                        if (q !== p) {
+                            var pl = q.querySelector('.pp-play'), pa = q.querySelector('.pp-pause');
+                            if (pl && pa) { pl.style.display = ''; pa.style.display = 'none'; }
+                        }
+                    });
+                    audio.play();
+                    iconPlay.style.display = 'none'; iconPause.style.display = '';
+                } else {
+                    audio.pause();
+                    iconPlay.style.display = ''; iconPause.style.display = 'none';
+                }
+            });
+            track.addEventListener('click', function(e) {
+                if (!audio.duration) return;
+                var r = track.getBoundingClientRect();
+                audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+            });
+            var back = p.querySelector('.pp-back');
+            var fwd = p.querySelector('.pp-fwd');
+            var rateBtn = p.querySelector('.pp-rate');
+            if (back) back.addEventListener('click', function() {
+                audio.currentTime = Math.max(0, audio.currentTime - 15);
+            });
+            if (fwd) fwd.addEventListener('click', function() {
+                if (audio.duration) audio.currentTime = Math.min(audio.duration, audio.currentTime + 15);
+            });
+            if (rateBtn) {
+                var rates = [1, 1.25, 1.5, 2], ri = 0;
+                rateBtn.addEventListener('click', function() {
+                    ri = (ri + 1) % rates.length;
+                    audio.playbackRate = rates[ri];
+                    rateBtn.textContent = rates[ri] + '×';
+                });
+            }
+        });
+    })();
+    </script>
+
+    <script>
+    (function() {
+        var bar = document.getElementById('progress-bar');
+        var onScroll = function() {
+            var h = document.documentElement;
+            var max = h.scrollHeight - h.clientHeight;
+            bar.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%';
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    })();
+    </script>
+</body>
+</html>
