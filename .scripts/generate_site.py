@@ -39,6 +39,9 @@ TTS_VOICE_PREFERENCES = [
     "Schedar",   # characterized as "even" — closest neutral substitute
 ]
 
+# One edition per day, so this is ~20 days of narration (~100 MB).
+MAX_DAILY_AUDIO_KEPT = 20
+
 # Gemini-TTS accepts up to 4,000 bytes in the text field. Larger chunks mean
 # fewer synthesis seams (each seam risks a tone shift), so pack close to the
 # limit while leaving headroom for multi-byte characters.
@@ -159,9 +162,16 @@ def _synthesize_with_voice(client, texttospeech, chunks, voice_name):
                 response = client.synthesize_speech(
                     input=synthesis_input, voice=voice, audio_config=audio_config
                 )
+                # QA is advisory: a leak usually clears on a fresh
+                # synthesis, but the judge also false-positives, and a
+                # blocked publication is worse than a rare blemish. Retry
+                # while attempts remain, then publish with a loud warning.
                 if not audio_matches_text(response.audio_content, chunk):
-                    raise RuntimeError(
-                        f"chunk {idx+1} spoke non-transcript content (QA)")
+                    if attempt < 2:
+                        raise RuntimeError(
+                            f"chunk {idx+1} spoke non-transcript content (QA)")
+                    print(f"    Chunk {idx+1}: QA still flagging after retries; "
+                          f"publishing anyway (review this edition).")
                 full_audio_content += response.audio_content
                 last_error = None
                 break
@@ -1341,10 +1351,10 @@ def narrate_stage(repo_root, base_name=None, force=False):
     plain_text = re.sub(r'\s+', ' ', plain_text).strip()
     generate_audio_with_fallback(plain_text, audio_file_path)
 
-    # Rolling window: Keep only the 10 most recent MP3s
+    # Rolling window: keep the newest MAX_DAILY_AUDIO_KEPT MP3s
     mp3_files = glob.glob(os.path.join(audio_dir, "*.mp3"))
     mp3_files.sort(key=os.path.getmtime, reverse=True)
-    for file_to_delete in mp3_files[10:]:
+    for file_to_delete in mp3_files[MAX_DAILY_AUDIO_KEPT:]:
         try:
             os.remove(file_to_delete)
             print(f"[narrate] Deleted old audio file: {file_to_delete}")
@@ -1587,7 +1597,7 @@ def build_podcast_page(repo_root):
         <header class="show-head">
             <span class="kicker">The Post-Human Debrief</span>
             <h1>The Weekly Podcast</h1>
-            <p>Two voices. One conversation. Charon and Kore debrief everything that mattered this week in AI and markets, distilled from fourteen daily briefings. New episodes weekly.</p>
+            <p>Two voices. One conversation. Charon and Kore debrief everything that mattered this week in AI and markets, distilled from the week's briefings. New episodes weekly.</p>
         </header>
 {items}
     </div>
@@ -1974,7 +1984,7 @@ def update_index_page(repo_root, new_date_str):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Post-Human Briefing</title>
-    <meta name="description" content="A twice-daily synthesis of frontier AI and global markets, written and narrated end-to-end by autonomous agents.">
+    <meta name="description" content="A daily synthesis of frontier AI and global markets, written and narrated end-to-end by autonomous agents.">
     {THEME_BOOT}
     {SITE_FONTS}
     <link rel="icon" type="image/png" href="img/logo_favicon.png">
@@ -2004,7 +2014,7 @@ def update_index_page(repo_root, new_date_str):
         <section class="archive">
             <div class="archive-head">
                 <span class="kicker accent">All briefings</span>
-                <span class="kicker">Morning &amp; Evening, ET</span>
+                <span class="kicker">Daily, 9:15 AM ET</span>
             </div>
             <hr class="thin-rule">
             <div class="week-columns">

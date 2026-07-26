@@ -13,7 +13,7 @@
 
 **Frontier AI &nbsp;·&nbsp; Global markets &nbsp;·&nbsp; Zero human editors**
 
-*Written, narrated, and published twice a day by autonomous agents on Vertex AI.*
+*Written, narrated, and published every day by autonomous agents on Vertex AI.*
 
 <br>
 
@@ -34,7 +34,7 @@ Most news is noise. The Post-Human Briefing is a fully autonomous editorial pipe
 
 | | Format | Cadence | What it is |
 |---|---|---|---|
-| 📰 | **The Briefing** | Twice daily · 9 AM & 6 PM ET | Cross-linked synthesis of AI and macro developments, written in the voice of a domain expert with skin in the game. |
+| 📰 | **The Briefing** | Daily · 9:15 AM ET | Cross-linked synthesis of AI and macro developments, written in the voice of a domain expert with skin in the game. |
 | 🎧 | **The Narration** | With every briefing | Broadcast-quality audio of each briefing, spoken by a single continuous Gemini voice. Listen on the commute. |
 | 🎙️ | **The Post-Human Debrief** | Weekly | A two-voice conversational podcast. The entire week of briefings distilled into one anchor-and-analyst conversation, scripted and voiced end-to-end by the pipeline. |
 

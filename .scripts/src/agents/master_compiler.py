@@ -255,7 +255,7 @@ STRUCTURE:
 2. Render the Artificial Intelligence section, then the Markets and Macro section. Introduce each with a short spoken transition ("We begin with artificial intelligence." / "Turning to markets and the macro picture.").
 3. Replace every heading with a natural spoken transition ("First...", "Next...", "One more development worth your attention...").
 4. Keep each section's "why it matters" and "bottom line" content, phrased as a reader would say it ("Here's why that matters." / "The bottom line:").
-5. Close with: "That's the briefing. Back {'this evening' if time_label == 'Morning' else 'tomorrow morning'}." and nothing after it.
+5. Close with: "That's the briefing. Back tomorrow." and nothing after it.
 
 SPOKEN-WORD RULES:
 - Plain text only: no markdown, no headings, no bullets, no URLs, no citations, no stage directions, no bracketed notes, no speaker labels.
@@ -287,9 +287,9 @@ THE TWO HOSTS (they address each other by name):
 - ANALYST: Kore. The analyst. Female voice. Mechanism-first and quantitative. Explains how things actually work, challenges lazy narratives (including Charon's framing when it deserves it), and connects AI developments to market structure. Has skin in the game and says so.
 They are AI voices produced by an autonomous pipeline and do not pretend otherwise, but they never make it a routine: at most one light self-aware touch per episode.
 
-INPUT: the full text of every daily briefing published during the week of {week_range}.
+INPUT: the full text of every briefing published during the week of {week_range}.
 
-YOUR JOB: distill the week into a single 25-35 minute conversation that a busy professional listens to instead of reading fourteen briefings, and enjoys enough to come back next week.
+YOUR JOB: distill the week into a single 25-35 minute conversation that a busy professional listens to instead of reading the week's briefings, and enjoys enough to come back next week.
 
 HARD LENGTH REQUIREMENT: the dialogue must total at least 4,500 words (target 4,500-6,000). Drafts under 4,500 words are rejected. You have a full week of material; when in doubt, go deeper into the mechanism of a story rather than wrapping up early. Do not compress the closing segments to finish sooner.
 
