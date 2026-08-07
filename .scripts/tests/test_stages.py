@@ -81,3 +81,30 @@ def test_narrate_skips_existing_audio_and_reuses_script():
             assert generate_site.narrate_stage(repo_root, base, force=True) is True
             builder.assert_not_called()
             assert "Persisted script body" in tts.call_args[0][0]
+
+
+def test_narrate_backfills_missing_recent_audio():
+    """A default (no-edition) narrate run must fill any recent edition that
+    has content but no MP3, not just the newest -- so a transient failure
+    self-heals on the next scheduled run."""
+    with tempfile.TemporaryDirectory() as repo_root:
+        older, newest = "2026-08-06-AM", "2026-08-07-AM"
+        write_content(repo_root, older)
+        write_content(repo_root, newest)
+        audio_dir = os.path.join(repo_root, "audio")
+        os.makedirs(audio_dir)
+        # newest already has audio; older is the transient-failure hole
+        open(os.path.join(audio_dir, f"{newest}.mp3"), "wb").close()
+
+        narrated = []
+
+        def fake_tts(text, path):
+            narrated.append(os.path.basename(path)[:-4])
+            open(path, "wb").close()
+
+        with patch('generate_site.generate_audio_with_fallback', side_effect=fake_tts), \
+             patch('generate_site.build_audio_script', return_value="script body"):
+            # default run: newest already voiced, older backfilled
+            assert generate_site.narrate_stage(repo_root) is True
+        assert older in narrated
+        assert os.path.exists(os.path.join(audio_dir, f"{older}.mp3"))

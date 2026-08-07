@@ -1281,25 +1281,55 @@ def render_stage(repo_root, force=False):
 
 
 def narrate_stage(repo_root, base_name=None, force=False):
-    """Produce the MP3 for an edition (newest by default).
+    """Narrate one edition, or (default) backfill every recent edition
+    missing audio plus the newest.
+
+    A transient CI/TTS outage can leave a briefing with content but no
+    MP3 (observed: a GitHub Actions action-download outage on 2026-08-06
+    that killed the narrate job before it ran). Making the scheduled run
+    backfill any content edition inside the retention window that lacks
+    audio means such a hole self-heals on the next day's run, no human in
+    the loop. An explicit base_name narrates just that edition.
+    """
+    if base_name is not None:
+        return _narrate_edition(repo_root, base_name, force=force)
+
+    editions = list_content_editions(repo_root)
+    if not editions:
+        pages = sorted(
+            f[:-5] for f in os.listdir(repo_root)
+            if f.endswith('.html') and re.match(r'^\d{4}-\d{2}-\d{2}', f))
+        if not pages:
+            print("[narrate] Nothing to narrate.")
+            return False
+        return _narrate_edition(repo_root, pages[-1], force=force)
+
+    # Only consider the retention window: older editions' MP3s are
+    # intentionally evicted, so a missing one there is not a hole to fill.
+    audio_dir = os.path.join(repo_root, "audio")
+    recent = editions[-MAX_DAILY_AUDIO_KEPT:]
+    newest = editions[-1]
+    targets = [e for e in recent
+               if e == newest
+               or not os.path.exists(os.path.join(audio_dir, f"{e}.mp3"))]
+    backfilled = [e for e in targets if e != newest]
+    if backfilled:
+        print(f"[narrate] Backfilling missing audio for: {', '.join(backfilled)}")
+
+    result = False
+    for edition in targets:
+        if _narrate_edition(repo_root, edition, force=force):
+            result = True
+    return result
+
+
+def _narrate_edition(repo_root, base_name, force=False):
+    """Produce the MP3 for a single edition.
 
     The LLM audio script is persisted next to the content, so a TTS retry
     reuses it instead of paying for a rewrite. Editions without a content
     dir (pre-content-store archive) fall back to extracting from their HTML.
     """
-    if base_name is None:
-        editions = list_content_editions(repo_root)
-        if editions:
-            base_name = editions[-1]
-        else:
-            pages = sorted(
-                f[:-5] for f in os.listdir(repo_root)
-                if f.endswith('.html') and re.match(r'^\d{4}-\d{2}-\d{2}', f))
-            if not pages:
-                print("[narrate] Nothing to narrate.")
-                return False
-            base_name = pages[-1]
-
     audio_dir = os.path.join(repo_root, "audio")
     os.makedirs(audio_dir, exist_ok=True)
     audio_file_path = os.path.join(audio_dir, f"{base_name}.mp3")
