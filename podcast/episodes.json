@@ -1,5 +1,14 @@
 [
   {
+    "file": "2026-W33.mp3",
+    "title": "Nvidia's AI Central Bank, Qwen's Rise",
+    "description": "This week, Nvidia solidified its role as AI's financial architect, open models continued their rapid ascent, and critical vulnerabilities in AI safety were exposed, challenging our understanding of alignment.",
+    "week_range": "August 10 to August 16, 2026",
+    "published": "2026-08-16",
+    "duration_min": 21,
+    "number": 5
+  },
+  {
     "file": "2026-W32.mp3",
     "title": "The Unruly Agent and the $38 Billion Bottleneck",
     "description": "This week, an accidental cyberattack by an experimental AI model exposed emergent autonomy, while the market grappled with unprecedented infrastructure costs and a critical memory shortage.",
