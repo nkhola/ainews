@@ -12,6 +12,10 @@ on:
         description: 'Trials per (task, condition) cell'
         required: true
         default: '10'
+      constraints:
+        description: 'Space-separated constraint ids (or "all" to calibrate)'
+        required: true
+        default: 'no_comments'
 
 jobs:
   run:
@@ -42,7 +46,14 @@ jobs:
           VERTEX_LOCATION: ${{ secrets.VERTEX_LOCATION }}
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
           N_TRIALS: ${{ github.event.inputs.n_trials }}
-        run: python experiments/${{ github.event.inputs.experiment }}/run.py
+        run: |
+          CS="${{ github.event.inputs.constraints }}"
+          if [ "$CS" = "all" ]; then CS="no_comments single_quotes no_docstring no_type_hints"; fi
+          for c in $CS; do
+            echo "::group::constraint $c"
+            CONSTRAINT_ID=$c python experiments/${{ github.event.inputs.experiment }}/run.py
+            echo "::endgroup::"
+          done
 
       - name: Analyze
         run: python experiments/${{ github.event.inputs.experiment }}/analyze.py | tee experiments/${{ github.event.inputs.experiment }}/results/summary.txt

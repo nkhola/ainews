@@ -11,7 +11,14 @@ import requests
 import google.auth
 from google.auth.transport.requests import Request
 
-CONSTRAINT = "Do not include any comments in the code."
+CONSTRAINTS = {
+    "no_comments": "Do not include any comments in the code.",
+    "single_quotes": "Use only single-quoted strings. Never use double quotes.",
+    "no_docstring": "Do not include a docstring.",
+    "no_type_hints": "Do not use type hints or annotations.",
+}
+CONSTRAINT_ID = os.environ.get("CONSTRAINT_ID", "no_comments")
+CONSTRAINT = CONSTRAINTS[CONSTRAINT_ID]
 REPETITIONS = [1, 2, 4, 8, 16]
 TASKS = {
     "merge_intervals": "Write a Python function `merge_intervals(intervals)` that merges overlapping intervals.",
@@ -58,7 +65,43 @@ def count_comments(code):
 
 
 def has_docstring(code):
-    return bool(re.search(r'def\s+\w+\([^)]*\)[^:]*:\s*\n\s*("""|\'\'\')', code))
+    try:
+        import ast as _ast
+        tree = _ast.parse(code)
+        return any(_ast.get_docstring(n) for n in _ast.walk(tree)
+                   if isinstance(n, (_ast.FunctionDef, _ast.AsyncFunctionDef, _ast.ClassDef)))
+    except Exception:
+        return None
+
+
+def violations(code, cid):
+    """Exact, pre-declared checker per constraint. None = unparseable."""
+    try:
+        if cid == "no_comments":
+            toks = tokenize.generate_tokens(io.StringIO(code).readline)
+            return sum(1 for t in toks if t.type == tokenize.COMMENT)
+        if cid == "single_quotes":
+            toks = list(tokenize.generate_tokens(io.StringIO(code).readline))
+            return sum(1 for t in toks if t.type == tokenize.STRING
+                       and t.string.lstrip("rbfuRBFU").startswith('"'))
+        import ast as _ast
+        tree = _ast.parse(code)
+        if cid == "no_docstring":
+            return sum(1 for n in _ast.walk(tree)
+                       if isinstance(n, (_ast.FunctionDef, _ast.AsyncFunctionDef, _ast.ClassDef))
+                       and _ast.get_docstring(n))
+        if cid == "no_type_hints":
+            c = 0
+            for n in _ast.walk(tree):
+                if isinstance(n, (_ast.FunctionDef, _ast.AsyncFunctionDef)):
+                    c += sum(1 for a in n.args.args if a.annotation is not None)
+                    c += 1 if n.returns is not None else 0
+                if isinstance(n, _ast.AnnAssign):
+                    c += 1
+            return c
+    except Exception:
+        return None
+    return None
 
 
 def call(task_id, reps, trial):
@@ -80,10 +123,11 @@ def call(task_id, reps, trial):
             text = "".join(p.get("text", "") for p in parts)
             usage = j.get("usageMetadata", {})
             code = extract_code(text)
-            ncom = count_comments(code)
+            ncom = violations(code, CONSTRAINT_ID)
             return {
                 "task": task_id, "reps": reps, "trial": trial, "model": MODEL,
-                "ok": True, "comments": ncom,
+                "constraint": CONSTRAINT_ID, "ok": True, "violations": ncom,
+                "text_head": text[:500],
                 "compliant": (ncom == 0) if ncom is not None else None,
                 "unparseable": ncom is None,
                 "docstring": has_docstring(code),
@@ -95,7 +139,7 @@ def call(task_id, reps, trial):
             last = str(e)[:200]
             time.sleep(2 * (attempt + 1) + random.random())
     return {"task": task_id, "reps": reps, "trial": trial, "model": MODEL,
-            "ok": False, "error": last, "ts": time.time()}
+            "constraint": CONSTRAINT_ID, "ok": False, "error": last, "ts": time.time()}
 
 
 def main():
@@ -103,8 +147,8 @@ def main():
     random.shuffle(jobs)  # order randomised so drift cannot align with a condition
     out_dir = os.path.join(os.path.dirname(__file__), "results")
     os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, "runs.jsonl")
-    print(f"model={MODEL} jobs={len(jobs)}", flush=True)
+    out_path = os.path.join(out_dir, f"runs_{CONSTRAINT_ID}.jsonl")
+    print(f"model={MODEL} constraint={CONSTRAINT_ID} jobs={len(jobs)}", flush=True)
     done = 0
     with open(out_path, "w") as fh, ThreadPoolExecutor(max_workers=4) as ex:
         futs = {ex.submit(call, *j): j for j in jobs}
