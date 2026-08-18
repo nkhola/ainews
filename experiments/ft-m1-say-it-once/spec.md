@@ -15,7 +15,7 @@ Engineers repeat critical instructions in system prompts. "Say it twice so it li
 ## Design
 
 - **Constraint:** `Do not include any comments in the code.` Chosen because models violate it constantly and compliance is exactly machine-checkable.
-- **Conditions:** the constraint appears 1, 2, 4, 8, or 16 times, consecutively, in the system prompt. Position held fixed so repetition *count* is the only variable.
+- **Conditions:** the constraint appears 0 (control, absent), 1, 2, 4, 8, or 16 times, consecutively, in the system prompt. Position held fixed so repetition *count* is the only variable. The 0 condition establishes the model prior, without which "repetition helps" is uninterpretable.
 - **Tasks:** 6 Python functions, all the kind of thing a model likes to narrate with comments.
 - **n:** 10 runs per (task, condition) = 300 calls.
 - **Model:** Gemini via Vertex REST, temperature left at the API default (1.0) because that is how people actually run it.
@@ -29,3 +29,9 @@ Per the franchise framework: compliance rate with Wilson 95% intervals, flip rat
 ## Declared in advance
 
 Every run is reported. No condition gets dropped for looking wrong. If the result is "no effect," that publishes at full length.
+
+## Amendments before the full run (logged, pre-data)
+
+- **Constraint switched to `single_quotes`** after a calibration pass: `no_comments`, `no_docstring` and `no_type_hints` all sat at 98-100% compliance, a ceiling where repetition cannot show an effect in either direction. Calibration data is in `results/` and reported in the post.
+- **Thinking disabled (`thinkingBudget: 0`).** Thinking tokens bill against `maxOutputTokens` but return separately; at a 900-token cap this truncated visible code mid-identifier and silently discarded up to 79% of runs, with a truncation rate that varied by condition. `finishReason` is now recorded and truncation is reported separately from parse failure.
+- **Control condition added (reps=0).**

@@ -19,7 +19,7 @@ CONSTRAINTS = {
 }
 CONSTRAINT_ID = os.environ.get("CONSTRAINT_ID", "no_comments")
 CONSTRAINT = CONSTRAINTS[CONSTRAINT_ID]
-REPETITIONS = [1, 2, 4, 8, 16]
+REPETITIONS = [0, 1, 2, 4, 8, 16]  # 0 = control: constraint absent entirely
 TASKS = {
     "merge_intervals": "Write a Python function `merge_intervals(intervals)` that merges overlapping intervals.",
     "retry_backoff": "Write a Python function `retry_with_backoff(fn, attempts)` that retries a callable with exponential backoff.",
@@ -46,7 +46,11 @@ def token():
 
 
 def system_prompt(reps):
-    return "You are a Python code generator.\n" + "\n".join([CONSTRAINT] * reps)
+    """reps=0 is the control: no constraint at all, revealing the model's prior."""
+    base = "You are a Python code generator."
+    if reps == 0:
+        return base
+    return base + "\n" + "\n".join([CONSTRAINT] * reps)
 
 
 def extract_code(text):
@@ -161,7 +165,7 @@ def main():
     out_path = os.path.join(out_dir, f"runs_{CONSTRAINT_ID}.jsonl")
     print(f"model={MODEL} constraint={CONSTRAINT_ID} jobs={len(jobs)}", flush=True)
     done = 0
-    with open(out_path, "w") as fh, ThreadPoolExecutor(max_workers=4) as ex:
+    with open(out_path, "w") as fh, ThreadPoolExecutor(max_workers=6) as ex:
         futs = {ex.submit(call, *j): j for j in jobs}
         for f in as_completed(futs):
             rec = f.result()
