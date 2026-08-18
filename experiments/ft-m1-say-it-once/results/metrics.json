@@ -1,0 +1,120 @@
+{
+  "no_docstring": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 60,
+    "api_failures": 0,
+    "truncated": 0,
+    "unparseable": 0,
+    "conditions": {
+      "1": {
+        "n": 12,
+        "compliant": 12,
+        "rate": 1.0,
+        "ci_low": 0.7575,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "viol_per_run": 0.0,
+        "mean_out_tokens": 111.4
+      },
+      "2": {
+        "n": 12,
+        "compliant": 12,
+        "rate": 1.0,
+        "ci_low": 0.7575,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "viol_per_run": 0.0,
+        "mean_out_tokens": 107.8
+      },
+      "4": {
+        "n": 12,
+        "compliant": 12,
+        "rate": 1.0,
+        "ci_low": 0.7575,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "viol_per_run": 0.0,
+        "mean_out_tokens": 110.3
+      },
+      "8": {
+        "n": 12,
+        "compliant": 12,
+        "rate": 1.0,
+        "ci_low": 0.7575,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "viol_per_run": 0.0,
+        "mean_out_tokens": 103.4
+      },
+      "16": {
+        "n": 12,
+        "compliant": 12,
+        "rate": 1.0,
+        "ci_low": 0.7575,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "viol_per_run": 0.0,
+        "mean_out_tokens": 114.3
+      }
+    }
+  },
+  "single_quotes": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 60,
+    "api_failures": 0,
+    "truncated": 0,
+    "unparseable": 0,
+    "conditions": {
+      "1": {
+        "n": 12,
+        "compliant": 10,
+        "rate": 0.8333,
+        "ci_low": 0.552,
+        "ci_high": 0.953,
+        "flip_rate": 0.0,
+        "viol_per_run": 0.167,
+        "mean_out_tokens": 239.2
+      },
+      "2": {
+        "n": 12,
+        "compliant": 9,
+        "rate": 0.75,
+        "ci_low": 0.4677,
+        "ci_high": 0.9111,
+        "flip_rate": 0.1667,
+        "viol_per_run": 0.25,
+        "mean_out_tokens": 318.8
+      },
+      "4": {
+        "n": 12,
+        "compliant": 11,
+        "rate": 0.9167,
+        "ci_low": 0.6461,
+        "ci_high": 0.9851,
+        "flip_rate": 0.1667,
+        "viol_per_run": 0.083,
+        "mean_out_tokens": 236.1
+      },
+      "8": {
+        "n": 12,
+        "compliant": 11,
+        "rate": 0.9167,
+        "ci_low": 0.6461,
+        "ci_high": 0.9851,
+        "flip_rate": 0.1667,
+        "viol_per_run": 0.083,
+        "mean_out_tokens": 193.3
+      },
+      "16": {
+        "n": 12,
+        "compliant": 12,
+        "rate": 1.0,
+        "ci_low": 0.7575,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "viol_per_run": 0.0,
+        "mean_out_tokens": 249.3
+      }
+    }
+  }
+}
