@@ -1,0 +1,61 @@
+name: Field Test
+
+# Dispatch-only. Never runs on a schedule and never touches the briefing pipeline.
+on:
+  workflow_dispatch:
+    inputs:
+      experiment:
+        description: 'Experiment directory under experiments/'
+        required: true
+        default: 'ft-m1-say-it-once'
+      n_trials:
+        description: 'Trials per (task, condition) cell'
+        required: true
+        default: '10'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests google-auth
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+
+      - name: Run experiment
+        env:
+          VERTEX_PROJECT_ID: ${{ secrets.VERTEX_PROJECT_ID }}
+          VERTEX_LOCATION: ${{ secrets.VERTEX_LOCATION }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+          N_TRIALS: ${{ github.event.inputs.n_trials }}
+        run: python experiments/${{ github.event.inputs.experiment }}/run.py
+
+      - name: Analyze
+        run: python experiments/${{ github.event.inputs.experiment }}/analyze.py | tee experiments/${{ github.event.inputs.experiment }}/results/summary.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.inputs.experiment }}-results
+          path: experiments/${{ github.event.inputs.experiment }}/results/
+
+      - name: Commit results
+        run: |
+          git config user.name "field-test-bot"
+          git config user.email "actions@github.com"
+          git add experiments/*/results/ || true
+          git diff --staged --quiet || git commit -m "field-test: ${{ github.event.inputs.experiment }} results (n=${{ github.event.inputs.n_trials }})"
+          git push || true
