@@ -20,9 +20,10 @@ def wilson(k, n, z=1.96):
 def report_one(path, out):
     rows = [json.loads(l) for l in open(path) if l.strip()]
     ok = [r for r in rows if r.get("ok")]
-    usable = [r for r in ok if r.get("violations") is not None]
+    trunc = [r for r in ok if r.get("truncated")]
+    usable = [r for r in ok if r.get("violations") is not None and not r.get("truncated")]
     cid = rows[0].get("constraint", "?")
-    unpar = len(ok) - len(usable)
+    unpar = len(ok) - len(usable) - len([r for r in ok if r.get("truncated")])
 
     by_rep, cells = defaultdict(list), defaultdict(list)
     for r in usable:
@@ -30,7 +31,7 @@ def report_one(path, out):
         cells[(r["task"], r["reps"])].append(r)
 
     print(f"\n### constraint={cid}  model={rows[0].get('model')}  runs={len(rows)}  "
-          f"api_fail={len(rows)-len(ok)}  unparseable={unpar}")
+          f"api_fail={len(rows)-len(ok)}  truncated={len(trunc)}  unparseable={unpar}")
     print(f"{'reps':>5} {'n':>4} {'ok':>4} {'rate':>7} {'95% CI':>16} {'flip':>6} {'viol/run':>9} {'out_tok':>8}")
     print("-" * 70)
     conds = {}
@@ -62,7 +63,7 @@ def report_one(path, out):
                 line += f"{(sum(1 for r in c if r['violations']==0)/len(c)):>6.0%} " if c else "     - "
             print(line)
     out[cid] = {"model": rows[0].get("model"), "total_runs": len(rows),
-                "api_failures": len(rows) - len(ok), "unparseable": unpar,
+                "api_failures": len(rows) - len(ok), "truncated": len(trunc), "unparseable": unpar,
                 "conditions": conds}
 
 

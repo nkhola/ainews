@@ -32,7 +32,7 @@ TASKS = {
 PROJECT = os.environ["VERTEX_PROJECT_ID"]
 MODEL = (os.environ.get("LLM_MODEL") or "google/gemini-2.5-flash").split("/")[-1]
 N = int(os.environ.get("N_TRIALS", "10"))
-MAX_TOKENS = 900
+MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "2048"))
 URL = (f"https://aiplatform.googleapis.com/v1/projects/{PROJECT}/locations/global/"
        f"publishers/google/models/{MODEL}:generateContent")
 
@@ -108,7 +108,14 @@ def call(task_id, reps, trial):
     body = {
         "systemInstruction": {"parts": [{"text": system_prompt(reps)}]},
         "contents": [{"role": "user", "parts": [{"text": TASKS[task_id]}]}],
-        "generationConfig": {"maxOutputTokens": MAX_TOKENS},
+        "generationConfig": {
+            "maxOutputTokens": MAX_TOKENS,
+            # Thinking tokens are billed against maxOutputTokens but returned
+            # separately, so leaving this on truncated the visible code mid-token.
+            # Disabled so the experiment measures instruction-following, not
+            # reasoning budget. Stated as a limit in the post.
+            "thinkingConfig": {"thinkingBudget": 0},
+        },
     }
     last = None
     for attempt in range(5):
@@ -119,7 +126,9 @@ def call(task_id, reps, trial):
                 raise RuntimeError(f"capacity {r.status_code}")
             r.raise_for_status()
             j = r.json()
-            parts = j["candidates"][0]["content"].get("parts", [])
+            cand = j["candidates"][0]
+            finish = cand.get("finishReason")
+            parts = cand["content"].get("parts", [])
             text = "".join(p.get("text", "") for p in parts)
             usage = j.get("usageMetadata", {})
             code = extract_code(text)
@@ -127,11 +136,13 @@ def call(task_id, reps, trial):
             return {
                 "task": task_id, "reps": reps, "trial": trial, "model": MODEL,
                 "constraint": CONSTRAINT_ID, "ok": True, "violations": ncom,
-                "text_head": text[:500],
+                "finish": finish, "truncated": finish == "MAX_TOKENS",
+                "text_head": text[:1200],
                 "compliant": (ncom == 0) if ncom is not None else None,
                 "unparseable": ncom is None,
                 "docstring": has_docstring(code),
                 "in_tokens": usage.get("promptTokenCount"),
+                "thought_tokens": usage.get("thoughtsTokenCount"),
                 "out_tokens": usage.get("candidatesTokenCount"),
                 "chars": len(text), "ts": time.time(),
             }
