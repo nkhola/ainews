@@ -1,21 +1,68 @@
 
-model=gemini-2.5-flash  runs=30  api_fail=0  unparseable=7
+### constraint=no_comments  model=gemini-2.5-flash  runs=120  api_fail=0  unparseable=22
+ reps    n   ok    rate           95% CI   flip  viol/run  out_tok
+----------------------------------------------------------------------
+    1   19   19 100.0% [83.2%,100.0%]     0%      0.00       66
+    2   18   18 100.0% [82.4%,100.0%]     0%      0.00       57
+    4   19   19 100.0% [83.2%,100.0%]     0%      0.00       75
+    8   20   20 100.0% [83.9%,100.0%]     0%      0.00       69
+   16   22   22 100.0% [85.1%,100.0%]     0%      0.00       56
 
- reps    n  compliant    rate           95% CI   flip  out_tok  docstr
-------------------------------------------------------------------------
-    1    5          5 100.0% [56.6%,100.0%]     0%       53     0%
-    2    4          4 100.0% [51.0%,100.0%]     0%      118     0%
-    4    5          5 100.0% [56.6%,100.0%]     0%       63     0%
-    8    6          6 100.0% [61.0%,100.0%]     0%       63     0%
-   16    3          3 100.0% [43.8%,100.0%]     0%       78     0%
-
-per-task compliance by repetition
 task                    1      2      4      8     16
-chunk_iterable      100%   100%   100%   100%      - 
-flatten_dict        100%      -   100%   100%   100% 
+chunk_iterable      100%   100%   100%   100%   100% 
+flatten_dict        100%   100%   100%   100%   100% 
 lru_cache           100%   100%   100%   100%   100% 
 merge_intervals     100%   100%   100%   100%   100% 
-parse_semver           -   100%      -   100%      - 
-retry_backoff       100%      -   100%   100%      - 
+parse_semver        100%   100%   100%   100%   100% 
+retry_backoff       100%   100%   100%   100%   100% 
+
+### constraint=no_docstring  model=gemini-2.5-flash  runs=120  api_fail=0  unparseable=69
+ reps    n   ok    rate           95% CI   flip  viol/run  out_tok
+----------------------------------------------------------------------
+    1   12   11  91.7% [64.6%,98.5%]    17%      0.08      123
+    2   12   12 100.0% [75.7%,100.0%]     0%      0.00      105
+    4    4    4 100.0% [51.0%,100.0%]     0%      0.00      101
+    8   11   11 100.0% [74.1%,100.0%]     0%      0.00      104
+   16   12   12 100.0% [75.7%,100.0%]     0%      0.00      115
+
+task                    1      2      4      8     16
+chunk_iterable      100%   100%   100%   100%   100% 
+flatten_dict        100%   100%      -   100%   100% 
+lru_cache           100%   100%      -   100%   100% 
+merge_intervals     100%   100%      -   100%   100% 
+parse_semver         75%      -   100%   100%   100% 
+retry_backoff       100%      -      -   100%   100% 
+
+### constraint=no_type_hints  model=gemini-2.5-flash  runs=120  api_fail=0  unparseable=95
+ reps    n   ok    rate           95% CI   flip  viol/run  out_tok
+----------------------------------------------------------------------
+    1    5    5 100.0% [56.6%,100.0%]     0%      0.00      304
+    2    6    6 100.0% [61.0%,100.0%]     0%      0.00      248
+    4    5    5 100.0% [56.6%,100.0%]     0%      0.00      267
+    8    6    6 100.0% [61.0%,100.0%]     0%      0.00      228
+   16    3    3 100.0% [43.8%,100.0%]     0%      0.00      322
+
+task                    1      2      4      8     16
+chunk_iterable      100%   100%   100%   100%   100% 
+flatten_dict        100%   100%      -      -      - 
+merge_intervals        -      -   100%      -      - 
+parse_semver        100%   100%   100%   100%   100% 
+
+### constraint=single_quotes  model=gemini-2.5-flash  runs=120  api_fail=0  unparseable=87
+ reps    n   ok    rate           95% CI   flip  viol/run  out_tok
+----------------------------------------------------------------------
+    1    8    3  37.5% [13.7%,69.4%]    33%      0.62      234
+    2    3    0   0.0% [ 0.0%,56.2%]     0%      1.00      280
+    4   12    6  50.0% [25.4%,74.6%]    75%      0.50      235
+    8    5    2  40.0% [11.8%,76.9%]     0%      0.60      367
+   16    5    2  40.0% [11.8%,76.9%]    25%      0.60      218
+
+task                    1      2      4      8     16
+chunk_iterable       25%     0%    33%     0%    50% 
+flatten_dict           -      -      -     0%     0% 
+lru_cache              -      -   100%      -   100% 
+merge_intervals       0%     0%    33%   100%     0% 
+parse_semver           -      -    33%   100%      - 
+retry_backoff       100%      -      -      -      - 
 
 wrote results/metrics.json
