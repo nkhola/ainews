@@ -1,0 +1,21 @@
+
+model=gemini-2.5-flash  runs=30  api_fail=0  unparseable=7
+
+ reps    n  compliant    rate           95% CI   flip  out_tok  docstr
+------------------------------------------------------------------------
+    1    5          5 100.0% [56.6%,100.0%]     0%       53     0%
+    2    4          4 100.0% [51.0%,100.0%]     0%      118     0%
+    4    5          5 100.0% [56.6%,100.0%]     0%       63     0%
+    8    6          6 100.0% [61.0%,100.0%]     0%       63     0%
+   16    3          3 100.0% [43.8%,100.0%]     0%       78     0%
+
+per-task compliance by repetition
+task                    1      2      4      8     16
+chunk_iterable      100%   100%   100%   100%      - 
+flatten_dict        100%      -   100%   100%   100% 
+lru_cache           100%   100%   100%   100%   100% 
+merge_intervals     100%   100%   100%   100%   100% 
+parse_semver           -   100%      -   100%      - 
+retry_backoff       100%      -   100%   100%      - 
+
+wrote results/metrics.json
