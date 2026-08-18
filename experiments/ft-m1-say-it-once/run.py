@@ -101,7 +101,9 @@ def call(task_id, reps, trial):
 def main():
     jobs = [(t, r, i) for t in TASKS for r in REPETITIONS for i in range(N)]
     random.shuffle(jobs)  # order randomised so drift cannot align with a condition
-    out_path = os.path.join(os.path.dirname(__file__), "results", "runs.jsonl")
+    out_dir = os.path.join(os.path.dirname(__file__), "results")
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, "runs.jsonl")
     print(f"model={MODEL} jobs={len(jobs)}", flush=True)
     done = 0
     with open(out_path, "w") as fh, ThreadPoolExecutor(max_workers=4) as ex:

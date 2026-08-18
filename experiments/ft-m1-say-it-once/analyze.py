@@ -4,6 +4,7 @@ import json, math, os
 from collections import defaultdict
 
 HERE = os.path.dirname(__file__)
+os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
 RUNS = os.path.join(HERE, "results", "runs.jsonl")
 
 
