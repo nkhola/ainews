@@ -35,3 +35,23 @@ Every run is reported. No condition gets dropped for looking wrong. If the resul
 - **Constraint switched to `single_quotes`** after a calibration pass: `no_comments`, `no_docstring` and `no_type_hints` all sat at 98-100% compliance, a ceiling where repetition cannot show an effect in either direction. Calibration data is in `results/` and reported in the post.
 - **Thinking disabled (`thinkingBudget: 0`).** Thinking tokens bill against `maxOutputTokens` but return separately; at a 900-token cap this truncated visible code mid-identifier and silently discarded up to 79% of runs, with a truncation rate that varied by condition. `finishReason` is now recorded and truncation is reported separately from parse failure.
 - **Control condition added (reps=0).**
+
+## Post-hoc note (2026-08-19, AFTER data collection — not part of the pre-registration)
+
+The source paper was verified against arXiv rather than the briefing summary, and the
+pre-registered bet above rests on a misreading. Han-yu Wang, *When More Becomes Less:
+Position-Dependent Repetition Effects in Language Models* (arXiv 2608.04021, submitted
+2026-06-24) reports two regimes, not one:
+
+- **Adjacent repetition**: P(target) climbs with N and **plateaus**.
+- **Displaced repetition**: inverted-U, rising to an early peak then declining, with a
+  per-word drop whose bootstrap CI excludes zero across all 13 models tested.
+
+This experiment placed every copy of the constraint consecutively, which is the
+*adjacent* regime. The observed climb-to-4x-then-plateau is therefore consistent with
+the paper's adjacent prediction, and the decline predicted in the bet belongs to the
+displaced regime, which was never tested here.
+
+The pre-registered text is left unedited above, because a pre-registration that gets
+quietly corrected after seeing the data is worthless. FT-02 tests the displaced regime:
+same constraint and tasks, copies distributed through the prompt instead of stacked.
