@@ -8,7 +8,7 @@ and structure differ.
 
 Correctness is measured by EXECUTION, not by opinion. The generated function is run
 against a fixed assertion set in a child process with a restricted builtins dict, an
-import allowlist, a per-assertion SIGALRM, and a hard wall-clock timeout on the parent
+import denylist, a per-assertion SIGALRM, and a hard wall-clock timeout on the parent
 side. No model grades anything.
 """
 import ast
@@ -627,16 +627,42 @@ def _defines(code, func):
     return False
 
 
+_CODE_START = re.compile(r"^(?:def |async def |class |import |from |@)", re.M)
+
+
+def _salvage(text):
+    """No fence at all. Start at the first plausible code line and trim lines off the
+    end until the region parses, so a response that skipped the fence is still scored
+    on its code rather than on its prose."""
+    try:
+        m = _CODE_START.search(text)
+        if not m:
+            return ""
+        lines = text[m.start():].splitlines()
+        for cut in range(len(lines), 0, -1):
+            cand = "\n".join(lines[:cut])
+            try:
+                ast.parse(cand)
+            except Exception:
+                continue
+            return cand
+    except Exception:
+        pass
+    return ""
+
+
 def _extract_code(text, func):
     """First fenced block that parses and defines the target function; else the
-    longest fenced block; else the raw text."""
+    longest fenced block; else a salvaged unfenced code region; else the raw text."""
+    if not isinstance(text, str):
+        return ""
     blocks = _fenced_blocks(text)
     for b in blocks:
         if _defines(b, func):
             return b
     if blocks:
         return blocks[0]
-    return text if isinstance(text, str) else ""
+    return _salvage(text) or text
 
 
 def _run_asserts(code, func, asserts):

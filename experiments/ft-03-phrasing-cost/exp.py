@@ -159,16 +159,41 @@ def _defines(code, func):
     return False
 
 
+_CODE_START = re.compile(r"^(?:def |async def |class |import |from |@)", re.M)
+
+
+def _salvage(text):
+    """No fence at all. Start at the first plausible code line and trim lines off the
+    end until the region parses. Matters here: a wrapper that suppresses fencing must
+    not be scored as a wrapper that suppressed the code."""
+    try:
+        m = _CODE_START.search(text)
+        if not m:
+            return ""
+        lines = text[m.start():].splitlines()
+        for cut in range(len(lines), 0, -1):
+            cand = "\n".join(lines[:cut])
+            try:
+                ast.parse(cand)
+            except Exception:
+                continue
+            return cand
+    except Exception:
+        pass
+    return ""
+
+
 def _extract_code(text, func):
-    """Prefer the first fenced block that actually defines the target function;
-    fall back to the longest fenced block; fall back to the raw text."""
+    """Prefer the first fenced block that defines the target function; else the
+    longest fenced block; else salvage an unfenced code region; else the raw text."""
     blocks = _fenced_blocks(text)
     for b in blocks:
         if _defines(b, func):
             return b
     if blocks:
         return blocks[0]
-    return text or ""
+    salvaged = _salvage(text or "")
+    return salvaged or (text or "")
 
 
 def _code_lines(code):

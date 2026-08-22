@@ -54,16 +54,16 @@ Probe cost: $0.0018. Re-run any time with
 |----|-----------|----------|--------|------|------|------|
 | FT-01 | `ft-m1-say-it-once` | Does repeating an instruction help? | PUBLISHED | 1,080 | ~$1.45 | Say It Four Times |
 | FT-02 | `ft-02-where-you-put-it` | Does placement matter? What does crowding cost? | DRAFTED | 2,700 | ~$1.60 | Top and Bottom Doesn't Work |
-| FT-03 | `ft-03-phrasing-cost` | Do equivalent phrasings change token spend? | PLANNED | | | |
-| FT-04 | `ft-04-same-ticket-five-ways` | Does rewording a ticket change what you get? | PLANNED | | | |
-| FT-05 | `ft-05-formalism-trap` | Do LLM judges pass confident, well-formatted wrong answers? | PLANNED | | | |
-| FT-06 | `ft-06-thinking-budget` | Does more thinking budget buy correctness on coding tasks? | PLANNED | | | |
-| FT-07 | `ft-07-being-watched` | Does telling a model it's being tested change its behaviour? | PLANNED | | | |
+| FT-03 | `ft-03-phrasing-cost` | Do equivalent phrasings change token spend? | RUNNING | 1,800 | | |
+| FT-04 | `ft-04-same-ticket-five-ways` | Does rewording a ticket change what you get? | RIGGED | 900 | | |
+| FT-05 | `ft-05-formalism-trap` | Do LLM judges pass confident, well-formatted wrong answers? | RUNNING | 1,200 | | |
+| FT-06 | `ft-06-thinking-budget` | Does more thinking budget buy correctness on coding tasks? | RIGGED | 1,200 | | |
+| FT-07 | `ft-07-being-watched` | Does telling a model it's being tested change its behaviour? | RIGGED | 1,200 | | |
 | FT-08 | `ft-08-filler-tokens` | Do meaningless filler tokens change output quality? | PLANNED | | | |
-| FT-09 | `ft-09-when-pro-pays` | At what task difficulty does a Pro model beat a Flash model? | PLANNED | | | |
-| FT-10 | `ft-10-split-knowledge` | Can two innocuous documents combine into a false claim? | PLANNED | | | |
-| FT-11 | `ft-11-conflicting-orders` | When two instructions conflict, which one wins? | PLANNED | | | |
-| FT-12 | `ft-12-injection-resistance` | Do models differ in resisting instructions hidden in data? | PLANNED | | | |
+| FT-09 | `ft-09-when-pro-pays` | At what task difficulty does a Pro model beat a Flash model? | RIGGED | 300/model | | |
+| FT-10 | `ft-10-split-knowledge` | Can two innocuous documents combine into a false claim? | RUNNING | 1,200 | | |
+| FT-11 | `ft-11-conflicting-orders` | When two instructions conflict, which one wins? | RUNNING | 1,080 | | |
+| FT-12 | `ft-12-injection-resistance` | Do models differ in resisting instructions hidden in data? | RUNNING | 1,200 | | |
 
 ## House rules for every experiment
 
@@ -79,3 +79,11 @@ Probe cost: $0.0018. Re-run any time with
 ## Session log
 
 - 2026-08-26: batch program started. Harness + ledger created, 10 experiments planned.
+- 2026-08-22: model probe run ($0.0018). gemini-3.1-pro-preview confirmed available; 3-flash,
+  3-pro-preview and 3.1-pro all 404. Workflow made concurrency-safe (rebase-and-retry push)
+  because parallel runs race on the results branch.
+- 2026-08-22: FT-03/05/10/11/12 dispatched as wave 1 at n=30. FT-04/06/07/09 rigged and
+  awaiting wave 2. FT-08 rig still being written.
+- Known confound logged by the FT-07 author: its `neutral` arm is one sentence shorter than
+  the four framed arms, so neutral-vs-framed is confounded with prompt length. The clean
+  comparison is among the four framed arms; a length-matched placebo arm is the follow-up.

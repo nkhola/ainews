@@ -23,6 +23,7 @@ call the function against fixed assertions, count passes. No model grades anythi
 import builtins as _builtins
 import re
 import sys
+import textwrap
 import time
 
 NAME = "ft-06-thinking-budget"
@@ -346,7 +347,8 @@ def verify(text, task_id, task, cond):
         diff = task.get("difficulty")
         base = {"n_passed": 0, "n_asserts": n, "difficulty": diff}
 
-        code = _extract_code(text, task["func"])
+        # dedent, so a fence indented under a markdown bullet still compiles
+        code = textwrap.dedent(_extract_code(text, task["func"]))
         if not code.strip():
             return {"pass": False, **base, "error": "no code block found"}
 
