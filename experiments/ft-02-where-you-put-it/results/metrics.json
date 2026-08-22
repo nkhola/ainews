@@ -1,0 +1,119 @@
+{
+  "ft02": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 1980,
+    "truncated": 0,
+    "conditions": {
+      "0  no constraint": {
+        "n": 180,
+        "compliant": 0,
+        "rate": 0.0,
+        "ci_low": 0.0,
+        "ci_high": 0.0209,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 165.3,
+        "mean_out_tokens": 449.1
+      },
+      "1  (no arrangement)": {
+        "n": 180,
+        "compliant": 84,
+        "rate": 0.4667,
+        "ci_low": 0.3952,
+        "ci_high": 0.5395,
+        "flip_rate": 1.0,
+        "mean_in_tokens": 168.3,
+        "mean_out_tokens": 361.7
+      },
+      "2x clustered": {
+        "n": 180,
+        "compliant": 83,
+        "rate": 0.4611,
+        "ci_low": 0.3899,
+        "ci_high": 0.534,
+        "flip_rate": 1.0,
+        "mean_in_tokens": 176.3,
+        "mean_out_tokens": 421.4
+      },
+      "2x spread": {
+        "n": 180,
+        "compliant": 90,
+        "rate": 0.5,
+        "ci_low": 0.4277,
+        "ci_high": 0.5723,
+        "flip_rate": 1.0,
+        "mean_in_tokens": 176.3,
+        "mean_out_tokens": 334.6
+      },
+      "2x bookend": {
+        "n": 180,
+        "compliant": 71,
+        "rate": 0.3944,
+        "ci_low": 0.326,
+        "ci_high": 0.4673,
+        "flip_rate": 1.0,
+        "mean_in_tokens": 176.3,
+        "mean_out_tokens": 346.9
+      },
+      "4x clustered": {
+        "n": 179,
+        "compliant": 155,
+        "rate": 0.8659,
+        "ci_low": 0.8082,
+        "ci_high": 0.9082,
+        "flip_rate": 0.8333,
+        "mean_in_tokens": 187.3,
+        "mean_out_tokens": 381.5
+      },
+      "4x spread": {
+        "n": 180,
+        "compliant": 93,
+        "rate": 0.5167,
+        "ci_low": 0.4441,
+        "ci_high": 0.5886,
+        "flip_rate": 1.0,
+        "mean_in_tokens": 187.3,
+        "mean_out_tokens": 304.7
+      },
+      "4x bookend": {
+        "n": 180,
+        "compliant": 100,
+        "rate": 0.5556,
+        "ci_low": 0.4826,
+        "ci_high": 0.6262,
+        "flip_rate": 1.0,
+        "mean_in_tokens": 187.3,
+        "mean_out_tokens": 378.5
+      },
+      "8x clustered": {
+        "n": 180,
+        "compliant": 155,
+        "rate": 0.8611,
+        "ci_low": 0.803,
+        "ci_high": 0.9041,
+        "flip_rate": 0.8333,
+        "mean_in_tokens": 208.3,
+        "mean_out_tokens": 193.6
+      },
+      "8x spread": {
+        "n": 180,
+        "compliant": 156,
+        "rate": 0.8667,
+        "ci_low": 0.8093,
+        "ci_high": 0.9087,
+        "flip_rate": 1.0,
+        "mean_in_tokens": 208.3,
+        "mean_out_tokens": 190.1
+      },
+      "8x bookend": {
+        "n": 180,
+        "compliant": 151,
+        "rate": 0.8389,
+        "ci_low": 0.7782,
+        "ci_high": 0.8854,
+        "flip_rate": 1.0,
+        "mean_in_tokens": 208.3,
+        "mean_out_tokens": 208.1
+      }
+    }
+  }
+}
