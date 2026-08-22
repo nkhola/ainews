@@ -33,6 +33,9 @@ FILLER = [
     "Write code that a reviewer can scan quickly.",
 ]
 ARRANGEMENTS = ["clustered", "spread", "bookend"]
+# "alone" = the constraint with NO surrounding instructions, i.e. FT-01's exact shape.
+# Added 2026-08-22 to isolate dilution (filler present vs absent) inside one experiment,
+# rather than inferring it by comparing against FT-01 across days.
 REPS = [2, 4, 8]
 TASKS = {
     "merge_intervals": "Write a Python function `merge_intervals(intervals)` that merges overlapping intervals.",
@@ -61,6 +64,8 @@ def build_lines(reps, arrangement):
     """Identical content in every arm; only the order changes."""
     if reps == 0:
         return FILLER[:SLOTS]
+    if arrangement == "alone":
+        return [CONSTRAINT] * reps          # no filler at all
     fill = FILLER[:SLOTS - reps]
     # "single" is the reps=1 baseline, where arrangement has no meaning.
     if arrangement in ("clustered", "single"):
@@ -142,16 +147,23 @@ def validate(jobs):
     cannot render is a crash 1,900 calls deep otherwise."""
     for t, reps, arr, _ in jobs:
         lines = build_lines(reps, arr)
-        assert len(lines) == SLOTS, f"{arr} reps={reps}: {len(lines)} lines, expected {SLOTS}"
+        want = reps if arr == "alone" else SLOTS
+        assert len(lines) == want, f"{arr} reps={reps}: {len(lines)} lines, expected {want}"
         got = sum(1 for l in lines if l == CONSTRAINT)
         assert got == reps, f"{arr} reps={reps}: {got} copies present"
     print(f"validated {len(jobs)} prompts, all {SLOTS} lines with correct copy counts", flush=True)
 
 
 def main():
+    only = [a for a in os.environ.get("RUN_ARMS", "").split(",") if a]
     jobs = []
     for t in TASKS:
         for i in range(N):
+            if only:
+                for a in only:
+                    for r in ([1] + REPS):
+                        jobs.append((t, r, a, i))
+                continue
             jobs.append((t, 0, "control", i))          # no-constraint control
             jobs.append((t, 1, "single", i))           # arrangement-free baseline
             for a in ARRANGEMENTS:
@@ -161,7 +173,8 @@ def main():
     random.shuffle(jobs)
     out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
     os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, "runs.jsonl")
+    suffix = os.environ.get("OUT_SUFFIX", "")
+    out_path = os.path.join(out_dir, f"runs{suffix}.jsonl")
     print(f"model={MODEL} jobs={len(jobs)}", flush=True)
     done = 0
     with open(out_path, "w") as fh, ThreadPoolExecutor(max_workers=6) as ex:

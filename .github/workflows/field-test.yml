@@ -46,6 +46,8 @@ jobs:
           VERTEX_LOCATION: ${{ secrets.VERTEX_LOCATION }}
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
           N_TRIALS: ${{ github.event.inputs.n_trials }}
+          RUN_ARMS: ${{ github.event.inputs.constraints == 'single_quotes' && '' || github.event.inputs.constraints }}
+          OUT_SUFFIX: ${{ github.event.inputs.constraints == 'single_quotes' && '' || '_alone' }}
         run: |
           CS="${{ github.event.inputs.constraints }}"
           if [ "$CS" = "all" ]; then CS="no_comments single_quotes no_docstring no_type_hints"; fi
