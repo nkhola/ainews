@@ -1,0 +1,59 @@
+{
+  "ft-06-thinking-budget": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 1200,
+    "truncated": 0,
+    "conditions": {
+      "think_0": {
+        "n": 233,
+        "pass": 230,
+        "rate": 0.9871,
+        "ci_low": 0.9628,
+        "ci_high": 0.9956,
+        "flip_rate": 0.25,
+        "mean_in_tokens": 120.0,
+        "mean_out_tokens": 352.2
+      },
+      "think_128": {
+        "n": 237,
+        "pass": 233,
+        "rate": 0.9831,
+        "ci_low": 0.9574,
+        "ci_high": 0.9934,
+        "flip_rate": 0.25,
+        "mean_in_tokens": 120.3,
+        "mean_out_tokens": 574.9
+      },
+      "think_2048": {
+        "n": 236,
+        "pass": 231,
+        "rate": 0.9788,
+        "ci_low": 0.9514,
+        "ci_high": 0.9909,
+        "flip_rate": 0.375,
+        "mean_in_tokens": 120.2,
+        "mean_out_tokens": 584.4
+      },
+      "think_512": {
+        "n": 237,
+        "pass": 231,
+        "rate": 0.9747,
+        "ci_low": 0.9459,
+        "ci_high": 0.9883,
+        "flip_rate": 0.25,
+        "mean_in_tokens": 119.5,
+        "mean_out_tokens": 572.4
+      },
+      "think_8192": {
+        "n": 235,
+        "pass": 228,
+        "rate": 0.9702,
+        "ci_low": 0.9398,
+        "ci_high": 0.9855,
+        "flip_rate": 0.25,
+        "mean_in_tokens": 119.6,
+        "mean_out_tokens": 578.8
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+
+experiment=ft-06-thinking-budget  runs=1200  api_fail=22  truncated=0  usable=1178
+condition                      n   pass    rate           95% CI   flip      in     out
+--------------------------------------------------------------------------------------------
+think_0                      233    230  98.7% [96.3%,99.6%]    25%     120     352
+think_128                    237    233  98.3% [95.7%,99.3%]    25%     120     575
+think_2048                   236    231  97.9% [95.1%,99.1%]    38%     120     584
+think_512                    237    231  97.5% [94.6%,98.8%]    25%     120     572
+think_8192                   235    228  97.0% [94.0%,98.5%]    25%     120     579
+
+wrote /home/runner/work/ainews/ainews/experiments/ft-06-thinking-budget/results/metrics.json
