@@ -51,9 +51,8 @@ jobs:
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
           N_TRIALS: ${{ github.event.inputs.n_trials }}
           LLM_MODEL_OVERRIDE: ${{ github.event.inputs.model_override }}
-          OUT_SUFFIX: ${{ github.event.inputs.model_override != '' && format('_{0}', github.event.inputs.model_override) || '' }}
+          OUT_SUFFIX: ${{ github.event.inputs.model_override != '' && format('_{0}', github.event.inputs.model_override) || (github.event.inputs.constraints == 'alone' && '_alone' || '') }}
           RUN_ARMS: ${{ github.event.inputs.constraints == 'single_quotes' && '' || github.event.inputs.constraints }}
-          OUT_SUFFIX: ${{ github.event.inputs.constraints == 'single_quotes' && '' || '_alone' }}
         run: |
           EXP="${{ github.event.inputs.experiment }}"
           # Probe mode, and harness experiments (exp.py), take precedence over legacy run.py
