@@ -51,6 +51,7 @@ jobs:
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
           N_TRIALS: ${{ github.event.inputs.n_trials }}
           LLM_MODEL_OVERRIDE: ${{ github.event.inputs.model_override }}
+          OUT_SUFFIX: ${{ github.event.inputs.model_override != '' && format('_{0}', github.event.inputs.model_override) || '' }}
           RUN_ARMS: ${{ github.event.inputs.constraints == 'single_quotes' && '' || github.event.inputs.constraints }}
           OUT_SUFFIX: ${{ github.event.inputs.constraints == 'single_quotes' && '' || '_alone' }}
         run: |

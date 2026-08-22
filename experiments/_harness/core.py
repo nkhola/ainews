@@ -160,4 +160,6 @@ if __name__ == "__main__":
     n = int(os.environ.get("N_TRIALS", "30"))
     m = load(d)
     here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    run(m, n, os.path.join(here, d, "results", "runs.jsonl"))
+    # OUT_SUFFIX keeps a model sweep from overwriting itself; metrics.py globs runs*.jsonl
+    suffix = os.environ.get("OUT_SUFFIX", "")
+    run(m, n, os.path.join(here, d, "results", f"runs{suffix}.jsonl"))
