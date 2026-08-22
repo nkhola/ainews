@@ -62,7 +62,8 @@ def build_lines(reps, arrangement):
     if reps == 0:
         return FILLER[:SLOTS]
     fill = FILLER[:SLOTS - reps]
-    if arrangement == "clustered":
+    # "single" is the reps=1 baseline, where arrangement has no meaning.
+    if arrangement in ("clustered", "single"):
         return [CONSTRAINT] * reps + fill
     if arrangement == "bookend":
         head = reps // 2
@@ -136,6 +137,17 @@ def call(task_id, reps, arrangement, trial):
             "model": MODEL, "ok": False, "error": last, "ts": time.time()}
 
 
+def validate(jobs):
+    """Build every prompt in the matrix before spending a cent. A label this function
+    cannot render is a crash 1,900 calls deep otherwise."""
+    for t, reps, arr, _ in jobs:
+        lines = build_lines(reps, arr)
+        assert len(lines) == SLOTS, f"{arr} reps={reps}: {len(lines)} lines, expected {SLOTS}"
+        got = sum(1 for l in lines if l == CONSTRAINT)
+        assert got == reps, f"{arr} reps={reps}: {got} copies present"
+    print(f"validated {len(jobs)} prompts, all {SLOTS} lines with correct copy counts", flush=True)
+
+
 def main():
     jobs = []
     for t in TASKS:
@@ -145,6 +157,7 @@ def main():
             for a in ARRANGEMENTS:
                 for r in REPS:
                     jobs.append((t, r, a, i))
+    validate(jobs)
     random.shuffle(jobs)
     out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
     os.makedirs(out_dir, exist_ok=True)
