@@ -1,0 +1,19 @@
+{
+  "ft-09-when-pro-pays": {
+    "model": "gemini-2.5-flash-lite",
+    "total_runs": 300,
+    "truncated": 0,
+    "conditions": {
+      "default": {
+        "n": 300,
+        "pass": 282,
+        "rate": 0.94,
+        "ci_low": 0.9072,
+        "ci_high": 0.9617,
+        "flip_rate": 0.4,
+        "mean_in_tokens": 119.0,
+        "mean_out_tokens": 325.5
+      }
+    }
+  }
+}

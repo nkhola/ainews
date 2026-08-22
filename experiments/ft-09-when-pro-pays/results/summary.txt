@@ -1,0 +1,7 @@
+
+experiment=ft-09-when-pro-pays  runs=300  api_fail=0  truncated=0  usable=300
+condition                      n   pass    rate           95% CI   flip      in     out
+--------------------------------------------------------------------------------------------
+default                      300    282  94.0% [90.7%,96.2%]    40%     119     326
+
+wrote /home/runner/work/ainews/ainews/experiments/ft-09-when-pro-pays/results/metrics.json
