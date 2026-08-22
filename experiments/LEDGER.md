@@ -56,14 +56,14 @@ Probe cost: $0.0018. Re-run any time with
 | FT-02 | `ft-02-where-you-put-it` | Does placement matter? What does crowding cost? | DRAFTED | 2,700 | ~$1.60 | Top and Bottom Doesn't Work |
 | FT-03 | `ft-03-phrasing-cost` | Do equivalent phrasings change token spend? | RUNNING | 1,800 | | |
 | FT-04 | `ft-04-same-ticket-five-ways` | Does rewording a ticket change what you get? | RIGGED | 900 | | |
-| FT-05 | `ft-05-formalism-trap` | Do LLM judges pass confident, well-formatted wrong answers? | RUNNING | 1,200 | | |
+| FT-05 | `ft-05-formalism-trap` | Do LLM judges pass confident, well-formatted wrong answers? | DATA | 1,200 | ~$0.15 | judge false-accepts wrong answers 10-17%; formal dressing +6pp, CIs overlap |
 | FT-06 | `ft-06-thinking-budget` | Does more thinking budget buy correctness on coding tasks? | RIGGED | 1,200 | | |
 | FT-07 | `ft-07-being-watched` | Does telling a model it's being tested change its behaviour? | RIGGED | 1,200 | | |
 | FT-08 | `ft-08-filler-tokens` | Do meaningless filler tokens change output quality? | PLANNED | | | |
 | FT-09 | `ft-09-when-pro-pays` | At what task difficulty does a Pro model beat a Flash model? | RIGGED | 300/model | | |
-| FT-10 | `ft-10-split-knowledge` | Can two innocuous documents combine into a false claim? | RUNNING | 1,200 | | |
-| FT-11 | `ft-11-conflicting-orders` | When two instructions conflict, which one wins? | RUNNING | 1,080 | | |
-| FT-12 | `ft-12-injection-resistance` | Do models differ in resisting instructions hidden in data? | RUNNING | 1,200 | | |
+| FT-10 | `ft-10-split-knowledge` | Can two innocuous documents combine into a false claim? | DATA | 1,200 | ~$0.35 | NULL RESULT: all arms 97.7-99.6%, no combination effect found |
+| FT-11 | `ft-11-conflicting-orders` | When two instructions conflict, which one wins? | DATA | 1,080 | ~$0.60 | recency ~25pp, repetition ~54pp. Repetition beats position |
+| FT-12 | `ft-12-injection-resistance` | Do models differ in resisting instructions hidden in data? | DATA | 1,200 | ~$0.55 | injection lands ~45%; one defensive line takes it to 0% |
 
 ## House rules for every experiment
 
@@ -87,3 +87,34 @@ Probe cost: $0.0018. Re-run any time with
 - Known confound logged by the FT-07 author: its `neutral` arm is one sentence shorter than
   the four framed arms, so neutral-vs-framed is confounded with prompt length. The clean
   comparison is among the four framed arms; a length-matched placebo arm is the follow-up.
+
+
+## Wave 1 results (2026-08-22)
+
+All four completed cleanly. Full tables in each `results/summary.txt`; raw runs in
+`results/runs.jsonl`.
+
+- **FT-05 formalism trap.** Judge competence floor is perfect (100% on both correct arms),
+  so the judge is not broken. It nevertheless accepted wrong answers 10.4% of the time when
+  plainly stated and 16.8% when dressed in headings and confident structure. The
+  pre-registered bet said the gap would be at least 15 points; it is about 6, and the Wilson
+  intervals overlap slightly. Report as suggestive, not established. The headline that IS
+  solid: roughly one wrong answer in six to ten gets a PASS regardless of dress.
+- **FT-10 split knowledge.** Null result. Every arm sits between 97.7% and 99.6%, including
+  the `both` arm designed to induce the false claim. No combination effect. Publishes at full
+  length per house rules; the author's own note that the verifier is conservative and the
+  rate is a lower bound needs the promised hand audit before the post makes a strong claim.
+- **FT-11 conflicting orders.** The richest result of the wave. Rule A is obeyed ~77% when it
+  is stated last and ~52% when stated first (recency, about 25 points), but stating a rule
+  twice against the other's once moves it from 33.1% to 87.1% (about 54 points). Repetition
+  beats position by roughly two to one.
+- **FT-12 injection resistance.** Control 100% clean. A benign canary injection lands about
+  45% of the time (plain 55.9% resisted, fake-system framing 51.3% resisted, in-comment
+  64.8%). One defensive system line took resistance to 100% [98.3, 100]. Caveat for the post:
+  this is a non-adaptive canary, not an adversary who gets to iterate.
+
+**Cross-cutting observation worth its own note:** every wave-1 experiment lost 6-7% of calls
+to API failures (75-84 per 1,200) under five concurrent matrices. The harness retried five
+times with backoff before giving up, and the losses are spread across conditions rather than
+concentrated, so they do not bias a particular arm. Future waves should either cut
+concurrency or raise the retry ceiling.
