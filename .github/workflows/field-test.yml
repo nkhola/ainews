@@ -88,9 +88,18 @@ jobs:
           path: experiments/${{ github.event.inputs.experiment }}/results/
 
       - name: Commit results
+        if: ${{ github.event.inputs.experiment != 'probe' }}
         run: |
+          # Several experiments run concurrently, so pushes race. Retry with rebase.
           git config user.name "field-test-bot"
           git config user.email "actions@github.com"
           git add experiments/*/results/ || true
-          git diff --staged --quiet || git commit -m "field-test: ${{ github.event.inputs.experiment }} results (n=${{ github.event.inputs.n_trials }})"
-          git push || true
+          if git diff --staged --quiet; then echo "no results to commit"; exit 0; fi
+          git commit -q -m "field-test: ${{ github.event.inputs.experiment }} results (n=${{ github.event.inputs.n_trials }})"
+          for i in 1 2 3 4 5 6; do
+            if git push -q origin HEAD:main 2>/dev/null; then echo "pushed on attempt $i"; exit 0; fi
+            sleep $(( (RANDOM % 12) + 4 ))
+            git pull --rebase -q origin main || git rebase --abort || true
+          done
+          echo "push failed after retries; results are still in the uploaded artifact"
+          exit 0

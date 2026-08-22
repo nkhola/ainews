@@ -33,6 +33,21 @@ Planning figures (gemini-2.5-flash list): $0.30/M in, $2.50/M out. A 2,000-call 
 short coding tasks lands near $1.50. Pro-class arms cost roughly 5x that and are used only
 where a frontier comparison is the actual question.
 
+## Available models (probed 2026-08-22, this project)
+
+| model | available | note |
+|---|---|---|
+| `gemini-2.5-flash-lite` | yes | cheapest, $0.10/$0.40 per M |
+| `gemini-2.5-flash` | yes | default workhorse, $0.30/$2.50 |
+| `gemini-2.5-pro` | yes | thinks by default (167 thought tokens on a trivial call) |
+| `gemini-3.5-flash` | yes | |
+| `gemini-3.6-flash` | yes | |
+| `gemini-3.1-pro-preview` | yes | the frontier arm for FT-09 |
+| `gemini-3-flash`, `gemini-3-pro-preview`, `gemini-3.1-pro` | **404** | do not use |
+
+Probe cost: $0.0018. Re-run any time with
+`gh workflow run field-test.yml -f experiment=probe -f n_trials=1`.
+
 ## Experiments
 
 | ID | Directory | Question | Status | Runs | Cost | Post |
