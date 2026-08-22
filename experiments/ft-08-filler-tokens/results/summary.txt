@@ -1,0 +1,13 @@
+
+experiment=ft-08-filler-tokens  runs=1260  api_fail=79  truncated=0  usable=1181
+condition                      n   pass    rate           95% CI   flip      in     out
+--------------------------------------------------------------------------------------------
+dots_200                     166    166 100.0% [97.7%,100.0%]     0%     316     156
+dots_50                      165    162  98.2% [94.8%,99.4%]    17%     166     159
+dots_800                     171    171 100.0% [97.8%,100.0%]     0%     917     214
+lorem_200                    169    169 100.0% [97.8%,100.0%]     0%     332     156
+lorem_50                     162    162 100.0% [97.7%,100.0%]     0%     171     165
+lorem_800                    171    171 100.0% [97.8%,100.0%]     0%     984     181
+none                         177    177 100.0% [97.9%,100.0%]     0%     115     161
+
+wrote /home/runner/work/ainews/ainews/experiments/ft-08-filler-tokens/results/metrics.json

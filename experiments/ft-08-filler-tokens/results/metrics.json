@@ -1,0 +1,79 @@
+{
+  "ft-08-filler-tokens": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 1260,
+    "truncated": 0,
+    "conditions": {
+      "dots_200": {
+        "n": 166,
+        "pass": 166,
+        "rate": 1.0,
+        "ci_low": 0.9774,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 316.4,
+        "mean_out_tokens": 155.6
+      },
+      "dots_50": {
+        "n": 165,
+        "pass": 162,
+        "rate": 0.9818,
+        "ci_low": 0.9479,
+        "ci_high": 0.9938,
+        "flip_rate": 0.1667,
+        "mean_in_tokens": 165.9,
+        "mean_out_tokens": 159.0
+      },
+      "dots_800": {
+        "n": 171,
+        "pass": 171,
+        "rate": 1.0,
+        "ci_low": 0.978,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 916.7,
+        "mean_out_tokens": 214.3
+      },
+      "lorem_200": {
+        "n": 169,
+        "pass": 169,
+        "rate": 1.0,
+        "ci_low": 0.9778,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 332.3,
+        "mean_out_tokens": 156.2
+      },
+      "lorem_50": {
+        "n": 162,
+        "pass": 162,
+        "rate": 1.0,
+        "ci_low": 0.9768,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 170.8,
+        "mean_out_tokens": 165.1
+      },
+      "lorem_800": {
+        "n": 171,
+        "pass": 171,
+        "rate": 1.0,
+        "ci_low": 0.978,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 983.6,
+        "mean_out_tokens": 180.5
+      },
+      "none": {
+        "n": 177,
+        "pass": 177,
+        "rate": 1.0,
+        "ci_low": 0.9788,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 115.3,
+        "mean_out_tokens": 161.4
+      }
+    }
+  }
+}
