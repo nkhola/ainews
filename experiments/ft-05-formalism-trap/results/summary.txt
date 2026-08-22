@@ -1,0 +1,10 @@
+
+experiment=ft-05-formalism-trap  runs=1200  api_fail=75  truncated=0  usable=1125
+condition                      n   pass    rate           95% CI   flip      in     out
+--------------------------------------------------------------------------------------------
+correct_formal               284    284 100.0% [98.7%,100.0%]     0%     277       1
+correct_plain                278    278 100.0% [98.6%,100.0%]     0%     101       1
+wrong_formal                 285     48  16.8% [12.9%,21.6%]    10%     268       1
+wrong_plain                  278     29  10.4% [ 7.4%,14.6%]     0%     102       1
+
+wrote /home/runner/work/ainews/ainews/experiments/ft-05-formalism-trap/results/metrics.json

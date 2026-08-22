@@ -1,0 +1,49 @@
+{
+  "ft-05-formalism-trap": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 1200,
+    "truncated": 0,
+    "conditions": {
+      "correct_formal": {
+        "n": 284,
+        "pass": 284,
+        "rate": 1.0,
+        "ci_low": 0.9867,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 276.8,
+        "mean_out_tokens": 1.0
+      },
+      "correct_plain": {
+        "n": 278,
+        "pass": 278,
+        "rate": 1.0,
+        "ci_low": 0.9864,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 100.8,
+        "mean_out_tokens": 1.0
+      },
+      "wrong_formal": {
+        "n": 285,
+        "pass": 48,
+        "rate": 0.1684,
+        "ci_low": 0.1294,
+        "ci_high": 0.2162,
+        "flip_rate": 0.1,
+        "mean_in_tokens": 268.3,
+        "mean_out_tokens": 1.0
+      },
+      "wrong_plain": {
+        "n": 278,
+        "pass": 29,
+        "rate": 0.1043,
+        "ci_low": 0.0736,
+        "ci_high": 0.1458,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 101.5,
+        "mean_out_tokens": 1.0
+      }
+    }
+  }
+}
