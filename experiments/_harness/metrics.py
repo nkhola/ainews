@@ -27,9 +27,14 @@ def summarize(directory):
     trunc = sum(1 for r in ok if r.get("truncated"))
     usable = [r for r in ok if r.get("pass") is not None and not r.get("truncated")]
 
+    # When a sweep varies the MODEL rather than the condition (FT-09), grouping on
+    # condition alone would merge the models into one meaningless row.
+    models = {r.get("model") for r in usable}
+    multi = len(models) > 1
     by = defaultdict(list)
     for r in usable:
-        by[r["condition"]].append(r)
+        key = f'{r["condition"]}@{r["model"]}' if multi else r["condition"]
+        by[key].append(r)
 
     print(f"\nexperiment={directory}  runs={len(rows)}  api_fail={len(rows)-len(ok)}  "
           f"truncated={trunc}  usable={len(usable)}")
