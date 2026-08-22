@@ -13,9 +13,13 @@ on:
         required: true
         default: '10'
       constraints:
-        description: 'Space-separated constraint ids (or "all" to calibrate)'
-        required: true
-        default: 'no_comments'
+        description: 'Legacy arm selector (older rigs only); ignore for harness experiments'
+        required: false
+        default: 'single_quotes'
+      model_override:
+        description: 'Optional model id, e.g. gemini-3.1-pro-preview'
+        required: false
+        default: ''
 
 jobs:
   run:
@@ -46,9 +50,21 @@ jobs:
           VERTEX_LOCATION: ${{ secrets.VERTEX_LOCATION }}
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
           N_TRIALS: ${{ github.event.inputs.n_trials }}
+          LLM_MODEL_OVERRIDE: ${{ github.event.inputs.model_override }}
           RUN_ARMS: ${{ github.event.inputs.constraints == 'single_quotes' && '' || github.event.inputs.constraints }}
           OUT_SUFFIX: ${{ github.event.inputs.constraints == 'single_quotes' && '' || '_alone' }}
         run: |
+          EXP="${{ github.event.inputs.experiment }}"
+          # Probe mode, and harness experiments (exp.py), take precedence over legacy run.py
+          if [ "$EXP" = "probe" ]; then
+            python experiments/_harness/probe_models.py
+            exit 0
+          fi
+          if [ -f "experiments/$EXP/exp.py" ]; then
+            python experiments/_harness/core.py "$EXP"
+            python experiments/_harness/metrics.py "$EXP" | tee "experiments/$EXP/results/summary.txt"
+            exit 0
+          fi
           CS="${{ github.event.inputs.constraints }}"
           if [ "$CS" = "all" ]; then CS="no_comments single_quotes no_docstring no_type_hints"; fi
           for c in $CS; do
@@ -57,10 +73,16 @@ jobs:
             echo "::endgroup::"
           done
 
-      - name: Analyze
-        run: python experiments/${{ github.event.inputs.experiment }}/analyze.py | tee experiments/${{ github.event.inputs.experiment }}/results/summary.txt
+      - name: Analyze (legacy rigs only)
+        if: ${{ github.event.inputs.experiment != 'probe' }}
+        run: |
+          EXP="${{ github.event.inputs.experiment }}"
+          if [ ! -f "experiments/$EXP/exp.py" ] && [ -f "experiments/$EXP/analyze.py" ]; then
+            python experiments/$EXP/analyze.py | tee experiments/$EXP/results/summary.txt
+          fi
 
       - uses: actions/upload-artifact@v4
+        if: ${{ github.event.inputs.experiment != 'probe' }}
         with:
           name: ${{ github.event.inputs.experiment }}-results
           path: experiments/${{ github.event.inputs.experiment }}/results/
