@@ -1,0 +1,59 @@
+{
+  "ft-10-split-knowledge": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 1200,
+    "truncated": 0,
+    "conditions": {
+      "both": {
+        "n": 221,
+        "pass": 216,
+        "rate": 0.9774,
+        "ci_low": 0.9481,
+        "ci_high": 0.9903,
+        "flip_rate": 0.25,
+        "mean_in_tokens": 261.3,
+        "mean_out_tokens": 64.6
+      },
+      "both_plus_warning": {
+        "n": 224,
+        "pass": 223,
+        "rate": 0.9955,
+        "ci_low": 0.9751,
+        "ci_high": 0.9992,
+        "flip_rate": 0.125,
+        "mean_in_tokens": 294.3,
+        "mean_out_tokens": 57.5
+      },
+      "doc_a_only": {
+        "n": 222,
+        "pass": 219,
+        "rate": 0.9865,
+        "ci_low": 0.961,
+        "ci_high": 0.9954,
+        "flip_rate": 0.25,
+        "mean_in_tokens": 218.4,
+        "mean_out_tokens": 50.4
+      },
+      "doc_b_only": {
+        "n": 223,
+        "pass": 218,
+        "rate": 0.9776,
+        "ci_low": 0.9486,
+        "ci_high": 0.9904,
+        "flip_rate": 0.25,
+        "mean_in_tokens": 228.1,
+        "mean_out_tokens": 53.4
+      },
+      "neither": {
+        "n": 227,
+        "pass": 224,
+        "rate": 0.9868,
+        "ci_low": 0.9619,
+        "ci_high": 0.9955,
+        "flip_rate": 0.125,
+        "mean_in_tokens": 185.8,
+        "mean_out_tokens": 44.1
+      }
+    }
+  }
+}

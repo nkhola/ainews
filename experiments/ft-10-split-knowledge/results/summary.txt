@@ -1,0 +1,11 @@
+
+experiment=ft-10-split-knowledge  runs=1200  api_fail=83  truncated=0  usable=1117
+condition                      n   pass    rate           95% CI   flip      in     out
+--------------------------------------------------------------------------------------------
+both                         221    216  97.7% [94.8%,99.0%]    25%     261      65
+both_plus_warning            224    223  99.6% [97.5%,99.9%]    12%     294      57
+doc_a_only                   222    219  98.6% [96.1%,99.5%]    25%     218      50
+doc_b_only                   223    218  97.8% [94.9%,99.0%]    25%     228      53
+neither                      227    224  98.7% [96.2%,99.5%]    12%     186      44
+
+wrote /home/runner/work/ainews/ainews/experiments/ft-10-split-knowledge/results/metrics.json
