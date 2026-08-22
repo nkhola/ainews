@@ -1,0 +1,59 @@
+{
+  "ft-04-same-ticket-five-ways": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 900,
+    "truncated": 0,
+    "conditions": {
+      "formal_spec": {
+        "n": 163,
+        "pass": 163,
+        "rate": 1.0,
+        "ci_low": 0.977,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 144.6,
+        "mean_out_tokens": 151.6
+      },
+      "precise": {
+        "n": 170,
+        "pass": 170,
+        "rate": 1.0,
+        "ci_low": 0.9779,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 113.3,
+        "mean_out_tokens": 169.3
+      },
+      "slack_chatty": {
+        "n": 167,
+        "pass": 167,
+        "rate": 1.0,
+        "ci_low": 0.9775,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 115.3,
+        "mean_out_tokens": 191.1
+      },
+      "terse_ticket": {
+        "n": 171,
+        "pass": 171,
+        "rate": 1.0,
+        "ci_low": 0.978,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 87.5,
+        "mean_out_tokens": 172.6
+      },
+      "user_story": {
+        "n": 168,
+        "pass": 168,
+        "rate": 1.0,
+        "ci_low": 0.9776,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 133.2,
+        "mean_out_tokens": 149.9
+      }
+    }
+  }
+}

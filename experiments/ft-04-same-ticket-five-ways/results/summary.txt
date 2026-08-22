@@ -1,0 +1,11 @@
+
+experiment=ft-04-same-ticket-five-ways  runs=900  api_fail=61  truncated=0  usable=839
+condition                      n   pass    rate           95% CI   flip      in     out
+--------------------------------------------------------------------------------------------
+formal_spec                  163    163 100.0% [97.7%,100.0%]     0%     145     152
+precise                      170    170 100.0% [97.8%,100.0%]     0%     113     169
+slack_chatty                 167    167 100.0% [97.8%,100.0%]     0%     115     191
+terse_ticket                 171    171 100.0% [97.8%,100.0%]     0%      87     173
+user_story                   168    168 100.0% [97.8%,100.0%]     0%     133     150
+
+wrote /home/runner/work/ainews/ainews/experiments/ft-04-same-ticket-five-ways/results/metrics.json
