@@ -1,10 +1,20 @@
 {
   "ft-09-when-pro-pays": {
     "model": "gemini-2.5-flash-lite",
-    "total_runs": 300,
+    "total_runs": 900,
     "truncated": 0,
     "conditions": {
-      "default": {
+      "default@gemini-2.5-flash": {
+        "n": 273,
+        "pass": 272,
+        "rate": 0.9963,
+        "ci_low": 0.9795,
+        "ci_high": 0.9994,
+        "flip_rate": 0.1,
+        "mean_in_tokens": 118.7,
+        "mean_out_tokens": 332.9
+      },
+      "default@gemini-2.5-flash-lite": {
         "n": 300,
         "pass": 282,
         "rate": 0.94,
@@ -13,6 +23,16 @@
         "flip_rate": 0.4,
         "mean_in_tokens": 119.0,
         "mean_out_tokens": 325.5
+      },
+      "default@gemini-3.1-pro-preview": {
+        "n": 300,
+        "pass": 300,
+        "rate": 1.0,
+        "ci_low": 0.9874,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 119.0,
+        "mean_out_tokens": 163.0
       }
     }
   }

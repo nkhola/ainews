@@ -54,16 +54,16 @@ Probe cost: $0.0018. Re-run any time with
 |----|-----------|----------|--------|------|------|------|
 | FT-01 | `ft-m1-say-it-once` | Does repeating an instruction help? | PUBLISHED | 1,080 | ~$1.45 | Say It Four Times |
 | FT-02 | `ft-02-where-you-put-it` | Does placement matter? What does crowding cost? | DRAFTED | 2,700 | ~$1.60 | Top and Bottom Doesn't Work |
-| FT-03 | `ft-03-phrasing-cost` | Do equivalent phrasings change token spend? | RUNNING | 1,800 | | |
-| FT-04 | `ft-04-same-ticket-five-ways` | Does rewording a ticket change what you get? | RIGGED | 900 | | |
+| FT-03 | `ft-03-phrasing-cost` | Do equivalent phrasings change token spend? | RERUN | 1,800 | ~$2 | phrasing swings output 144-1915 tokens (13x); first run lost 46% to API failures, re-running clean |
+| FT-04 | `ft-04-same-ticket-five-ways` | Does rewording a ticket change what you get? | DATA | 900 | ~$0.60 | NULL: all 5 rewrite styles 100% correct. Wording changed cost, not correctness |
 | FT-05 | `ft-05-formalism-trap` | Do LLM judges pass confident, well-formatted wrong answers? | DATA | 1,200 | ~$0.15 | judge false-accepts wrong answers 10-17%; formal dressing +6pp, CIs overlap |
-| FT-06 | `ft-06-thinking-budget` | Does more thinking budget buy correctness on coding tasks? | RIGGED | 1,200 | | |
-| FT-07 | `ft-07-being-watched` | Does telling a model it's being tested change its behaviour? | RIGGED | 1,200 | | |
-| FT-08 | `ft-08-filler-tokens` | Do meaningless filler tokens change output quality? | PLANNED | | | |
-| FT-09 | `ft-09-when-pro-pays` | At what task difficulty does a Pro model beat a Flash model? | RIGGED | 300/model | | |
+| FT-06 | `ft-06-thinking-budget` | Does more thinking budget buy correctness on coding tasks? | DRAFTED | 1,200 | ~$1.20 | NULL on accuracy at every difficulty; 8192-budget burned 3,233 reasoning tokens for nothing |
+| FT-07 | `ft-07-being-watched` | Does telling a model it's being tested change its behaviour? | DRAFTED | 1,200 | ~$1.10 | under eval framing model flagged ambiguity 0% vs 9% unframed; prose 3 vs 19 words |
+| FT-08 | `ft-08-filler-tokens` | Do meaningless filler tokens change output quality? | DATA | 1,260 | ~$1.30 | NULL: filler inert at every amount and kind, 98-100% across the board |
+| FT-09 | `ft-09-when-pro-pays` | At what task difficulty does a Pro model beat a Flash model? | DATA | 900 | ~$0.90 | ceiling: lite 94.0%, flash 99.6%, 3.1-pro 100%. Pro used half the output tokens |
 | FT-10 | `ft-10-split-knowledge` | Can two innocuous documents combine into a false claim? | DATA | 1,200 | ~$0.35 | NULL RESULT: all arms 97.7-99.6%, no combination effect found |
-| FT-11 | `ft-11-conflicting-orders` | When two instructions conflict, which one wins? | DATA | 1,080 | ~$0.60 | recency ~25pp, repetition ~54pp. Repetition beats position |
-| FT-12 | `ft-12-injection-resistance` | Do models differ in resisting instructions hidden in data? | DATA | 1,200 | ~$0.55 | injection lands ~45%; one defensive line takes it to 0% |
+| FT-11 | `ft-11-conflicting-orders` | When two instructions conflict, which one wins? | DRAFTED | 1,080 | ~$0.60 | recency ~25pp, repetition ~54pp; one conflict pair was escapable (design flaw, disclosed) |
+| FT-12 | `ft-12-injection-resistance` | Do models differ in resisting instructions hidden in data? | DRAFTED | 1,200 | ~$0.55 | injection lands ~45%; one defensive line took it to 0/224 |
 
 ## House rules for every experiment
 
@@ -118,3 +118,35 @@ to API failures (75-84 per 1,200) under five concurrent matrices. The harness re
 times with backoff before giving up, and the losses are spread across conditions rather than
 concentrated, so they do not bias a particular arm. Future waves should either cut
 concurrency or raise the retry ceiling.
+
+
+## Wave 2 results and the meta-finding (2026-08-22)
+
+**The most important thing in this batch is a lesson about my own task design.** FT-04, FT-06,
+FT-07, FT-08 and FT-09 all returned near-ceiling pass rates (94-100%), which means the tasks
+were too easy for the dependent variable to move. Five experiments that each cost about a
+dollar largely measured my own choice of problems. Anyone building evals should read that as
+the warning it is: **calibrate task difficulty first, or you will spend a matrix proving your
+tasks are easy.** Where an effect did appear, it appeared in a variable I was not primarily
+watching (tokens, commentary), not in the pass rate.
+
+- **FT-03 phrasing cost.** First run lost 830 of 1,800 calls to API failures under five-way
+  concurrency, plus 187 truncations. Data unusable for a headline; re-running alone. The
+  direction is dramatic and worth the rerun: mean visible output ran from 144 tokens
+  (`be_concise`) to 1,915 (`stepwise`), a 13x spread for semantically equivalent asks.
+- **FT-04 same ticket five ways.** Clean null. All five rewrite styles produced 100% correct
+  code. Pairs naturally with FT-03: rewording changed what you pay, not what you get.
+- **FT-06 thinking budget.** Null on accuracy at every difficulty band (easy 100% everywhere;
+  hard 97% at budget zero vs 90-97% with thinking), while consuming up to 3,233 reasoning
+  tokens and pushing visible output from 352 to ~575. Ceiling caveat stated in the post.
+- **FT-07 being watched.** The subtlest result of the batch. Pass rates identical, but
+  ambiguity flagging fell from 9% (unframed) to 0/222 (told it was an automated evaluation),
+  and prose outside the code fell from 19 words to 3. Zero clarifying questions in 1,120 runs.
+- **FT-08 filler tokens.** Clean null. Filler inert at 50, 200 and 800 tokens, dots or lorem.
+- **FT-09 when Pro pays.** Ceiling again: flash-lite 94.0%, flash 99.6%, gemini-3.1-pro-preview
+  100%. The unplanned finding is efficiency: Pro produced the same answers in 163 output
+  tokens against flash's 333.
+
+**Recovered data note:** the three FT-09 model runs raced on `git push` and two were silently
+dropped by the workflow's `push || true`. Both were recovered from the Actions artifacts.
+Fix the workflow to retry the push rather than swallow the failure.
