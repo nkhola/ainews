@@ -54,7 +54,7 @@ Probe cost: $0.0018. Re-run any time with
 |----|-----------|----------|--------|------|------|------|
 | FT-01 | `ft-m1-say-it-once` | Does repeating an instruction help? | PUBLISHED | 1,080 | ~$1.45 | Say It Four Times |
 | FT-02 | `ft-02-where-you-put-it` | Does placement matter? What does crowding cost? | DRAFTED | 2,700 | ~$1.60 | Top and Bottom Doesn't Work |
-| FT-03 | `ft-03-phrasing-cost` | Do equivalent phrasings change token spend? | RERUN | 1,800 | ~$2 | phrasing swings output 144-1915 tokens (13x); first run lost 46% to API failures, re-running clean |
+| FT-03 | `ft-03-phrasing-cost` | Do equivalent phrasings change token spend? | DRAFTED | 1,800 | ~$4 | 16.5x output-token spread (137 to 2,261) for identical requests; correctness flat |
 | FT-04 | `ft-04-same-ticket-five-ways` | Does rewording a ticket change what you get? | DRAFTED | 900 | ~$0.60 | NULL: all 5 rewrite styles 100% correct. Wording changed cost, not correctness |
 | FT-05 | `ft-05-formalism-trap` | Do LLM judges pass confident, well-formatted wrong answers? | DRAFTED | 1,200 | ~$0.15 | judge false-accepts wrong answers 10-17%; formal dressing +6pp, CIs overlap |
 | FT-06 | `ft-06-thinking-budget` | Does more thinking budget buy correctness on coding tasks? | DRAFTED | 1,200 | ~$1.20 | NULL on accuracy at every difficulty; 8192-budget burned 3,233 reasoning tokens for nothing |
@@ -154,7 +154,7 @@ Fix the workflow to retry the push rather than swallow the failure.
 
 ## Draft status (2026-08-22, end of batch session)
 
-Nine of ten drafted, every one passing `tools/audit_post.py`. Posts live in the blog repo
+**All ten drafted**, every one passing `tools/audit_post.py`. Posts live in the blog repo
 under `posts/<date-slug>/post.md` with `post.substack.md` and rendered PNGs beside them
 (another session reorganised posts into per-post folders mid-batch; drafts survived intact).
 
@@ -169,7 +169,7 @@ under `posts/<date-slug>/post.md` with `post.substack.md` and rendered PNGs besi
 | 2026-10-14 | FT-10 split knowledge | `the-null-result` |
 | 2026-10-21 | FT-04 phrasing registers | `five-ways-to-ask` |
 | 2026-10-28 | FT-08 filler tokens | `i-padded-the-prompt-with-nonsense` |
-| pending | FT-03 phrasing cost | rerun in flight |
+| 2026-11-04 | FT-03 phrasing cost | `the-same-question-sixteen-times-the-bill` |
 
 **Reusable tooling added this batch** (blog repo `tools/`): `ft_bars.py` (categorical bars with
 Wilson whiskers), `ft_table_generic.py` (any table as a house-style PNG, because Substack
@@ -193,3 +193,17 @@ Field Test can render its figures without new code.
    near-ceiling rates and measured nothing but my own task choice. A cheap pilot at n=5
    would have caught every one of them.
 4. FT-10's promised hand audit of raw answers is still outstanding; its post says so.
+
+
+## Batch complete (2026-08-22)
+
+Ten experiments, roughly 14,000 API calls, about $16 of the $250 credit. Ten drafts, all
+passing the audit gate, all with figures rendered in the house style, all with pre-registered
+predictions recorded before the data existed and reported honestly when they failed. Seven of
+the ten bets were wrong in some part, and every post says so.
+
+FT-03 final numbers (clean run, 0 API failures, 0 budget stops, 17 truncations of 1,800):
+output tokens by wrapper run be_concise 137, spec_form 319, terse 629, verbose 761, bare 1161,
+urgent 1739, role 1772, polite 1858, chatty 2059, stepwise 2261. Correctness 94.2% to 100%.
+The 16.5x cost spread on identical requests is the single most immediately actionable number
+the batch produced.
