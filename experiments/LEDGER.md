@@ -55,13 +55,13 @@ Probe cost: $0.0018. Re-run any time with
 | FT-01 | `ft-m1-say-it-once` | Does repeating an instruction help? | PUBLISHED | 1,080 | ~$1.45 | Say It Four Times |
 | FT-02 | `ft-02-where-you-put-it` | Does placement matter? What does crowding cost? | DRAFTED | 2,700 | ~$1.60 | Top and Bottom Doesn't Work |
 | FT-03 | `ft-03-phrasing-cost` | Do equivalent phrasings change token spend? | RERUN | 1,800 | ~$2 | phrasing swings output 144-1915 tokens (13x); first run lost 46% to API failures, re-running clean |
-| FT-04 | `ft-04-same-ticket-five-ways` | Does rewording a ticket change what you get? | DATA | 900 | ~$0.60 | NULL: all 5 rewrite styles 100% correct. Wording changed cost, not correctness |
-| FT-05 | `ft-05-formalism-trap` | Do LLM judges pass confident, well-formatted wrong answers? | DATA | 1,200 | ~$0.15 | judge false-accepts wrong answers 10-17%; formal dressing +6pp, CIs overlap |
+| FT-04 | `ft-04-same-ticket-five-ways` | Does rewording a ticket change what you get? | DRAFTED | 900 | ~$0.60 | NULL: all 5 rewrite styles 100% correct. Wording changed cost, not correctness |
+| FT-05 | `ft-05-formalism-trap` | Do LLM judges pass confident, well-formatted wrong answers? | DRAFTED | 1,200 | ~$0.15 | judge false-accepts wrong answers 10-17%; formal dressing +6pp, CIs overlap |
 | FT-06 | `ft-06-thinking-budget` | Does more thinking budget buy correctness on coding tasks? | DRAFTED | 1,200 | ~$1.20 | NULL on accuracy at every difficulty; 8192-budget burned 3,233 reasoning tokens for nothing |
 | FT-07 | `ft-07-being-watched` | Does telling a model it's being tested change its behaviour? | DRAFTED | 1,200 | ~$1.10 | under eval framing model flagged ambiguity 0% vs 9% unframed; prose 3 vs 19 words |
-| FT-08 | `ft-08-filler-tokens` | Do meaningless filler tokens change output quality? | DATA | 1,260 | ~$1.30 | NULL: filler inert at every amount and kind, 98-100% across the board |
-| FT-09 | `ft-09-when-pro-pays` | At what task difficulty does a Pro model beat a Flash model? | DATA | 900 | ~$0.90 | ceiling: lite 94.0%, flash 99.6%, 3.1-pro 100%. Pro used half the output tokens |
-| FT-10 | `ft-10-split-knowledge` | Can two innocuous documents combine into a false claim? | DATA | 1,200 | ~$0.35 | NULL RESULT: all arms 97.7-99.6%, no combination effect found |
+| FT-08 | `ft-08-filler-tokens` | Do meaningless filler tokens change output quality? | DRAFTED | 1,260 | ~$1.30 | NULL: filler inert at every amount and kind, 98-100% across the board |
+| FT-09 | `ft-09-when-pro-pays` | At what task difficulty does a Pro model beat a Flash model? | DRAFTED | 900 | ~$0.90 | ceiling: lite 94.0%, flash 99.6%, 3.1-pro 100%. Pro used half the output tokens |
+| FT-10 | `ft-10-split-knowledge` | Can two innocuous documents combine into a false claim? | DRAFTED | 1,200 | ~$0.35 | NULL RESULT: all arms 97.7-99.6%, no combination effect found |
 | FT-11 | `ft-11-conflicting-orders` | When two instructions conflict, which one wins? | DRAFTED | 1,080 | ~$0.60 | recency ~25pp, repetition ~54pp; one conflict pair was escapable (design flaw, disclosed) |
 | FT-12 | `ft-12-injection-resistance` | Do models differ in resisting instructions hidden in data? | DRAFTED | 1,200 | ~$0.55 | injection lands ~45%; one defensive line took it to 0/224 |
 
@@ -150,3 +150,39 @@ watching (tokens, commentary), not in the pass rate.
 **Recovered data note:** the three FT-09 model runs raced on `git push` and two were silently
 dropped by the workflow's `push || true`. Both were recovered from the Actions artifacts.
 Fix the workflow to retry the push rather than swallow the failure.
+
+
+## Draft status (2026-08-22, end of batch session)
+
+Nine of ten drafted, every one passing `tools/audit_post.py`. Posts live in the blog repo
+under `posts/<date-slug>/post.md` with `post.substack.md` and rendered PNGs beside them
+(another session reorganised posts into per-post folders mid-batch; drafts survived intact).
+
+| Post date | Field Test | Draft |
+|---|---|---|
+| 2026-09-02 | FT-11 conflicting orders | `whichever-you-said-last` |
+| 2026-09-09 | FT-12 injection | `one-line-of-defence` |
+| 2026-09-16 | FT-06 thinking budget | `more-thinking-didnt-help` |
+| 2026-09-23 | FT-07 evaluation awareness | `quieter-when-watched` |
+| 2026-09-30 | FT-05 formalism trap | `the-judge-liked-the-formatting` |
+| 2026-10-07 | FT-09 model tiers | `the-cheapest-model-won` |
+| 2026-10-14 | FT-10 split knowledge | `the-null-result` |
+| 2026-10-21 | FT-04 phrasing registers | `five-ways-to-ask` |
+| 2026-10-28 | FT-08 filler tokens | `i-padded-the-prompt-with-nonsense` |
+| pending | FT-03 phrasing cost | rerun in flight |
+
+**Reusable tooling added this batch** (blog repo `tools/`): `ft_bars.py` (categorical bars with
+Wilson whiskers), `ft_table_generic.py` (any table as a house-style PNG, because Substack
+cannot render markdown tables), `ft_chart_series.py`, `ft_table_matrix.py`. Every future
+Field Test can render its figures without new code.
+
+**Four things a future session should fix:**
+1. The workflow still does `git push || true`, which silently drops results when runs race.
+   Two FT-09 model files were lost that way and recovered from Actions artifacts. Make it
+   retry with rebase and fail loudly.
+2. Concurrency causes API failures. Five parallel matrices cost 6-7% of calls; FT-03's first
+   run lost 46%. Cap at three concurrent, or raise the retry ceiling in `core.py`.
+3. **Calibrate task difficulty before spending a matrix.** Five of ten experiments returned
+   near-ceiling rates and measured nothing but my own task choice. A cheap pilot at n=5
+   would have caught every one of them.
+4. FT-10's promised hand audit of raw answers is still outstanding; its post says so.
