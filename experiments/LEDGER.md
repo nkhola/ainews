@@ -180,8 +180,15 @@ Field Test can render its figures without new code.
 1. The workflow still does `git push || true`, which silently drops results when runs race.
    Two FT-09 model files were lost that way and recovered from Actions artifacts. Make it
    retry with rebase and fail loudly.
-2. Concurrency causes API failures. Five parallel matrices cost 6-7% of calls; FT-03's first
-   run lost 46%. Cap at three concurrent, or raise the retry ceiling in `core.py`.
+2. **CORRECTION.** FT-03's losses were NOT API failures and NOT caused by concurrency. Both
+   runs hit the in-process budget guard: every one of the 777/830 "failures" carries the
+   error string `budget stop`. FT-03's verbose arms average ~1,800 output tokens, so a $3 cap
+   halted the matrix roughly 57% through. The guard did its job; the cap was wrong for this
+   experiment. Raised to $12 and maxOutputTokens to 4096, re-running.
+   The genuine concurrency effect on the OTHER experiments is smaller: 6-7% of calls under
+   five parallel matrices, spread evenly across arms. Still worth capping at three concurrent.
+   Lesson for the harness: `budget stop` should be reported as its own outcome, never
+   summed into `api_fail`, because those two numbers mean opposite things about your data.
 3. **Calibrate task difficulty before spending a matrix.** Five of ten experiments returned
    near-ceiling rates and measured nothing but my own task choice. A cheap pilot at n=5
    would have caught every one of them.

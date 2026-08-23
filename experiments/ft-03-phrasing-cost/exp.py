@@ -14,7 +14,8 @@ import re
 
 NAME = "ft-03-phrasing-cost"
 MODEL = "gemini-2.5-flash"
-BUDGET_USD = 3.0
+BUDGET_USD = 12.0  # raised 2026-08-22: verbose arms average ~1,800 output tokens;
+                   # the $3 cap stopped the matrix ~57% in and censored the expensive arms
 
 # Held constant in every arm so the wrapper is the only variable. Neutral about
 # length, format, and effort.
@@ -211,7 +212,7 @@ def build_request(task_id, task, cond):
         "systemInstruction": {"parts": [{"text": SYSTEM}]},
         "contents": [{"role": "user", "parts": [{"text": user}]}],
         "generationConfig": {
-            "maxOutputTokens": 2400,
+            "maxOutputTokens": 4096,
             "thinkingConfig": {"thinkingBudget": 0},
         },
     }

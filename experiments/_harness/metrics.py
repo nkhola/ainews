@@ -24,6 +24,10 @@ def summarize(directory):
     for f in sorted(glob.glob(os.path.join(base, "runs*.jsonl"))):
         rows += [json.loads(l) for l in open(f) if l.strip()]
     ok = [r for r in rows if r.get("ok")]
+    # A budget stop is not an API failure. Conflating them hides why a matrix ended.
+    budget_stopped = sum(1 for r in rows if not r.get("ok")
+                         and "budget stop" in str(r.get("error", "")))
+    api_fail = len(rows) - len(ok) - budget_stopped
     trunc = sum(1 for r in ok if r.get("truncated"))
     usable = [r for r in ok if r.get("pass") is not None and not r.get("truncated")]
 
@@ -36,8 +40,8 @@ def summarize(directory):
         key = f'{r["condition"]}@{r["model"]}' if multi else r["condition"]
         by[key].append(r)
 
-    print(f"\nexperiment={directory}  runs={len(rows)}  api_fail={len(rows)-len(ok)}  "
-          f"truncated={trunc}  usable={len(usable)}")
+    print(f"\nexperiment={directory}  runs={len(rows)}  api_fail={api_fail}  "
+          f"budget_stopped={budget_stopped}  truncated={trunc}  usable={len(usable)}")
     print(f"{'condition':<26} {'n':>5} {'pass':>6} {'rate':>7} {'95% CI':>16} {'flip':>6} "
           f"{'in':>7} {'out':>7}")
     print("-" * 92)
@@ -62,6 +66,7 @@ def summarize(directory):
               f"{sum(ti)/n:>7.0f} {sum(to)/n:>7.0f}")
 
     out = {directory: {"model": ok[0]["model"] if ok else None, "total_runs": len(rows),
+                       "api_failures": api_fail, "budget_stopped": budget_stopped,
                        "truncated": trunc, "conditions": conds}}
     with open(os.path.join(base, "metrics.json"), "w") as fh:
         json.dump(out, fh, indent=2)
