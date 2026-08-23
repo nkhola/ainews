@@ -2,107 +2,107 @@
   "ft-03-phrasing-cost": {
     "model": "gemini-2.5-flash",
     "total_runs": 1800,
-    "truncated": 187,
+    "truncated": 153,
     "conditions": {
       "bare": {
-        "n": 67,
-        "pass": 67,
+        "n": 88,
+        "pass": 88,
         "rate": 1.0,
-        "ci_low": 0.9458,
+        "ci_low": 0.9582,
         "ci_high": 1.0,
         "flip_rate": 0.0,
-        "mean_in_tokens": 29.8,
-        "mean_out_tokens": 734.3
+        "mean_in_tokens": 30.2,
+        "mean_out_tokens": 962.7
       },
       "be_concise": {
-        "n": 94,
-        "pass": 94,
-        "rate": 1.0,
-        "ci_low": 0.9607,
-        "ci_high": 1.0,
-        "flip_rate": 0.0,
-        "mean_in_tokens": 34.8,
-        "mean_out_tokens": 143.8
+        "n": 103,
+        "pass": 102,
+        "rate": 0.9903,
+        "ci_low": 0.947,
+        "ci_high": 0.9983,
+        "flip_rate": 0.1667,
+        "mean_in_tokens": 34.0,
+        "mean_out_tokens": 137.1
       },
       "chatty": {
+        "n": 69,
+        "pass": 68,
+        "rate": 0.9855,
+        "ci_low": 0.9224,
+        "ci_high": 0.9974,
+        "flip_rate": 0.1667,
+        "mean_in_tokens": 75.7,
+        "mean_out_tokens": 1784.5
+      },
+      "polite": {
+        "n": 77,
+        "pass": 77,
+        "rate": 1.0,
+        "ci_low": 0.9525,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 49.8,
+        "mean_out_tokens": 1743.4
+      },
+      "role": {
+        "n": 79,
+        "pass": 77,
+        "rate": 0.9747,
+        "ci_low": 0.9123,
+        "ci_high": 0.993,
+        "flip_rate": 0.3333,
+        "mean_in_tokens": 42.2,
+        "mean_out_tokens": 1290.7
+      },
+      "spec_form": {
+        "n": 103,
+        "pass": 103,
+        "rate": 1.0,
+        "ci_low": 0.964,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 43.5,
+        "mean_out_tokens": 319.1
+      },
+      "stepwise": {
         "n": 66,
         "pass": 66,
         "rate": 1.0,
         "ci_low": 0.945,
         "ci_high": 1.0,
         "flip_rate": 0.0,
-        "mean_in_tokens": 75.0,
-        "mean_out_tokens": 1882.6
-      },
-      "polite": {
-        "n": 78,
-        "pass": 77,
-        "rate": 0.9872,
-        "ci_low": 0.9309,
-        "ci_high": 0.9977,
-        "flip_rate": 0.1667,
-        "mean_in_tokens": 50.4,
-        "mean_out_tokens": 1781.4
-      },
-      "role": {
-        "n": 69,
-        "pass": 68,
-        "rate": 0.9855,
-        "ci_low": 0.9224,
-        "ci_high": 0.9974,
-        "flip_rate": 0.0,
-        "mean_in_tokens": 42.9,
-        "mean_out_tokens": 1276.8
-      },
-      "spec_form": {
-        "n": 89,
-        "pass": 89,
-        "rate": 1.0,
-        "ci_low": 0.9586,
-        "ci_high": 1.0,
-        "flip_rate": 0.0,
-        "mean_in_tokens": 43.3,
-        "mean_out_tokens": 334.4
-      },
-      "stepwise": {
-        "n": 67,
-        "pass": 67,
-        "rate": 1.0,
-        "ci_low": 0.9458,
-        "ci_high": 1.0,
-        "flip_rate": 0.0,
-        "mean_in_tokens": 46.1,
-        "mean_out_tokens": 1914.9
+        "mean_in_tokens": 46.2,
+        "mean_out_tokens": 1888.0
       },
       "terse": {
-        "n": 101,
-        "pass": 101,
+        "n": 100,
+        "pass": 100,
         "rate": 1.0,
-        "ci_low": 0.9634,
+        "ci_low": 0.963,
         "ci_high": 1.0,
         "flip_rate": 0.0,
-        "mean_in_tokens": 34.5,
-        "mean_out_tokens": 573.4
+        "mean_in_tokens": 34.1,
+        "mean_out_tokens": 613.1
       },
       "urgent": {
-        "n": 58,
-        "pass": 57,
-        "rate": 0.9828,
-        "ci_low": 0.9086,
-        "ci_high": 0.997,
+        "n": 71,
+        "pass": 70,
+        "rate": 0.9859,
+        "ci_low": 0.9244,
+        "ci_high": 0.9975,
         "flip_rate": 0.1667,
-        "mean_in_tokens": 44.6,
-        "mean_out_tokens": 1063.5
+        "mean_in_tokens": 45.2,
+        "mean_out_tokens": 1156.9
       },
       "verbose": {
-        "n": 94,
-        "pass": 93,
-        "rate": 0.9894,
-        "ci_low": 0.9422,
-        "ci_high": 0.9981,
-        "flip_rate": 0.1667,
-        "mean_in_tokens": 115.1,
-        "mean_out_tokens": 745.4
+        "n": 114,
+        "pass": 114,
+        "rate": 1.0,
+        "ci_low": 0.9674,
+        "ci_high": 1.0,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 115.3,
+        "mean_out_tokens": 701.9
       }
     }
   }
