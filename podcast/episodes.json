@@ -1,5 +1,14 @@
 [
   {
+    "file": "2026-W34.mp3",
+    "title": "The Price of Thought and the $500B Bet",
+    "description": "This week, local AI models challenge cloud giants, agentic systems demand new controls, and markets grapple with unprecedented capital flows into AI, all against a backdrop of geopolitical friction and bond market turmoil.",
+    "week_range": "August 17 to August 23, 2026",
+    "published": "2026-08-23",
+    "duration_min": 23,
+    "number": 6
+  },
+  {
     "file": "2026-W33.mp3",
     "title": "Nvidia's AI Central Bank, Qwen's Rise",
     "description": "This week, Nvidia solidified its role as AI's financial architect, open models continued their rapid ascent, and critical vulnerabilities in AI safety were exposed, challenging our understanding of alignment.",
