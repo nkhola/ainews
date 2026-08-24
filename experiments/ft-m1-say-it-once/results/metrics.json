@@ -1,71 +1,10 @@
 {
-  "single_quotes": {
+  "ft-m1-say-it-once": {
     "model": "gemini-2.5-flash",
     "total_runs": 1080,
     "api_failures": 0,
+    "budget_stopped": 0,
     "truncated": 9,
-    "unparseable": 0,
-    "conditions": {
-      "0": {
-        "n": 171,
-        "compliant": 0,
-        "rate": 0.0,
-        "ci_low": 0.0,
-        "ci_high": 0.022,
-        "flip_rate": 0.0,
-        "viol_per_run": 6.567,
-        "mean_out_tokens": 770.1
-      },
-      "1": {
-        "n": 180,
-        "compliant": 134,
-        "rate": 0.7444,
-        "ci_low": 0.6761,
-        "ci_high": 0.8026,
-        "flip_rate": 0.5,
-        "viol_per_run": 0.3,
-        "mean_out_tokens": 275.1
-      },
-      "2": {
-        "n": 180,
-        "compliant": 151,
-        "rate": 0.8389,
-        "ci_low": 0.7782,
-        "ci_high": 0.8854,
-        "flip_rate": 0.6667,
-        "viol_per_run": 0.217,
-        "mean_out_tokens": 282.3
-      },
-      "4": {
-        "n": 180,
-        "compliant": 174,
-        "rate": 0.9667,
-        "ci_low": 0.9292,
-        "ci_high": 0.9846,
-        "flip_rate": 0.6667,
-        "viol_per_run": 0.033,
-        "mean_out_tokens": 223.2
-      },
-      "8": {
-        "n": 180,
-        "compliant": 169,
-        "rate": 0.9389,
-        "ci_low": 0.8939,
-        "ci_high": 0.9655,
-        "flip_rate": 0.6667,
-        "viol_per_run": 0.067,
-        "mean_out_tokens": 216.5
-      },
-      "16": {
-        "n": 180,
-        "compliant": 171,
-        "rate": 0.95,
-        "ci_low": 0.9077,
-        "ci_high": 0.9735,
-        "flip_rate": 0.5,
-        "viol_per_run": 0.05,
-        "mean_out_tokens": 239.8
-      }
-    }
+    "conditions": {}
   }
 }

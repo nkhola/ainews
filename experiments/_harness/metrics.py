@@ -7,6 +7,33 @@ import json, math, os, sys, glob
 from collections import defaultdict
 
 
+T_CRIT = {2:12.71,3:4.30,4:3.18,5:2.78,6:2.57,7:2.45,8:2.36,9:2.31,10:2.26,
+          12:2.20,15:2.14,20:2.09,25:2.06,30:2.05,50:2.01,100:1.98}
+
+
+def cluster_ci(rows, key="pass"):
+    """Interval with the TASK as the unit of analysis, not the run.
+
+    Runs within a task are correlated, so treating 6 tasks x 30 trials as 180
+    independent samples understates uncertainty badly. A reader on Hacker News put
+    it best: weighing six rocks a hundred times does not tell you the average weight
+    of a mountain. This is the number that belongs in a headline; the Wilson interval
+    over runs describes only the tasks actually tested.
+    """
+    by = defaultdict(list)
+    for r in rows:
+        by[r["task"]].append(1 if r.get(key) else 0)
+    rates = [sum(v) / len(v) for v in by.values()]
+    k = len(rates)
+    if k < 2:
+        return (rates[0] if rates else 0.0, 0.0, 1.0, k)
+    mean = sum(rates) / k
+    sd = math.sqrt(sum((x - mean) ** 2 for x in rates) / (k - 1))
+    t = T_CRIT.get(k, min(T_CRIT.items(), key=lambda kv: abs(kv[0] - k))[1])
+    m = t * sd / math.sqrt(k)
+    return (mean, max(0.0, mean - m), min(1.0, mean + m), k)
+
+
 def wilson(k, n, z=1.96):
     if n == 0:
         return (0.0, 0.0, 0.0)
@@ -42,9 +69,10 @@ def summarize(directory):
 
     print(f"\nexperiment={directory}  runs={len(rows)}  api_fail={api_fail}  "
           f"budget_stopped={budget_stopped}  truncated={trunc}  usable={len(usable)}")
-    print(f"{'condition':<26} {'n':>5} {'pass':>6} {'rate':>7} {'95% CI':>16} {'flip':>6} "
-          f"{'in':>7} {'out':>7}")
-    print("-" * 92)
+    print(f"{'condition':<26} {'n':>5} {'pass':>6} {'rate':>7} {'per-run CI':>16} "
+          f"{'per-TASK CI':>16} {'flip':>6} {'in':>7} {'out':>7}")
+    print("  per-run CI is precision about the tasks tested. per-TASK CI is what generalises.")
+    print("-" * 112)
     conds = {}
     for cid in sorted(by):
         rs = by[cid]
@@ -62,8 +90,11 @@ def summarize(directory):
                       "ci_high": round(hi, 4), "flip_rate": round(fr, 4),
                       "mean_in_tokens": round(sum(ti)/n, 1),
                       "mean_out_tokens": round(sum(to)/n, 1)}
-        print(f"{cid:<26} {n:>5} {k:>6} {p:>6.1%} [{lo:>5.1%},{hi:>5.1%}] {fr:>6.0%} "
-              f"{sum(ti)/n:>7.0f} {sum(to)/n:>7.0f}")
+        cp, clo, chi, ntask = cluster_ci(rs)
+        conds[cid].update({"tasks": ntask, "clustered_rate": round(cp, 4),
+                           "clustered_low": round(clo, 4), "clustered_high": round(chi, 4)})
+        print(f"{cid:<26} {n:>5} {k:>6} {p:>6.1%} [{lo:>5.1%},{hi:>5.1%}] "
+              f"[{clo:>5.1%},{chi:>5.1%}] {fr:>6.0%} {sum(ti)/n:>7.0f} {sum(to)/n:>7.0f}")
 
     out = {directory: {"model": ok[0]["model"] if ok else None, "total_runs": len(rows),
                        "api_failures": api_fail, "budget_stopped": budget_stopped,
