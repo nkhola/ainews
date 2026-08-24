@@ -2,6 +2,8 @@
   "ft-04-same-ticket-five-ways": {
     "model": "gemini-2.5-flash",
     "total_runs": 900,
+    "api_failures": 61,
+    "budget_stopped": 0,
     "truncated": 0,
     "conditions": {
       "formal_spec": {
@@ -12,7 +14,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 144.6,
-        "mean_out_tokens": 151.6
+        "mean_out_tokens": 151.6,
+        "tasks": 6,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       },
       "precise": {
         "n": 170,
@@ -22,7 +28,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 113.3,
-        "mean_out_tokens": 169.3
+        "mean_out_tokens": 169.3,
+        "tasks": 6,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       },
       "slack_chatty": {
         "n": 167,
@@ -32,7 +42,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 115.3,
-        "mean_out_tokens": 191.1
+        "mean_out_tokens": 191.1,
+        "tasks": 6,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       },
       "terse_ticket": {
         "n": 171,
@@ -42,7 +56,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 87.5,
-        "mean_out_tokens": 172.6
+        "mean_out_tokens": 172.6,
+        "tasks": 6,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       },
       "user_story": {
         "n": 168,
@@ -52,7 +70,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 133.2,
-        "mean_out_tokens": 149.9
+        "mean_out_tokens": 149.9,
+        "tasks": 6,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       }
     }
   }

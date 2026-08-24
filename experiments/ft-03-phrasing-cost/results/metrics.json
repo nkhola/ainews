@@ -14,7 +14,11 @@
         "ci_high": 0.9969,
         "flip_rate": 0.1667,
         "mean_in_tokens": 30.3,
-        "mean_out_tokens": 1160.9
+        "mean_out_tokens": 1160.9,
+        "tasks": 6,
+        "clustered_rate": 0.9889,
+        "clustered_low": 0.9603,
+        "clustered_high": 1.0
       },
       "be_concise": {
         "n": 180,
@@ -24,7 +28,11 @@
         "ci_high": 0.9969,
         "flip_rate": 0.1667,
         "mean_in_tokens": 34.3,
-        "mean_out_tokens": 137.2
+        "mean_out_tokens": 137.2,
+        "tasks": 6,
+        "clustered_rate": 0.9889,
+        "clustered_low": 0.9603,
+        "clustered_high": 1.0
       },
       "chatty": {
         "n": 180,
@@ -34,7 +42,11 @@
         "ci_high": 0.999,
         "flip_rate": 0.1667,
         "mean_in_tokens": 75.3,
-        "mean_out_tokens": 2059.3
+        "mean_out_tokens": 2059.3,
+        "tasks": 6,
+        "clustered_rate": 0.9944,
+        "clustered_low": 0.9802,
+        "clustered_high": 1.0
       },
       "polite": {
         "n": 179,
@@ -44,7 +56,11 @@
         "ci_high": 0.999,
         "flip_rate": 0.1667,
         "mean_in_tokens": 50.3,
-        "mean_out_tokens": 1858.2
+        "mean_out_tokens": 1858.2,
+        "tasks": 6,
+        "clustered_rate": 0.9944,
+        "clustered_low": 0.9802,
+        "clustered_high": 1.0
       },
       "role": {
         "n": 179,
@@ -54,7 +70,11 @@
         "ci_high": 0.9809,
         "flip_rate": 0.3333,
         "mean_in_tokens": 43.3,
-        "mean_out_tokens": 1771.5
+        "mean_out_tokens": 1771.5,
+        "tasks": 6,
+        "clustered_rate": 0.96,
+        "clustered_low": 0.8731,
+        "clustered_high": 1.0
       },
       "spec_form": {
         "n": 180,
@@ -64,7 +84,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 43.3,
-        "mean_out_tokens": 318.7
+        "mean_out_tokens": 318.7,
+        "tasks": 6,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       },
       "stepwise": {
         "n": 174,
@@ -74,7 +98,11 @@
         "ci_high": 0.9941,
         "flip_rate": 0.5,
         "mean_in_tokens": 47.2,
-        "mean_out_tokens": 2261.2
+        "mean_out_tokens": 2261.2,
+        "tasks": 6,
+        "clustered_rate": 0.982,
+        "clustered_low": 0.9612,
+        "clustered_high": 1.0
       },
       "terse": {
         "n": 180,
@@ -84,7 +112,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 34.3,
-        "mean_out_tokens": 628.6
+        "mean_out_tokens": 628.6,
+        "tasks": 6,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       },
       "urgent": {
         "n": 171,
@@ -94,7 +126,11 @@
         "ci_high": 0.9679,
         "flip_rate": 0.5,
         "mean_in_tokens": 45.2,
-        "mean_out_tokens": 1738.9
+        "mean_out_tokens": 1738.9,
+        "tasks": 6,
+        "clustered_rate": 0.9379,
+        "clustered_low": 0.856,
+        "clustered_high": 1.0
       },
       "verbose": {
         "n": 180,
@@ -104,7 +140,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 115.3,
-        "mean_out_tokens": 760.6
+        "mean_out_tokens": 760.6,
+        "tasks": 6,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       }
     }
   }

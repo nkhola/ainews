@@ -2,6 +2,8 @@
   "ft-10-split-knowledge": {
     "model": "gemini-2.5-flash",
     "total_runs": 1200,
+    "api_failures": 83,
+    "budget_stopped": 0,
     "truncated": 0,
     "conditions": {
       "both": {
@@ -12,7 +14,11 @@
         "ci_high": 0.9903,
         "flip_rate": 0.25,
         "mean_in_tokens": 261.3,
-        "mean_out_tokens": 64.6
+        "mean_out_tokens": 64.6,
+        "tasks": 8,
+        "clustered_rate": 0.977,
+        "clustered_low": 0.9399,
+        "clustered_high": 1.0
       },
       "both_plus_warning": {
         "n": 224,
@@ -22,7 +28,11 @@
         "ci_high": 0.9992,
         "flip_rate": 0.125,
         "mean_in_tokens": 294.3,
-        "mean_out_tokens": 57.5
+        "mean_out_tokens": 57.5,
+        "tasks": 8,
+        "clustered_rate": 0.9957,
+        "clustered_low": 0.9855,
+        "clustered_high": 1.0
       },
       "doc_a_only": {
         "n": 222,
@@ -32,7 +42,11 @@
         "ci_high": 0.9954,
         "flip_rate": 0.25,
         "mean_in_tokens": 218.4,
-        "mean_out_tokens": 50.4
+        "mean_out_tokens": 50.4,
+        "tasks": 8,
+        "clustered_rate": 0.9863,
+        "clustered_low": 0.9638,
+        "clustered_high": 1.0
       },
       "doc_b_only": {
         "n": 223,
@@ -42,7 +56,11 @@
         "ci_high": 0.9904,
         "flip_rate": 0.25,
         "mean_in_tokens": 228.1,
-        "mean_out_tokens": 53.4
+        "mean_out_tokens": 53.4,
+        "tasks": 8,
+        "clustered_rate": 0.9765,
+        "clustered_low": 0.9314,
+        "clustered_high": 1.0
       },
       "neither": {
         "n": 227,
@@ -52,7 +70,11 @@
         "ci_high": 0.9955,
         "flip_rate": 0.125,
         "mean_in_tokens": 185.8,
-        "mean_out_tokens": 44.1
+        "mean_out_tokens": 44.1,
+        "tasks": 8,
+        "clustered_rate": 0.9861,
+        "clustered_low": 0.9533,
+        "clustered_high": 1.0
       }
     }
   }

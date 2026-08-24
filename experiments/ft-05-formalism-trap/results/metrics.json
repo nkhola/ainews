@@ -2,6 +2,8 @@
   "ft-05-formalism-trap": {
     "model": "gemini-2.5-flash",
     "total_runs": 1200,
+    "api_failures": 75,
+    "budget_stopped": 0,
     "truncated": 0,
     "conditions": {
       "correct_formal": {
@@ -12,7 +14,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 276.8,
-        "mean_out_tokens": 1.0
+        "mean_out_tokens": 1.0,
+        "tasks": 10,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       },
       "correct_plain": {
         "n": 278,
@@ -22,7 +28,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 100.8,
-        "mean_out_tokens": 1.0
+        "mean_out_tokens": 1.0,
+        "tasks": 10,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       },
       "wrong_formal": {
         "n": 285,
@@ -32,7 +42,11 @@
         "ci_high": 0.2162,
         "flip_rate": 0.1,
         "mean_in_tokens": 268.3,
-        "mean_out_tokens": 1.0
+        "mean_out_tokens": 1.0,
+        "tasks": 10,
+        "clustered_rate": 0.16,
+        "clustered_low": 0.0,
+        "clustered_high": 0.4103
       },
       "wrong_plain": {
         "n": 278,
@@ -42,7 +56,11 @@
         "ci_high": 0.1458,
         "flip_rate": 0.0,
         "mean_in_tokens": 101.5,
-        "mean_out_tokens": 1.0
+        "mean_out_tokens": 1.0,
+        "tasks": 10,
+        "clustered_rate": 0.1,
+        "clustered_low": 0.0,
+        "clustered_high": 0.326
       }
     }
   }

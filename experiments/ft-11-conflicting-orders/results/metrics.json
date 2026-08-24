@@ -2,6 +2,8 @@
   "ft-11-conflicting-orders": {
     "model": "gemini-2.5-flash",
     "total_runs": 1080,
+    "api_failures": 69,
+    "budget_stopped": 0,
     "truncated": 0,
     "conditions": {
       "a_top_b_bottom": {
@@ -12,7 +14,11 @@
         "ci_high": 0.5713,
         "flip_rate": 0.6667,
         "mean_in_tokens": 147.4,
-        "mean_out_tokens": 161.9
+        "mean_out_tokens": 161.9,
+        "tasks": 6,
+        "clustered_rate": 0.501,
+        "clustered_low": 0.032,
+        "clustered_high": 0.97
       },
       "a_twice_b_once": {
         "n": 170,
@@ -22,7 +28,11 @@
         "ci_high": 0.913,
         "flip_rate": 0.5,
         "mean_in_tokens": 153.9,
-        "mean_out_tokens": 135.4
+        "mean_out_tokens": 135.4,
+        "tasks": 6,
+        "clustered_rate": 0.866,
+        "clustered_low": 0.648,
+        "clustered_high": 1.0
       },
       "ab_adjacent": {
         "n": 172,
@@ -32,7 +42,11 @@
         "ci_high": 0.6191,
         "flip_rate": 0.6667,
         "mean_in_tokens": 147.2,
-        "mean_out_tokens": 180.7
+        "mean_out_tokens": 180.7,
+        "tasks": 6,
+        "clustered_rate": 0.5378,
+        "clustered_low": 0.0777,
+        "clustered_high": 0.9979
       },
       "b_top_a_bottom": {
         "n": 169,
@@ -42,7 +56,11 @@
         "ci_high": 0.8368,
         "flip_rate": 0.6667,
         "mean_in_tokens": 147.4,
-        "mean_out_tokens": 137.0
+        "mean_out_tokens": 137.0,
+        "tasks": 6,
+        "clustered_rate": 0.7853,
+        "clustered_low": 0.4742,
+        "clustered_high": 1.0
       },
       "b_twice_a_once": {
         "n": 169,
@@ -52,7 +70,11 @@
         "ci_high": 0.4054,
         "flip_rate": 0.0,
         "mean_in_tokens": 155.1,
-        "mean_out_tokens": 220.6
+        "mean_out_tokens": 220.6,
+        "tasks": 6,
+        "clustered_rate": 0.3333,
+        "clustered_low": 0.0,
+        "clustered_high": 0.8751
       },
       "ba_adjacent": {
         "n": 160,
@@ -62,7 +84,11 @@
         "ci_high": 0.8218,
         "flip_rate": 0.3333,
         "mean_in_tokens": 147.2,
-        "mean_out_tokens": 151.8
+        "mean_out_tokens": 151.8,
+        "tasks": 6,
+        "clustered_rate": 0.7674,
+        "clustered_low": 0.3748,
+        "clustered_high": 1.0
       }
     }
   }

@@ -2,6 +2,8 @@
   "ft-06-thinking-budget": {
     "model": "gemini-2.5-flash",
     "total_runs": 1200,
+    "api_failures": 22,
+    "budget_stopped": 0,
     "truncated": 0,
     "conditions": {
       "think_0": {
@@ -12,7 +14,11 @@
         "ci_high": 0.9956,
         "flip_rate": 0.25,
         "mean_in_tokens": 120.0,
-        "mean_out_tokens": 352.2
+        "mean_out_tokens": 352.2,
+        "tasks": 8,
+        "clustered_rate": 0.9872,
+        "clustered_low": 0.9663,
+        "clustered_high": 1.0
       },
       "think_128": {
         "n": 237,
@@ -22,7 +28,11 @@
         "ci_high": 0.9934,
         "flip_rate": 0.25,
         "mean_in_tokens": 120.3,
-        "mean_out_tokens": 574.9
+        "mean_out_tokens": 574.9,
+        "tasks": 8,
+        "clustered_rate": 0.9833,
+        "clustered_low": 0.9536,
+        "clustered_high": 1.0
       },
       "think_2048": {
         "n": 236,
@@ -32,7 +42,11 @@
         "ci_high": 0.9909,
         "flip_rate": 0.375,
         "mean_in_tokens": 120.2,
-        "mean_out_tokens": 584.4
+        "mean_out_tokens": 584.4,
+        "tasks": 8,
+        "clustered_rate": 0.9789,
+        "clustered_low": 0.953,
+        "clustered_high": 1.0
       },
       "think_512": {
         "n": 237,
@@ -42,7 +56,11 @@
         "ci_high": 0.9883,
         "flip_rate": 0.25,
         "mean_in_tokens": 119.5,
-        "mean_out_tokens": 572.4
+        "mean_out_tokens": 572.4,
+        "tasks": 8,
+        "clustered_rate": 0.9744,
+        "clustered_low": 0.9318,
+        "clustered_high": 1.0
       },
       "think_8192": {
         "n": 235,
@@ -52,7 +70,11 @@
         "ci_high": 0.9855,
         "flip_rate": 0.25,
         "mean_in_tokens": 119.6,
-        "mean_out_tokens": 578.8
+        "mean_out_tokens": 578.8,
+        "tasks": 8,
+        "clustered_rate": 0.9693,
+        "clustered_low": 0.9158,
+        "clustered_high": 1.0
       }
     }
   }

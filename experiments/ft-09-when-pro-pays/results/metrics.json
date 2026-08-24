@@ -2,6 +2,8 @@
   "ft-09-when-pro-pays": {
     "model": "gemini-2.5-flash-lite",
     "total_runs": 900,
+    "api_failures": 27,
+    "budget_stopped": 0,
     "truncated": 0,
     "conditions": {
       "default@gemini-2.5-flash": {
@@ -12,7 +14,11 @@
         "ci_high": 0.9994,
         "flip_rate": 0.1,
         "mean_in_tokens": 118.7,
-        "mean_out_tokens": 332.9
+        "mean_out_tokens": 332.9,
+        "tasks": 10,
+        "clustered_rate": 0.9966,
+        "clustered_low": 0.9888,
+        "clustered_high": 1.0
       },
       "default@gemini-2.5-flash-lite": {
         "n": 300,
@@ -22,7 +28,11 @@
         "ci_high": 0.9617,
         "flip_rate": 0.4,
         "mean_in_tokens": 119.0,
-        "mean_out_tokens": 325.5
+        "mean_out_tokens": 325.5,
+        "tasks": 10,
+        "clustered_rate": 0.94,
+        "clustered_low": 0.8584,
+        "clustered_high": 1.0
       },
       "default@gemini-3.1-pro-preview": {
         "n": 300,
@@ -32,7 +42,11 @@
         "ci_high": 1.0,
         "flip_rate": 0.0,
         "mean_in_tokens": 119.0,
-        "mean_out_tokens": 163.0
+        "mean_out_tokens": 163.0,
+        "tasks": 10,
+        "clustered_rate": 1.0,
+        "clustered_low": 1.0,
+        "clustered_high": 1.0
       }
     }
   }
