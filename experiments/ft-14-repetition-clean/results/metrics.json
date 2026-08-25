@@ -1,0 +1,95 @@
+{
+  "ft-14-repetition-clean": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 1320,
+    "api_failures": 0,
+    "budget_stopped": 0,
+    "truncated": 3,
+    "conditions": {
+      "reps_00": {
+        "n": 216,
+        "pass": 0,
+        "rate": 0.0,
+        "ci_low": 0.0,
+        "ci_high": 0.0175,
+        "flip_rate": 0.0,
+        "mean_in_tokens": 33.9,
+        "mean_out_tokens": 761.0,
+        "tasks": 11,
+        "clustered_rate": 0.0,
+        "clustered_low": 0.0,
+        "clustered_high": 0.0
+      },
+      "reps_01": {
+        "n": 220,
+        "pass": 107,
+        "rate": 0.4864,
+        "ci_low": 0.4211,
+        "ci_high": 0.5521,
+        "flip_rate": 1.0,
+        "mean_in_tokens": 46.8,
+        "mean_out_tokens": 341.7,
+        "tasks": 11,
+        "clustered_rate": 0.4864,
+        "clustered_low": 0.283,
+        "clustered_high": 0.6897
+      },
+      "reps_02": {
+        "n": 220,
+        "pass": 176,
+        "rate": 0.8,
+        "ci_low": 0.7422,
+        "ci_high": 0.8475,
+        "flip_rate": 0.7273,
+        "mean_in_tokens": 59.8,
+        "mean_out_tokens": 290.5,
+        "tasks": 11,
+        "clustered_rate": 0.8,
+        "clustered_low": 0.6103,
+        "clustered_high": 0.9897
+      },
+      "reps_04": {
+        "n": 220,
+        "pass": 185,
+        "rate": 0.8409,
+        "ci_low": 0.7868,
+        "ci_high": 0.8833,
+        "flip_rate": 0.7273,
+        "mean_in_tokens": 85.8,
+        "mean_out_tokens": 252.3,
+        "tasks": 11,
+        "clustered_rate": 0.8409,
+        "clustered_low": 0.7022,
+        "clustered_high": 0.9796
+      },
+      "reps_08": {
+        "n": 220,
+        "pass": 187,
+        "rate": 0.85,
+        "ci_low": 0.7968,
+        "ci_high": 0.8912,
+        "flip_rate": 0.5455,
+        "mean_in_tokens": 137.8,
+        "mean_out_tokens": 282.4,
+        "tasks": 11,
+        "clustered_rate": 0.85,
+        "clustered_low": 0.7039,
+        "clustered_high": 0.9961
+      },
+      "reps_16": {
+        "n": 220,
+        "pass": 191,
+        "rate": 0.8682,
+        "ci_low": 0.8171,
+        "ci_high": 0.9066,
+        "flip_rate": 0.5455,
+        "mean_in_tokens": 241.8,
+        "mean_out_tokens": 295.9,
+        "tasks": 11,
+        "clustered_rate": 0.8682,
+        "clustered_low": 0.758,
+        "clustered_high": 0.9783
+      }
+    }
+  }
+}
