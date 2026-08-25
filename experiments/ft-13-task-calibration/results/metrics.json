@@ -1,0 +1,25 @@
+{
+  "ft-13-task-calibration": {
+    "model": "gemini-2.5-flash",
+    "total_runs": 264,
+    "api_failures": 0,
+    "budget_stopped": 0,
+    "truncated": 0,
+    "conditions": {
+      "stated_once": {
+        "n": 264,
+        "pass": 182,
+        "rate": 0.6894,
+        "ci_low": 0.6312,
+        "ci_high": 0.7422,
+        "flip_rate": 0.5455,
+        "mean_in_tokens": 45.8,
+        "mean_out_tokens": 245.2,
+        "tasks": 22,
+        "clustered_rate": 0.6894,
+        "clustered_low": 0.5347,
+        "clustered_high": 0.8441
+      }
+    }
+  }
+}

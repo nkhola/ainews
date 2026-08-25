@@ -1,0 +1,8 @@
+
+experiment=ft-13-task-calibration  runs=264  api_fail=0  budget_stopped=0  truncated=0  usable=264
+condition                      n   pass    rate       per-run CI      per-TASK CI   flip      in     out
+  per-run CI is precision about the tasks tested. per-TASK CI is what generalises.
+----------------------------------------------------------------------------------------------------------------
+stated_once                  264    182  68.9% [63.1%,74.2%] [53.5%,84.4%]    55%      46     245
+
+wrote /home/runner/work/ainews/ainews/experiments/ft-13-task-calibration/results/metrics.json
