@@ -207,3 +207,45 @@ output tokens by wrapper run be_concise 137, spec_form 319, terse 629, verbose 7
 urgent 1739, role 1772, polite 1858, chatty 2059, stepwise 2261. Correctness 94.2% to 100%.
 The 16.5x cost spread on identical requests is the single most immediately actionable number
 the batch produced.
+
+
+## FT-13 / FT-14: the rerun that fixes FT-01 (2026-08)
+
+Triggered by a Hacker News reader pointing out that 6 tasks x 30 runs is not 180
+independent samples. Two experiments followed.
+
+**FT-13, task calibration pilot.** 22 candidate tasks at one mention, 12 runs each, 264
+calls, zero failures. The result is the mechanism behind FT-01: compliance tracks the
+docstring rate almost exactly.
+
+| triple-quoted strings per run | 1.00 | 0.83 | 0.67 | 0.58 | 0.42 | 0.33 | 0.25 | 0.17 | 0.00 |
+|---|---|---|---|---|---|---|---|---|---|
+| complied | 0% | 17% | 33% | 42% | 58% | 67% | 75% | 83% | 100% |
+
+A triple-quoted docstring is the only place double quotes survive once the rule is stated,
+so FT-01 was mechanically measuring whether the model docstrings a given task. Its three
+100% tasks were not easy ones; they were tasks the model does not write docstrings for.
+
+**FT-14, the clean sweep.** The 11 tasks that landed between 17% and 83% in the pilot, run
+across 0/1/2/4/8/16 repetitions at 20 runs each. 1,320 calls, 0 API failures, 0 budget
+stops, 3 truncated.
+
+| reps | 0 | 1 | 2 | 4 | 8 | 16 |
+|---|---|---|---|---|---|---|
+| mean compliance | 0% | 49% | 80% | 84% | 85% | 87% |
+| per-task 95% | [0,0] | [28,69] | [61,99] | [70,98] | [70,100] | [76,98] |
+| docstrings/run | 1.26 | 0.50 | 0.19 | 0.14 | 0.11 | 0.13 |
+| flip rate | 0% | 100% | 73% | 73% | 55% | 55% |
+
+**Choosing tasks by pilot rather than intuition fixed the statistics.** 1x [28,69] against
+4x [70,98] do not overlap, so the claim that repetition helps survives task-level clustering
+here, where in FT-01 it did not. Two further things fall out that FT-01 could not see:
+
+- **The plateau starts at 2, not 4.** 2x [61,99] and 4x [70,98] overlap heavily. Most of the
+  available gain arrives on the second mention.
+- **Repetition also buys stability.** The flip rate halves, from 100% of task cells producing
+  both answers at one mention down to 55% at eight and sixteen. Repetition raises the mean
+  and narrows the run-to-run spread at the same time.
+
+The per-task curves are the result; the mean is a summary of these eleven tasks, not a claim
+about tasks in general. Chart at `posts/_data/ft14_spread.png` in the blog repo.
