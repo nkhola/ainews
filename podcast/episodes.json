@@ -1,5 +1,14 @@
 [
   {
+    "file": "2026-W36.mp3",
+    "title": "The Astra Paradox: Agents, Acquisitions, and Outages",
+    "description": "This week, we unpack OpenAI's GPT-6 Astra, Nvidia's Hugging Face acquisition, and the tension between AI's expanding capabilities and its fragile infrastructure amidst macro volatility.",
+    "week_range": "August 31 to September 6, 2026",
+    "published": "2026-09-06",
+    "duration_min": 20,
+    "number": 8
+  },
+  {
     "file": "2026-W35.mp3",
     "title": "AI's Bifurcated Future",
     "description": "This week, AI's economic realities clash with its capabilities, agents reveal new vulnerabilities, and macroeconomic headwinds challenge market narratives.",
