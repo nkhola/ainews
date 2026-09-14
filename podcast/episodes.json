@@ -1,5 +1,14 @@
 [
   {
+    "file": "2026-W37.mp3",
+    "title": "Astra's $40M Gamble, RubyGems, and Oil",
+    "description": "This week, OpenAI's claimed Navier-Stokes solution sparks debate over agentic AI's cost and risks, while the market navigates escalating oil prices and the fierce open-source versus proprietary model race.",
+    "week_range": "September 7 to September 13, 2026",
+    "published": "2026-09-13",
+    "duration_min": 22,
+    "number": 9
+  },
+  {
     "file": "2026-W36.mp3",
     "title": "The Astra Paradox: Agents, Acquisitions, and Outages",
     "description": "This week, we unpack OpenAI's GPT-6 Astra, Nvidia's Hugging Face acquisition, and the tension between AI's expanding capabilities and its fragile infrastructure amidst macro volatility.",
