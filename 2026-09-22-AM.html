@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Post-Human Briefing — 2026-09-22 Morning</title>
+    <script>(function(){var t=null;try{t=localStorage.getItem('phb-theme')}catch(e){}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}document.documentElement.setAttribute('data-theme',t);})();</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/logo_favicon.png">
+    <style>
+        :root {
+            --bg: #f4eee1;
+            --surface: #faf6ea;
+            --surface-2: #ece4d1;
+            --ink: #20242e;
+            --ink-soft: #494e5c;
+            --muted: #78715f;
+            --accent: #b0512b;
+            --accent-hover: #8f3f1e;
+            --ochre: #a5762a;
+            --teal: #3d6a78;
+            --hairline: #ddd3bd;
+            --rule: #20242e;
+            --font-serif: 'Fraunces', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        [data-theme="dark"] {
+            --bg: #14161d;
+            --surface: #1a1d26;
+            --surface-2: #232733;
+            --ink: #eae5d6;
+            --ink-soft: #c2bcab;
+            --muted: #8f8a79;
+            --accent: #d97950;
+            --accent-hover: #e89570;
+            --ochre: #cf9c45;
+            --teal: #7aa7b5;
+            --hairline: #2d3140;
+            --rule: #eae5d6;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font-sans);
+            line-height: 1.7;
+            min-height: 100vh;
+            transition: background 0.25s ease, color 0.25s ease;
+            -webkit-font-smoothing: antialiased;
+            /* long tokens (model names, link text) must break, not scroll */
+            overflow-wrap: break-word;
+        }
+
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { color: var(--accent-hover); }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid var(--hairline);
+            border-radius: 50%;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        .theme-toggle:hover { color: var(--ink); border-color: var(--muted); }
+        [data-theme="dark"] .icon-moon { display: none; }
+        [data-theme="light"] .icon-sun { display: none; }
+
+        .kicker {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .double-rule {
+            border: 0;
+            border-top: 3px solid var(--rule);
+            border-bottom: 1px solid var(--rule);
+            height: 3px;
+            margin: 0;
+        }
+        .thin-rule {
+            border: 0;
+            border-top: 1px solid var(--hairline);
+            margin: 0;
+        }
+
+        /* Audio player */
+        .phb-player {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0 2px 0;
+        }
+        .phb-player button.pp-btn {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent);
+            color: var(--bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+            padding: 0;
+        }
+        .phb-player button.pp-btn:hover { background: var(--accent-hover); }
+        .phb-player .pp-track {
+            flex-grow: 1;
+            height: 3px;
+            background: var(--hairline);
+            cursor: pointer;
+            position: relative;
+        }
+        .phb-player .pp-fill {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 0%;
+            background: var(--accent);
+        }
+        .phb-player .pp-time {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--muted);
+            min-width: 88px;
+            text-align: right;
+        }
+        .phb-player.pp-error .pp-time { min-width: 0; }
+
+        /* Waveform player variant (progress = clipped duplicate bar layer) */
+        .phb-player.pp-feature { gap: 18px; padding-top: 6px; }
+        .pp-feature .pp-btn { width: 56px; height: 56px; }
+        .pp-track.pp-wave {
+            height: 48px;
+            background: transparent;
+            position: relative;
+        }
+        .wave-bars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 100%;
+            width: 100%;
+        }
+        .wave-bars span {
+            flex: 1 1 0;
+            min-width: 2px;
+            background: var(--hairline);
+            border-radius: 1px;
+        }
+        .pp-wave .pp-fill {
+            background: transparent;
+            overflow: hidden;
+        }
+        .wave-inner { height: 48px; }
+        .wave-played span { background: var(--accent); }
+
+        .pp-skip {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s ease;
+        }
+        .pp-skip:hover { color: var(--ink); }
+        .pp-rate {
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            background: var(--surface-2);
+            border: none;
+            padding: 4px 10px;
+            cursor: pointer;
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+            transition: color 0.15s ease;
+            min-width: 46px;
+            text-align: center;
+        }
+        .pp-rate:hover { color: var(--ink); }
+        @media (max-width: 600px) {
+            /* controls on one row, waveform full-width on the next:
+               the bar stack has a fixed minimum width that otherwise
+               forces horizontal scrolling on phones */
+            .phb-player.pp-feature { flex-wrap: wrap; gap: 10px 8px; }
+            .pp-feature .pp-track.pp-wave {
+                order: 10;
+                flex-basis: 100%;
+                min-width: 0;
+            }
+            .pp-feature .pp-btn { width: 44px; height: 44px; }
+            .pp-skip { width: 28px; height: 28px; }
+            .pp-feature .pp-time {
+                margin-left: auto;
+                min-width: 0;
+                font-size: 0.7rem;
+            }
+        }
+
+        footer.site-footer {
+            max-width: 720px;
+            margin: 72px auto 0 auto;
+            padding: 24px 24px 48px 24px;
+            border-top: 1px solid var(--hairline);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            text-align: center;
+            line-height: 2;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 2px;
+            width: 0%;
+            background: var(--accent);
+            z-index: 10;
+        }
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 28px 24px 40px 24px;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--hairline);
+        }
+        .top-nav .nav-left, .top-nav .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .top-nav a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .top-nav a:hover { color: var(--ink); }
+
+        .briefing-head {
+            padding: 44px 0 28px 0;
+            text-align: left;
+        }
+        .briefing-head .kicker { color: var(--accent); }
+        .briefing-head h1 {
+            font-family: var(--font-serif);
+            font-size: 2.7rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.12;
+            margin: 10px 0 12px 0;
+        }
+        .briefing-head .dateline {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .listen-block {
+            border-top: 1px solid var(--hairline);
+            border-bottom: 1px solid var(--hairline);
+            padding: 16px 0;
+            margin-bottom: 8px;
+        }
+        /* Reading page gets a slightly quieter waveform than the podcast */
+        .listen-block .pp-btn { width: 46px; height: 46px; }
+        .listen-block .pp-track.pp-wave, .listen-block .wave-inner { height: 38px; }
+
+        section.brief-section { padding-top: 40px; }
+        .section-head { margin-bottom: 8px; }
+        .section-head h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 10px 0 0 0;
+        }
+        .brief-body { font-size: 1.02rem; color: var(--ink-soft); }
+        .brief-body > p:first-of-type::first-letter {
+            font-family: var(--font-serif);
+            font-size: 3.4em;
+            font-weight: 600;
+            float: left;
+            line-height: 0.82;
+            padding: 4px 10px 0 0;
+            color: var(--accent);
+        }
+        .brief-body h3 {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin: 2.2em 0 0.5em 0;
+            letter-spacing: -0.01em;
+        }
+        .brief-body h4 {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ochre);
+            margin: 1.6em 0 0.4em 0;
+        }
+        .brief-body p { margin: 0 0 1.2em 0; }
+        .brief-body ul { padding-left: 1.3em; margin: 0 0 1.2em 0; }
+        .brief-body li { margin-bottom: 0.5em; }
+        .brief-body a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+            text-underline-offset: 3px;
+        }
+        .brief-body a:hover { color: var(--accent-hover); text-decoration-color: var(--accent-hover); }
+        .brief-body blockquote {
+            border-left: 2px solid var(--ochre);
+            margin: 1.4em 0;
+            padding: 2px 0 2px 18px;
+            font-family: var(--font-serif);
+            font-style: italic;
+            color: var(--ink-soft);
+        }
+        .brief-body strong { color: var(--ink); }
+        .brief-body table {
+            display: block;
+            max-width: 100%;
+            overflow-x: auto;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .brief-body td, .brief-body th {
+            border: 1px solid var(--hairline);
+            padding: 6px 10px;
+            text-align: left;
+        }
+
+        .recent {
+            margin-top: 64px;
+            padding-top: 8px;
+        }
+        .recent .kicker { display: block; margin: 14px 0 10px 0; }
+        .recent-list { display: flex; flex-direction: column; }
+        .recent-list a {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+            padding: 11px 2px;
+            border-bottom: 1px solid var(--hairline);
+            color: var(--ink);
+            font-size: 0.95rem;
+        }
+        .recent-list a:hover { color: var(--accent); }
+        .recent-list a .go {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .recent-list a:hover .go { color: var(--accent); }
+
+        @media (max-width: 600px) {
+            .briefing-head h1 { font-size: 2.1rem; }
+        }
+</style>
+</head>
+<body>
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="page">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html">&larr; The Post-Human Briefing</a>
+            </div>
+            <div class="nav-right">
+                <a href="https://www.khola.blog/" target="_blank" rel="noopener">Khola.Blog</a>
+                <button class="theme-toggle" onclick="phbToggleTheme()" aria-label="Toggle color theme" title="Toggle theme"><svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg><svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+            </div>
+        </nav>
+
+        <header class="briefing-head">
+            <span class="kicker">The Post-Human Briefing</span>
+            <h1>Morning Briefing</h1>
+            <div class="dateline">Tuesday, September 22, 2026 &nbsp;&middot;&nbsp; 8 min read</div>
+        </header>
+
+        <div class="listen-block">
+            <span class="kicker">Listen to this briefing</span>
+            <div class="phb-player pp-feature">
+                <audio preload="metadata" src="audio/2026-09-22-AM.mp3"></audio>
+                <button class="pp-skip pp-back" aria-label="Back 15 seconds" title="Back 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 5 2 10 7 10"></polyline><path d="M3.8 14.7a8.5 8.5 0 1 0 1.2-8.2L2 10"></path></svg></button>
+                <button class="pp-btn" aria-label="Play or pause">
+                    <svg class="pp-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                    <svg class="pp-pause" style="display:none" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
+                </button>
+                <button class="pp-skip pp-fwd" aria-label="Forward 15 seconds" title="Forward 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 5 22 10 17 10"></polyline><path d="M20.2 14.7A8.5 8.5 0 1 1 19 6.5L22 10"></path></svg></button>
+                <div class="pp-track pp-wave"><div class="wave-bars"><span style="height:45%"></span><span style="height:58%"></span><span style="height:55%"></span><span style="height:60%"></span><span style="height:58%"></span><span style="height:55%"></span><span style="height:28%"></span><span style="height:34%"></span><span style="height:61%"></span><span style="height:26%"></span><span style="height:46%"></span><span style="height:28%"></span><span style="height:64%"></span><span style="height:53%"></span><span style="height:19%"></span><span style="height:59%"></span><span style="height:23%"></span><span style="height:36%"></span><span style="height:33%"></span><span style="height:38%"></span><span style="height:36%"></span><span style="height:33%"></span><span style="height:80%"></span><span style="height:86%"></span><span style="height:39%"></span><span style="height:78%"></span><span style="height:24%"></span><span style="height:80%"></span><span style="height:42%"></span><span style="height:31%"></span><span style="height:71%"></span><span style="height:37%"></span><span style="height:75%"></span><span style="height:88%"></span><span style="height:85%"></span><span style="height:90%"></span><span style="height:88%"></span><span style="height:85%"></span><span style="height:58%"></span><span style="height:64%"></span><span style="height:91%"></span><span style="height:56%"></span><span style="height:76%"></span><span style="height:58%"></span><span style="height:20%"></span><span style="height:83%"></span><span style="height:49%"></span><span style="height:89%"></span><span style="height:53%"></span><span style="height:66%"></span><span style="height:63%"></span><span style="height:68%"></span><span style="height:66%"></span><span style="height:63%"></span><span style="height:36%"></span><span style="height:42%"></span></div><div class="pp-fill"><div class="wave-inner"><div class="wave-bars wave-played"><span style="height:45%"></span><span style="height:58%"></span><span style="height:55%"></span><span style="height:60%"></span><span style="height:58%"></span><span style="height:55%"></span><span style="height:28%"></span><span style="height:34%"></span><span style="height:61%"></span><span style="height:26%"></span><span style="height:46%"></span><span style="height:28%"></span><span style="height:64%"></span><span style="height:53%"></span><span style="height:19%"></span><span style="height:59%"></span><span style="height:23%"></span><span style="height:36%"></span><span style="height:33%"></span><span style="height:38%"></span><span style="height:36%"></span><span style="height:33%"></span><span style="height:80%"></span><span style="height:86%"></span><span style="height:39%"></span><span style="height:78%"></span><span style="height:24%"></span><span style="height:80%"></span><span style="height:42%"></span><span style="height:31%"></span><span style="height:71%"></span><span style="height:37%"></span><span style="height:75%"></span><span style="height:88%"></span><span style="height:85%"></span><span style="height:90%"></span><span style="height:88%"></span><span style="height:85%"></span><span style="height:58%"></span><span style="height:64%"></span><span style="height:91%"></span><span style="height:56%"></span><span style="height:76%"></span><span style="height:58%"></span><span style="height:20%"></span><span style="height:83%"></span><span style="height:49%"></span><span style="height:89%"></span><span style="height:53%"></span><span style="height:66%"></span><span style="height:63%"></span><span style="height:68%"></span><span style="height:66%"></span><span style="height:63%"></span><span style="height:36%"></span><span style="height:42%"></span></div></div></div></div>
+                <span class="pp-time">0:00 / --:--</span>
+                <button class="pp-rate" aria-label="Playback speed" title="Playback speed">1&times;</button>
+            </div>
+        </div>
+
+        <section class="brief-section" id="ai-news">
+            <div class="section-head">
+                <hr class="double-rule">
+                <h2>Artificial Intelligence</h2>
+            </div>
+            <div class="brief-body">
+<p>Today's AI discourse reveals a critical tension: while the industry pushes for unprecedented model scale and agentic autonomy, a parallel movement emphasizes specialized, efficient architectures and rigorous safety frameworks. This simultaneous pursuit of frontier capabilities and responsible deployment defines the current developmental trajectory.</p>
+<h3>The New Calculus of Inference: Specialization and Efficiency</h3>
+<p>The monolithic LLM paradigm is being challenged by a focus on specialized, efficient architectures. TypeSafe AI introduced <a href="https://simonwillison.net/2026/Sep/21/jev/">Jev, a "System One" or "Decision Model"</a>, which eschews text generation for probabilistic numerical outputs (yes/no, choice, score) at significantly lower cost and higher speed. This model, accessible via <a href="https://simonwillison.net/2026/Sep/22/llm-typesafe/">llm-typesafe</a>, represents a shift towards dedicated, low-latency inference for classification-like tasks. Complementing this, research continues to optimize inference for larger models. <a href="https://arxiv.org/abs/2609.20971">RBS-Attention</a> offers substantial prefill speedups for long-context LLMs by using radius-bounded sparse attention, while <a href="https://arxiv.org/abs/2609.22098">TreeSpark</a> enhances speculative decoding with calibrated, load-adaptive draft trees, improving token acceptance and decoding speed. For Retrieval-Augmented Generation (RAG), <a href="https://arxiv.org/abs/2609.22100">AdaMem</a> proposes adaptive memory token allocation based on passage relevance, boosting efficiency and accuracy, particularly under aggressive compression. Even the core attention mechanism is being re-evaluated, with <a href="https://arxiv.org/abs/2609.21139">TinyCeNN-LM</a> exploring quality-gated conversion of pretrained attention layers to cellular-recurrent designs. This drive for efficiency extends to infrastructure, with <a href="https://simonwillison.net/2026/Sep/21/cloudflare-python-worker/">Cloudflare Python Workers now generally available</a>, enabling Python code execution at the edge via WebAssembly.</p>
+<h4>Why it matters</h4>
+<p>These developments indicate a maturation of inference engineering, moving beyond brute-force scaling to architectural specialization and algorithmic optimization, directly impacting deployment costs and latency.</p>
+<h3>Geopolitical AI: The Race to Scale and Open-Weight Dynamics</h3>
+<p>The global AI race intensified today with significant announcements from Chinese labs. Xiaomi's <a href="https://www.latent.space/p/ainews-xiaomi-mimo-v26-pro-1t-a42b">MiMo-V2.6-Pro 1T-A42B</a> emerged as a new top open-weight model, reportedly trained for $3M, highlighting increasing capability from new players. Alibaba announced plans for <a href="https://www.reddit.com/r/LocalLLaMA/comments/1wmxfjs/qwen_4_announced_at_apsara_conference/">Qwen 4</a> and an ambitious <a href="https://www.reddit.com/r/LocalLLaMA/comments/1wmyh9z/alibaba_plans_ai_model_with_5_trillion_to_10_trillion_parameters_unveils_new_chip/">5 to 10 trillion parameter model</a>, alongside a new chip, signaling a direct challenge to Western frontier models. This comes as <a href="https://www.reddit.com/r/LocalLLaMA/comments/1wmm89l/huawei_shelves_global_ai_chip_rollout_as_chinas/">Huawei reportedly shelves its global AI chip rollout</a> due to overwhelming domestic demand, underscoring the strategic importance of internal supply chains. The discussion around the <a href="https://www.interconnects.ai/p/debating-rsi-the-us-china-gap-and">US-China gap</a> and the <a href="https://www.interconnects.ai/p/the-current-balance-of-power-in-open">balance of power in open models</a> remains central, with models like <a href="https://www.reddit.com/r/LocalLLaMA/comments/1wmmnrt/yandexaliceaifoundation80ba3bbase/">Yandex's AliceAI-Foundation-80B</a> also entering the open-weight arena.</p>
+<h4>Why it matters</h4>
+<p>The rapid advancement and open-weight releases from non-Western entities are reshaping the competitive landscape, pushing the boundaries of scale and democratizing access to powerful models, albeit with geopolitical undertones.</p>
+<h3>Trade-offs &amp; Evolution: Scale vs. Specialization</h3>
+<p>A clear divergence is emerging between the pursuit of ever-larger, general-purpose models (Alibaba's 5-10T parameter ambition) and the development of highly specialized, efficient "System One" models (TypeSafe AI's Jev). While massive models aim for broad intelligence, specialized models target specific, high-volume decision tasks at a fraction of the cost and latency. This reflects a fundamental trade-off in AI system design: generality often comes at the expense of efficiency and cost for narrow applications. The optimal path for many real-world deployments may involve a hybrid approach, where frontier models handle complex, open-ended problems, and specialized models manage routine, high-throughput decisions.</p>
+<h3>Agentic AI: From Autonomous Design to Accountable Deployment</h3>
+<p>Agentic AI continues its march towards greater autonomy and application. Research demonstrates agents can <a href="https://arxiv.org/abs/2609.21157">design better chips by leveraging higher-level abstractions</a> and perform <a href="https://arxiv.org/abs/2609.21165">molecule optimization for binding specificity</a> using contact-differential reasoning. In code generation, <a href="https://arxiv.org/abs/2609.21208">CoVer (Co-trained Coder and Verifier)</a> improves reliability by co-training a language model as both coder and test author. The <a href="https://arxiv.org/abs/2609.22104">DeepInstructor framework</a> enables agents to evaluate research ideas by reasoning over structured scholarly experience. As agents become more capable, the need for robust operationalization frameworks becomes paramount. <a href="https://arxiv.org/abs/2609.21192">AI-GRACE</a> proposes a framework for agentic AI governance, risk, assurance, controls, and evidence, linking organizational objectives to deployment capabilities. Furthermore, <a href="https://arxiv.org/abs/2609.22111">ReAgent</a> introduces an automated auditing framework to verify consistency between agent-generated research documents and their supporting artifacts, addressing the critical challenge of accountability.</p>
+<h4>Why it matters</h4>
+<p>The progression of agentic AI from conceptual demonstrations to practical applications in design, science, and software necessitates robust governance and verification mechanisms to ensure reliability and trustworthiness.</p>
+<h3>Navigating the Perils: Safety, Interpretability, and Responsible AI</h3>
+<p>As AI systems become more pervasive, the focus on safety, interpretability, and responsible deployment intensifies. OpenAI is actively pushing for <a href="https://openai.com/index/priorities-principles-third-party-assessments">priorities and principles for third-party AI safety assessments</a> and <a href="https://openai.com/index/building-standards-next-phase-ai">global standards</a>, acknowledging the need for external oversight. Understanding model failures is critical: <a href="https://arxiv.org/abs/2609.21096">hallucination detection can be achieved by tracing topological signatures of impaired context sharing</a> within attention graphs. Fine-tuning, while powerful, carries risks; a study on healthcare LLMs showed that <a href="https://arxiv.org/abs/2609.22110">domain-specific fine-tuning improved maternal health advice but degraded vaccination advice</a> due to dataset quality, highlighting the need for rigorous validation. The phenomenon of "evaluation awareness," where models detect and alter behavior during assessment, is also being explored, with findings suggesting <a href="https://arxiv.org/abs/2609.22119">larger models rely on higher-order reasoning to detect evaluation</a>. Addressing privacy, research shows a <a href="https://arxiv.org/abs/2609.22112">clear trade-off between privacy and personalization</a> in LLMs, as reducing stylometric signals significantly impacts user-specific text generation. Furthermore, methods to control model behavior are emerging, such as <a href="https://www.reddit.com/r/LocalLLaMA/comments/1wms904/uncensor_an_llm_without_touching_weights_inject_a/">uncensoring an LLM by injecting a tiny KV-cache bank</a> without altering weights.</p>
+<h4>Why it matters</h4>
+<p>The increasing complexity and autonomy of AI systems demand sophisticated tools and frameworks for safety, interpretability, and ethical deployment, moving beyond performance metrics to address societal impact.</p>
+<h3>Trade-offs &amp; Evolution: Fine-tuning: Performance vs. Peril</h3>
+<p>Fine-tuning remains a powerful technique for adapting LLMs to specific domains, as demonstrated by the improved accuracy of <a href="https://arxiv.org/abs/2609.22110">MamaBot-Llama for maternal health</a>. However, the same study starkly illustrates the peril: fine-tuning with inadequate data can lead to a significant <em>degradation</em> in performance and a dramatic increase in critical safety issues, as seen with Vax-Llama. This highlights a critical evolution in our understanding of fine-tuning: it is not a universally beneficial process but a data-quality-sensitive intervention that can either amplify or undermine a model's reliability and safety.</p>
+<p>The Bottom Line: The AI frontier is simultaneously expanding in scale and capability while confronting the fundamental challenges of efficiency, control, and responsible integration into complex human systems.</p>
+            </div>
+        </section>
+
+        <section class="brief-section" id="finance-news">
+            <div class="section-head">
+                <hr class="double-rule">
+                <h2>Markets &amp; Macro</h2>
+            </div>
+            <div class="brief-body">
+<p>Today's market narrative is dominated by the accelerating impact of AI, driving significant sector rotation into tech while simultaneously creating existential threats for traditional industries. Geopolitical tensions persist, influencing global trade flows and commodity markets, all against a backdrop of central banks grappling with persistent inflationary pressures.</p>
+<h3>AI's Accelerating Impact and Sector Re-rating</h3>
+<p>The market is undergoing a significant re-rating driven by the perceived transformative power of artificial intelligence. <a href="https://finance.yahoo.com/video/meta-enormous-advantage-rally-sparked-170402510.html">Meta's new Muse AI chatbot</a> has sparked a rally, with the app <a href="https://finance.yahoo.com/m/d6b13148-dd92-306c-9c2d-c63b115afd9d/meta%E2%80%99s-muse-jumps-to-the-top.html">topping Apple Store charts</a> and being hailed as <a href="https://www.marketwatch.com/story/could-metas-viral-muse-app-be-the-companys-chatgpt-moment-8e7075aa?mod=mw_rss_topstories">Meta's "ChatGPT moment"</a>. This enthusiasm extends beyond the hyperscalers; <a href="https://www.fool.com/investing/2026/09/22/why-shopify-stock-rocketed-higher-today/">Shopify stock rocketed higher</a> by leaning into AI agent shopping, while <a href="https://www.fool.com/investing/2026/09/22/is-palantir-a-millionaire-maker-stock/">Palantir</a> and <a href="https://247wallst.com/investing/2026/09/22/the-ai-software-story-wall-street-is-underrating/">Salesforce</a> are highlighted for their AI-driven data aggregation and agentic AI businesses, respectively. Even hardware suppliers like <a href="https://www.marketwatch.com/story/sandisks-stock-is-rising-why-one-analyst-says-ai-could-help-it-reach-new-heights-5541ded8?mod=mw_rss_topstories">SanDisk are seeing stock rises</a> as larger AI models increase demand for NAND. The AI investment boom may be <a href="https://www.bloomberg.com/news/videos/2026-09-22/broader-growth-can-drive-stocks-higher-ubs-s-hoffmann-video">underestimated as it expands into robotics</a> and the physical economy. This AI-driven fervor is causing a clear sector rotation, with <a href="https://www.bloomberg.com/news/articles/2026-09-22/us-stock-futures-drift-after-ai-driven-rally-oil-prices-slip">investors moving out of financials and into AI-linked tech stocks</a>, pushing the <a href="https://www.fool.com/investing/2026/09/22/nasdaq-set-a-record-and-dow-lost-270-points/">Nasdaq to a new record</a> even as the Dow lagged. Meanwhile, <a href="https://finance.yahoo.com/m/1055d02e-f8f1-3e79-9f3c-e62ad94a49d1/apple-on-track-to-close-at-%245.html">Apple is on track for a $5 trillion market cap</a> ahead of its iPhone release, and <a href="https://finance.yahoo.com/m/c559b822-383a-3d57-9e8d-cf6bd3a3f34/dow-jones-tech-titan-amazon.html">Amazon is battling a key support level</a> while eyeing new buy points.</p>
+<h4>Why it matters</h4>
+<p>The rapid adoption and perceived disruptive potential of AI are fundamentally reshaping market leadership and capital allocation, creating a bifurcated market where tech innovators are rewarded at the expense of sectors vulnerable to displacement.</p>
+<h3>Geopolitical Frictions and Global Economic Realignments</h3>
+<p>Geopolitical tensions continue to shape global trade and energy markets. President Trump's combative UN speech saw him <a href="https://www.ft.com/content/1434496d-0eaf-4270-8ad3-87724cd3721e?syn-25a6b1a6=1">threaten to 'annihilate' Iran</a>, while his administration's <a href="https://www.ft.com/content/99457bcb-d98f-4719-a203-688daefcc3f7?syn-25a6b1a6=1">reluctance to engage Houthis rattles Saudi Arabia</a>, raising doubts about US reliability as a defense partner. In a positive development for energy markets, <a href="https://www.ft.com/content/5b4f8738-3b93-40c8-88d6-08c8ea684e83?syn-25a6b1a6=1">Saudi Arabia signaled the reopening of a key East-West pipeline</a> after recent drone strikes. Meanwhile, Chinese leader Xi Jinping seeks to <a href="https://www.ft.com/content/9bea08f4-c9e8-450a-9d0f-0af0bf47b64e?syn-25a6b1a6=1">extend the trade truce with the US</a> while discussing Taiwan, Iran, and AI. This comes as <a href="https://www.ft.com/content/51c49052-0799-4920-9189-8399f15c1f51?syn-25a6b1a6=1">China's share of global container exports soared to 40%</a>, highlighting its trade reliance. However, the <a href="https://www.bloomberg.com/news/videos/2026-09-22/port-of-long-beach-ceo-seeing-less-activity-with-china-video">Port of Long Beach CEO notes less activity with China</a>, suggesting a complex rebalancing of trade routes or partners. Chinese EV giant <a href="https://www.fool.com/investing/2026/09/22/byds-china-business-is-slowing-heres-the-part-of/">BYD's domestic business is slowing</a>, with its international operations now taking off. In Europe, the <a href="https://www.ft.com/content/760091dd-20be-4152-aa0d-561475a99ee8?syn-25a6b1a6=1">EU will lift sanctions on two Russian oligarchs</a> as part of a deal to extend other curbs, while <a href="https://www.bloomberg.com/news/articles/2026-09-22/stanchart-ceo-says-bank-shut-down-accounts-of-russian-bad-guys">Standard Chartered's CEO confirmed shutting down accounts</a> used by a Russian money laundering ring.</p>
+<h4>Why it matters</h4>
+<p>Persistent geopolitical frictions and shifting trade dynamics are compelling global supply chain reconfigurations and influencing commodity prices, creating both risks and opportunities for multinational corporations.</p>
+<h3>Monetary Policy Crossroads and Inflationary Persistence</h3>
+<p>Central banks remain focused on inflation, with <a href="https://www.bloomberg.com/news/articles/2026-09-22/fed-s-barkin-warns-inflation-pressures-will-take-time-to-pass">Richmond Fed President Tom Barkin warning that inflationary pressures will take time to pass</a> and risk becoming entrenched. This cautious stance influences bond markets, where <a href="https://www.bloomberg.com/news/videos/2026-09-22/short-end-treasuries-popular-bet-on-fed-inflation-win-video">investors are betting on short-end Treasuries</a> for a Fed inflation victory. Meanwhile, the <a href="https://www.ft.com/content/f11485ba-39fb-422c-b0ff-5e71e1fe4f44?syn-25a6b1a6=1">cost of Japan's money is shaping global markets</a> as its central bank tightens, potentially forcing sell-offs by investors who leveraged its currency for higher yields. In the municipal bond market, <a href="https://www.bloomberg.com/news/articles/2026-09-22/blackrock-vanguard-muni-etfs-see-record-inflows-after-bond-rout">BlackRock and Vanguard Muni ETFs saw record inflows</a> after a recent rout, with <a href="https://www.marketwatch.com/story/tax-free-bond-yields-are-in-a-sweet-spot-get-in-before-it-s-too-late-94b8adac?mod=mw_rss_topstories">tax-free bond yields now in a sweet spot</a>. The opacity of <a href="https://www.bloomberg.com/news/videos/2026-09-22/private-credit-s-default-disconnect-video">private credit default rates</a> continues to make the true level of distress difficult to gauge. Commodity markets saw <a href="https://www.bloomberg.com/news/articles/2026-09-21/latest-oil-market-news-and-analysis-for-sept-22">oil waver</a> amid Saudi pipeline news and UN diplomacy, while <a href="https://www.bloomberg.com/news/articles/2026-09-22/copper-rises-for-a-sixth-day-toward-record-on-china-tightness">copper rose toward a record</a> on tight Chinese supplies.</p>
+<h4>Why it matters</h4>
+<p>Central bank hawkishness, global yield shifts, and commodity market volatility reflect persistent inflation concerns and geopolitical risks, dictating capital flows and influencing corporate borrowing costs.</p>
+<h3>Trade-offs &amp; Evolution</h3>
+<p>The market is exhibiting a stark divergence, reflecting both the promise and peril of current trends. While <a href="https://finance.yahoo.com/video/meta-enormous-advantage-rally-sparked-170402510.html">Meta's Muse AI is driving a tech rally</a> and <a href="https://www.fool.com/investing/2026/09/22/why-shopify-stock-rocketed-higher-today/">Shopify embraces AI for growth</a>, the same AI advancements are causing <a href="https://finance.yahoo.com/m/5e62529c-81f8-3167-b7ec-a736f329640/travel-stocks-fall-on-worries.html">travel stocks (Expedia, Booking) to fall</a> on fears of displacement by personal assistants. This dichotomy underscores AI's dual nature as both a powerful accelerator and a disruptive force, creating clear winners and losers. Similarly, the narrative around global trade with China is complex: <a href="https://www.ft.com/content/51c49052-0799-4920-9189-8399f15c1f51?syn-25a6b1a6=1">China's share of global container exports is soaring</a>, yet the <a href="https://www.bloomberg.com/news/videos/2026-09-22/port-of-long-beach-ceo-seeing-less-activity-with-china-video">Port of Long Beach CEO reports less activity with China</a>. This suggests a re-routing of trade flows or a shift in trading partners rather than a simple decline in China's overall export power, indicating a more nuanced evolution of global supply chains.</p>
+<p>The Bottom Line: The relentless advance of AI continues to reshape capital allocation and industry structures, forcing a re-evaluation of long-term economic winners and losers amidst persistent geopolitical and monetary policy uncertainties.</p>
+            </div>
+        </section>
+
+        <div class="recent">
+            <hr class="double-rule">
+            <span class="kicker">Recent briefings</span>
+            <div class="recent-list">
+                <a href="2026-09-21-PM.html"><span>Evening Briefing &middot; Monday, September 21, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-09-20-AM.html"><span>Morning Briefing &middot; Sunday, September 20, 2026</span> <span class="go">Read</span></a>
+                <a href="2026-09-19-AM.html"><span>Morning Briefing &middot; Saturday, September 19, 2026</span> <span class="go">Read</span></a>
+                <a href="index.html"><span>All briefings</span> <span class="go">Archive</span></a>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        &copy; 2026 Nitin Khola / Post-Human Engineering&trade;. All Rights Reserved.<br>
+        "The Post-Human Briefing&trade;" and "The Post-Human Debrief&trade;" are proprietary trademarks.
+    </footer>
+
+    <script>function phbToggleTheme(){var r=document.documentElement;var t=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',t);try{localStorage.setItem('phb-theme',t)}catch(e){}}</script>
+
+    <script>
+    (function() {
+        var players = document.querySelectorAll('.phb-player');
+        var fmt = function(s) {
+            if (!isFinite(s)) return '--:--';
+            var m = Math.floor(s / 60), r = Math.floor(s % 60);
+            return m + ':' + (r < 10 ? '0' : '') + r;
+        };
+        players.forEach(function(p) {
+            var audio = p.querySelector('audio');
+            var btn = p.querySelector('.pp-btn');
+            var track = p.querySelector('.pp-track');
+            var fill = p.querySelector('.pp-fill');
+            var time = p.querySelector('.pp-time');
+            var iconPlay = btn.querySelector('.pp-play');
+            var iconPause = btn.querySelector('.pp-pause');
+            if (!audio) return;
+            var inner = p.querySelector('.wave-inner');
+            var update = function() {
+                // waveform fill clips a duplicate bar layer; keep it sized
+                // to the full track so the bars in both layers align
+                if (inner) inner.style.width = track.clientWidth + 'px';
+                var d = audio.duration, c = audio.currentTime;
+                fill.style.width = (d ? (c / d * 100) : 0) + '%';
+                time.textContent = fmt(c) + ' / ' + fmt(d);
+            };
+            audio.addEventListener('loadedmetadata', update);
+            audio.addEventListener('timeupdate', update);
+            window.addEventListener('resize', update);
+            audio.addEventListener('ended', function() {
+                iconPlay.style.display = ''; iconPause.style.display = 'none';
+            });
+            audio.addEventListener('error', function() {
+                p.classList.add('pp-error');
+                btn.disabled = true;
+                btn.style.opacity = '0.4';
+                time.textContent = 'audio unavailable';
+            });
+            btn.addEventListener('click', function() {
+                if (audio.paused) {
+                    document.querySelectorAll('.phb-player audio').forEach(function(a) {
+                        if (a !== audio) a.pause();
+                    });
+                    document.querySelectorAll('.phb-player').forEach(function(q) {
+                        if (q !== p) {
+                            var pl = q.querySelector('.pp-play'), pa = q.querySelector('.pp-pause');
+                            if (pl && pa) { pl.style.display = ''; pa.style.display = 'none'; }
+                        }
+                    });
+                    audio.play();
+                    iconPlay.style.display = 'none'; iconPause.style.display = '';
+                } else {
+                    audio.pause();
+                    iconPlay.style.display = ''; iconPause.style.display = 'none';
+                }
+            });
+            track.addEventListener('click', function(e) {
+                if (!audio.duration) return;
+                var r = track.getBoundingClientRect();
+                audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+            });
+            var back = p.querySelector('.pp-back');
+            var fwd = p.querySelector('.pp-fwd');
+            var rateBtn = p.querySelector('.pp-rate');
+            if (back) back.addEventListener('click', function() {
+                audio.currentTime = Math.max(0, audio.currentTime - 15);
+            });
+            if (fwd) fwd.addEventListener('click', function() {
+                if (audio.duration) audio.currentTime = Math.min(audio.duration, audio.currentTime + 15);
+            });
+            if (rateBtn) {
+                var rates = [1, 1.25, 1.5, 2], ri = 0;
+                rateBtn.addEventListener('click', function() {
+                    ri = (ri + 1) % rates.length;
+                    audio.playbackRate = rates[ri];
+                    rateBtn.textContent = rates[ri] + '×';
+                });
+            }
+        });
+    })();
+    </script>
+
+    <script>
+    (function() {
+        var bar = document.getElementById('progress-bar');
+        var onScroll = function() {
+            var h = document.documentElement;
+            var max = h.scrollHeight - h.clientHeight;
+            bar.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%';
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    })();
+    </script>
+</body>
+</html>
